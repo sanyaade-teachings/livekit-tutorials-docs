@@ -1,0 +1,162 @@
+site_name: Livekit Tutorials
+site_url: "https://openvidu.io/"
+site_description: LiveKit Tutorials
+repo_name: openvidu/livekit-tutorials-docs
+# repo_url: https://github.com/openvidu/openvidu-docs
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Intro: tutorials/intro.md
+      - Application Server:
+          - Node.js: tutorials/application-server/nodejs.md
+          - Java: tutorials/application-server/java.md
+          - Go: tutorials/application-server/go.md
+          - Python: tutorials/application-server/python.md
+          - Ruby: tutorials/application-server/ruby.md
+      - Application Client:
+          - JavaScript: tutorials/application-client/javascript.md
+          - React: tutorials/application-client/react.md
+          - Angular: tutorials/application-client/angular.md
+          - Vue: tutorials/application-client/vue.md
+          - Electron: tutorials/application-client/electron.md
+          - Ionic: tutorials/application-client/ionic.md
+        # - iOS: tutorials/application-client/ios.md
+        # - Android: tutorials/application-client/android.md
+      - Advanced Features:
+          - Iframe: tutorials/advanced-tutorials/iframe.md
+          - ScreenShare: tutorials/advanced-tutorials/screenshare.md
+          - Virtual Background: tutorials/advanced-tutorials/virtual-background.md
+          - Recording: tutorials/advanced-tutorials/recording.md
+          - Roles: tutorials/advanced-tutorials/roles.md
+  - Demos:
+      - demos/openvidu-call.md
+      - demos/openvidu-classroom.md
+      - demos/basic-videoconference.md
+      - demos/basic-screenshare.md
+      - demos/basic-webinar.md
+      - demos/openvidu-getaroom.md
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  language: en
+  features:
+    - content.code.copy
+    - content.tabs.link
+    - content.code.annotate
+    - content.tooltips
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.footer
+    # - navigation.expand
+    # - navigation.path
+    # - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    # - toc.follow
+    # - toc.integrate
+    - search.suggest
+    - search.highlight
+    # - header.autohide
+  font:
+    text: Tomorrow # Nunito Sans, Rubik, Barlow, Raleway, Open Sans, Tomorrow, IBM Plex Sans
+    code: Roboto Mono
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  favicon: assets/images/logo.png
+  logo: assets/images/openvidu_globe_bg_transp_cropped.png
+
+plugins:
+  - search
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      autoplayVideos: true
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      skip_classes:
+        - do-not-include-in-gallery
+      auto_caption: false
+      caption_position: bottom
+      background: none
+      shadow: false
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: "#"
+      permalink_title: Anchor link to this section for reference
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      pygments_lang_class: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.snippets:
+      url_download: true
+      check_paths: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  generator: false
+  social:
+    - icon: simple/github
+      link: https://github.com/OpenVidu
+    - icon: simple/x
+      link: https://twitter.com/openvidu
+    - icon: simple/medium
+      link: https://medium.com/@openvidu
+    - icon: simple/youtube
+      link: https://www.youtube.com/@openvidu
+  scope: /
+  consent:
+    title: Cookie consent
+    description: >
+      This website uses cookies to ensure you get the best experience on our website.
+      <a href="https://openvidu.io/conditions/cookie-policy" target="_blank">See cookie policy</a>
+    cookies:
+      analytics: Google Analytics
+
+extra_css:
+  - stylesheets/colors.css
+  - stylesheets/extra.css
+  - stylesheets/unsemantic-grid.css
+  - stylesheets/livekit-tutorials.css
+  - stylesheets/amplify.css
+
+extra_javascript:
+  - javascripts/extra.js
+  - javascripts/consent.js
+
+copyright: >
+  2023 &copy; OpenVidu –
+  <a href="#__consent">Change cookie settings</a>
