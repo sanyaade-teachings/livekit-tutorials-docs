@@ -1,41 +1,40 @@
 site_name: Livekit Tutorials
-site_url: "https://openvidu.io/"
+site_url: https://livekit-tutorials.openvidu.io
 site_description: LiveKit Tutorials
 repo_name: openvidu/livekit-tutorials-docs
-# repo_url: https://github.com/openvidu/openvidu-docs
+repo_url: https://github.com/openvidu/livekit-tutorials
 
 nav:
   - Home: index.md
-  - Tutorials:
-      - Intro: tutorials/intro.md
-      - Application Server:
-          - Node.js: tutorials/application-server/nodejs.md
-          - Java: tutorials/application-server/java.md
-          - Go: tutorials/application-server/go.md
-          - Python: tutorials/application-server/python.md
-          - Ruby: tutorials/application-server/ruby.md
-      - Application Client:
-          - JavaScript: tutorials/application-client/javascript.md
-          - React: tutorials/application-client/react.md
-          - Angular: tutorials/application-client/angular.md
-          - Vue: tutorials/application-client/vue.md
-          - Electron: tutorials/application-client/electron.md
-          - Ionic: tutorials/application-client/ionic.md
-        # - iOS: tutorials/application-client/ios.md
-        # - Android: tutorials/application-client/android.md
-      - Advanced Features:
-          - Iframe: tutorials/advanced-tutorials/iframe.md
-          - ScreenShare: tutorials/advanced-tutorials/screenshare.md
-          - Virtual Background: tutorials/advanced-tutorials/virtual-background.md
-          - Recording: tutorials/advanced-tutorials/recording.md
-          - Roles: tutorials/advanced-tutorials/roles.md
-  - Demos:
-      - demos/openvidu-call.md
-      - demos/openvidu-classroom.md
-      - demos/basic-videoconference.md
-      - demos/basic-screenshare.md
-      - demos/basic-webinar.md
-      - demos/openvidu-getaroom.md
+  - Application Server:
+      - Node.js: tutorials/application-server/nodejs.md
+      - Java: tutorials/application-server/java.md
+      - Go: tutorials/application-server/go.md
+      - Python: tutorials/application-server/python.md
+      - Ruby: tutorials/application-server/ruby.md
+  - Application Client:
+      - JavaScript: tutorials/application-client/javascript.md
+      - React: tutorials/application-client/react.md
+      - Angular: tutorials/application-client/angular.md
+      - Vue: tutorials/application-client/vue.md
+      - Electron: tutorials/application-client/electron.md
+      - Ionic: tutorials/application-client/ionic.md
+    # - iOS: tutorials/application-client/ios.md
+    # - Android: tutorials/application-client/android.md
+  - Advanced Features:
+      - Iframe: tutorials/advanced-tutorials/iframe.md
+      - ScreenShare: tutorials/advanced-tutorials/screenshare.md
+      - Virtual Background: tutorials/advanced-tutorials/virtual-background.md
+      - Recording: tutorials/advanced-tutorials/recording.md
+      - Roles: tutorials/advanced-tutorials/roles.md
+  # - Demos:
+  #     - demos/openvidu-call.md
+  #     - demos/openvidu-classroom.md
+  #     - demos/basic-videoconference.md
+  #     - demos/basic-screenshare.md
+  #     - demos/basic-webinar.md
+  #     - demos/openvidu-getaroom.md
+  - What is OpenVidu?: what-about-openvidu.md
 
 validation:
   omitted_files: warn
@@ -51,7 +50,7 @@ theme:
     - content.tabs.link
     - content.code.annotate
     - content.tooltips
-    - navigation.tabs
+    # - navigation.tabs
     # - navigation.tabs.sticky
     - navigation.instant
     - navigation.instant.progress
