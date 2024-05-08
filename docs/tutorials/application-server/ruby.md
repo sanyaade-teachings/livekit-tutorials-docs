@@ -34,9 +34,9 @@ ruby app.rb
 
 ## Understanding the code
 
-The application is a simple Ruby application using the popular Sinatra (web server) and Faraday (http client) libraries. It has a single controller file `app.rb` that exports an unique endpoint:
+The application is a simple Ruby application using the popular Sinatra (web server) and Faraday (http client) libraries. It has a single controller file `app.rb` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and participant name
+- `/token` : Generate a token for a given Room name and Participant name
 
 Let's see the code of the controller:
 
@@ -74,8 +74,8 @@ Then the application configures the port retrieved from the environment variable
 
 The unique endpoint of the application is `/token`. It receives a JSON object with the following fields:
 
-- `roomName`: the name of the room where the user wants to connect.
-- `participantName`: the name of the participant that wants to connect to the room.
+- `roomName`: the name of the Room where the user wants to connect.
+- `participantName`: the name of the participant that wants to connect to the Room.
 
 ```ruby
 post '/token' do

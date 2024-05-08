@@ -5,13 +5,15 @@ repo_name: openvidu/livekit-tutorials-docs
 repo_url: https://github.com/openvidu/livekit-tutorials
 
 nav:
-  - Home: index.md
+  - index.md
   - Application Server:
       - Node.js: tutorials/application-server/nodejs.md
       - Java: tutorials/application-server/java.md
       - Go: tutorials/application-server/go.md
+      - PHP: tutorials/application-server/php.md
       - Python: tutorials/application-server/python.md
       - Ruby: tutorials/application-server/ruby.md
+      - .NET: tutorials/application-server/dotnet.md
   - Application Client:
       - JavaScript: tutorials/application-client/javascript.md
       - React: tutorials/application-client/react.md
@@ -22,10 +24,8 @@ nav:
     # - iOS: tutorials/application-client/ios.md
     # - Android: tutorials/application-client/android.md
   - Advanced Features:
-      - Iframe: tutorials/advanced-tutorials/iframe.md
+      - Egress: tutorials/advanced-tutorials/recording.md
       - ScreenShare: tutorials/advanced-tutorials/screenshare.md
-      - Virtual Background: tutorials/advanced-tutorials/virtual-background.md
-      - Recording: tutorials/advanced-tutorials/recording.md
       - Roles: tutorials/advanced-tutorials/roles.md
   # - Demos:
   #     - demos/openvidu-call.md

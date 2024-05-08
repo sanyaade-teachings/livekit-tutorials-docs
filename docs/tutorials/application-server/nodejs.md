@@ -35,9 +35,9 @@ node index.js
 
 ## Understanding the code
 
-The application is a simple Express app with a single controller file `index.js` that exports an unique endpoint:
+The application is a simple Express app with a single controller file `index.js` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and participant name
+- `/token` : Generate a token for a given Room name and Participant name
 
 <!-- > You can get more information about these endpoints in the [Application Server Endpoints](application-server/#rest-endpoints) section. -->
 
@@ -87,8 +87,8 @@ Starting by the top, the `index.js` file has the following fields:
 
 The unique endpoint of the application is `/token`. It receives a JSON object with the following fields:
 
-- `roomName`: the name of the room where the user wants to connect.
-- `participantName`: the name of the participant that wants to connect to the room.
+- `roomName`: the name of the Room where the user wants to connect.
+- `participantName`: the name of the participant that wants to connect to the Room.
 
 ```javascript
 app.post('/token', (req, res) => {

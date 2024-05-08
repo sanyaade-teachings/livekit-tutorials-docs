@@ -30,9 +30,9 @@ mvn spring-boot:run
 
 ## Understanding the code
 
-The application is a simple Spring Boot application with a single controller class `Controller.java` that exports an unique endpoint:
+The application is a simple Spring Boot application with a single controller class `Controller.java` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and participant name
+- `/token` : Generate a token for a given Room name and Participant name
 
 Let's see the code of the controller:
 
@@ -69,8 +69,8 @@ Going deeper, the `Controller` class has the following fields:
 
 The unique endpoint of the application is `/token`. It receives a JSON object in the request body with the following fields:
 
-- `roomName`: the name of the room where the user wants to connect.
-- `participantName`: the name of the participant that wants to connect to the room.
+- `roomName`: the name of the Room where the user wants to connect.
+- `participantName`: the name of the participant that wants to connect to the Room.
 
 ```java
 @CrossOrigin(origins = "*")
