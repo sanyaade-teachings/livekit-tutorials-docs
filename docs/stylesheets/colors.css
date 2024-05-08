@@ -19,6 +19,14 @@
     --md-typeset-a-color: var(--md-primary-fg-color--light);
 }
 
+[data-md-color-scheme=default] {
+    --md-typeset-a-color: var(--md-primary-fg-color--dark);
+    .md-button--primary {
+        background-color: var(--md-accent-fg-color--transparent);
+        border-color: var(--md-accent-fg-color--transparent);
+    }
+}
+
 .red-color {
     color: #ff5252;
 }

@@ -70,12 +70,23 @@ theme:
   font:
     text: Tomorrow # Nunito Sans, Rubik, Barlow, Raleway, Open Sans, Tomorrow, IBM Plex Sans
     code: Roboto Mono
-  palette:
-    scheme: slate
-    primary: custom
-    accent: custom
   favicon: assets/images/logo.png
   logo: assets/images/openvidu_globe_bg_transp_cropped.png
+  palette:
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
 
 plugins:
   - search
