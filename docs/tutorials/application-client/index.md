@@ -1,6 +1,6 @@
 # Application client tutorials
 
-All application clients below share the same core functionality:
+Every application client below shares the same core functionality:
 
 - Users request a LiveKit token to any [application server](../application-server/) to connect to a room.
 - Users may publish camera, microphone and screen-share tracks.
