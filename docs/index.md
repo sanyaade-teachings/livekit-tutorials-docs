@@ -31,6 +31,15 @@ Any LiveKit application has 3 different parts:
 
 ### Application client tutorials
 
+All application clients below share the same core functionality:
+
+- Users request a LiveKit token to any [application server](#application-server-tutorials) to connect to a room.
+- Users may publish camera, microphone and screen-share tracks.
+- Users may subscribe to other users' tracks.
+- Users may mute and unmute their tracks.
+- Users may communicate through a chat.
+- Users may leave the room at any time.
+
 <div class="tutorials-container" markdown>
 
 [:simple-javascript:{.icon .lg-icon .tab-icon} **JavaScript**](./tutorials/application-client/javascript.md){ .md-button .md-button--primary .tutorial-link}
@@ -56,6 +65,11 @@ Any LiveKit application has 3 different parts:
 </div>
 
 ### Application server tutorials
+
+Every application server below has only one single purpose: generate LiveKit tokens on demand for any [application client](#application-client-tutorials). Two important notes:
+
+- They all have a single REST endpoint `/token` that takes a room and participant name and returns a token.
+- They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){target=\_blank} for their language, if available.
 
 <div class="tutorials-container" markdown>
 

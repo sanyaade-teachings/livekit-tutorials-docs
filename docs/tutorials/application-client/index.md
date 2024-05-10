@@ -2,7 +2,7 @@
 
 All application clients below share the same core functionality:
 
-- Users request a LiveKit token to any application server to connect to a room.
+- Users request a LiveKit token to any [application server](../application-server/) to connect to a room.
 - Users may publish camera, microphone and screen-share tracks.
 - Users may subscribe to other users' tracks.
 - Users may mute and unmute their tracks.
