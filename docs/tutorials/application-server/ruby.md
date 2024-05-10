@@ -1,23 +1,24 @@
-# openvidu-basic-ruby
+# Ruby
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/ruby){ .md-button target=\_blank }
 
-This is a minimal server application sample built for Ruby with [Sinatra](https://sinatrarb.com/){:target="_blank"}.
-It internally uses the [livekit-ruby-server-sdk](https://github.com/livekit/server-sdk-ruby){:target="_blank"}.
+This is a minimal server application built for Ruby with [Sinatra](https://sinatrarb.com/){:target="\_blank"} that allows generating LiveKit tokens on demand.
 
+It internally uses [LiveKit Ruby SDK](https://github.com/livekit/server-sdk-ruby){:target="\_blank"}.
 
 ## Running this application
 
 #### Prerequisites
-To run this application you will need **Ruby** installed on your system:
 
-- [Ruby](https://www.ruby-lang.org/en/downloads/){:target="_blank"}
+To run this application you will need **Ruby**:
+
+- [Ruby](https://www.ruby-lang.org/en/downloads/){:target="\_blank"}
 
 #### Download repository
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/openvidu-basic-ruby
+cd openvidu-livekit-tutorials/application-server/ruby
 ```
 
 #### Install dependencies
@@ -34,41 +35,44 @@ ruby app.rb
 
 ## Understanding the code
 
-The application is a simple Ruby application using the popular Sinatra (web server) and Faraday (http client) libraries. It has a single controller file `app.rb` that exports a unique endpoint:
+The application is a simple Ruby app using the popular Sinatra web library. It has a single controller file `app.rb` that exports a unique endpoint:
 
 - `/token` : Generate a token for a given Room name and Participant name
 
-Let's see the code of the controller:
+Let's see the code of the `app.rb` file:
 
-```ruby
-require 'sinatra'
-require 'sinatra/cors'
-require 'faraday'
-require 'json'
-require 'livekit'
-require './env.rb'
+```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L1-L15' target='_blank'>app.rb</a>" linenums="1"
+require "sinatra"
+require "sinatra/cors"
+require "livekit" # (1)!
+require "./env.rb"
 
-# Load env variables
-SERVER_PORT = ENV['SERVER_PORT']
-LIVEKIT_API_KEY = ENV['LIVEKIT_API_KEY']
-LIVEKIT_API_SECRET = ENV['LIVEKIT_API_SECRET']
+SERVER_PORT = ENV["SERVER_PORT"] || 6080 # (2)!
+LIVEKIT_API_KEY = ENV["LIVEKIT_API_KEY"] || "devkey" # (3)!
+LIVEKIT_API_SECRET = ENV["LIVEKIT_API_SECRET"] || "secret" # (4)!
 
-set :port, SERVER_PORT
+set :port, SERVER_PORT # (5)!
 
-register Sinatra::Cors
+register Sinatra::Cors # (6)!
 set :allow_origin, "*"
 set :allow_methods, "POST,OPTIONS"
 set :allow_headers, "content-type"
 ```
 
-Starting by the top, the `app.rb` file has the following statements:
+1. Import `livekit` library
+2. The port where the application will be listening
+3. The API key of LiveKit Server
+4. The API secret of LiveKit Server
+5. Configure the port
+6. Enable CORS support
 
-- All the `require` instructions: load the necessary libraries and environment variables.
+The `app.rb` file imports the required dependencies and loads the necessary environment variables (defined in `env.rb` file):
 
+- `SERVER_PORT`: the port where the application will be listening.
+- `LIVEKIT_API_KEY`: the API key of LiveKit Server.
+- `LIVEKIT_API_SECRET`: the API secret of LiveKit Server.
 
-Then the application configures the port retrieved from the environment variables (file `env.rb`) and sets the CORS configuration for Sinatra. The CORS policy is configured to allow requests from any origin and any header.
-
-<br>
+Finally the application configures the port and sets the CORS configuration for Sinatra.
 
 #### Create token endpoint
 
@@ -77,39 +81,37 @@ The unique endpoint of the application is `/token`. It receives a JSON object wi
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```ruby
-post '/token' do
-
+```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L17-L34' target='_blank'>app.rb</a>" linenums="17"
+post "/token" do
   content_type :json
 
   body = JSON.parse(request.body.read)
-  room_name = body['roomName']
-  participant_name = body['participantName']
+  room_name = body["roomName"]
+  participant_name = body["participantName"]
 
   if room_name.nil? || participant_name.nil?
     status 400
-    return 'roomName and participantName are required'
+    return JSON.generate("roomName and participantName are required")
   end
 
-  # By default, a token expires after 6 hours.
-  # You may override this by passing in ttl when creating the token. ttl is expressed in seconds.
-  token = LiveKit::AccessToken.new(api_key: LIVEKIT_API_KEY, api_secret: LIVEKIT_API_SECRET)
-  token.identity = participant_name
-  token.name = participant_name
-  token.add_grant(roomJoin: true, room: room_name)
+  token = LiveKit::AccessToken.new(api_key: LIVEKIT_API_KEY, api_secret: LIVEKIT_API_SECRET) # (1)!
+  token.identity = participant_name # (2)!
+  token.add_grant(roomJoin: true, room: room_name) # (3)!
 
-  token.to_jwt
+  return JSON.generate(token.to_jwt) # (4)!
 end
 ```
 
-The endpoint first checks if the request body has the `roomName` and `participantName` fields. If not, it returns a `400` error.
+1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
+2. We set participant's identity in the AccessToken.
+3. We set the video grants in the AccessToken. `roomJoin` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+4. Finally, we convert the AccessToken to a JWT token and send it back to the client.
 
-Then, it creates a new token using the [LiveKit Ruby SDK](https://github.com/livekit/server-sdk-ruby){:target="_blank"}.
+The endpoint first obtains the `roomName` and `participantName` parameters from the request body. If they are not available, it returns a `400` error.
 
-The token is created with the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` environment variables. This object will be used to create a new token for the user.
+If required fields are available, a new JWT token is created. For that we use the [LiveKit Ruby SDK](https://github.com/livekit/server-sdk-ruby){:target="\_blank"}:
 
-After that, we set the `identity` and `name` fields of the `AccessToken` object with the `participantName` received from the request body.
-
-Then, we add a new grant to the token. The grant is a `roomJoin` grant with the `room` field set to the `roomName` received from the request body.
-
-Finally, the `AccessToken` is converted to a JWT token and returned in the response body.
+1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
+2. We set participant's name and identity in the AccessToken.
+3. We set the video grants in the AccessToken. `roomJoin` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+4. Finally, we convert the AccessToken to a JWT token and send it back to the client.

@@ -1,96 +1,118 @@
+=== ":simple-nodedotjs:{.icon .lg-icon .tab-icon} Node"
 
+    To run this server application, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed in your device.
 
-=== ":fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} Node"
-
-	To run this server application, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
-
-	1. Clone the repository
-	```bash
-	git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-	```
-	2. Install dependencies
-	```bash
-	cd openvidu-livekit-tutorials/openvidu-basic-node
-	npm install
-	```
-
-	3. Run the server
-	```bash
-	node index.js
-	```
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Install dependencies
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/node
+    npm install
+    ```
+    3. Run the server
+    ```bash
+    node index.js
+    ```
 
 === ":fontawesome-brands-java:{.icon .lg-icon .tab-icon} Java"
 
-	To run this server application, you'll need [Java](https://www.java.com/en/download/manual.jsp){:target="\_blank"} and [Maven](https://maven.apache.org/){:target="\_blank"} installed on your development computer.
+    To run this server application, you'll need [Java](https://www.java.com/en/download/manual.jsp){:target="\_blank"} and [Maven](https://maven.apache.org/){:target="\_blank"} installed in your device.
 
-	1. Clone the repository
-	```bash
-	git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-	```
-	2. Run the server
-	```bash
-	cd openvidu-livekit-tutorials/openvidu-basic-java
-	mvn spring-boot:run
-	```
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Run the server
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/java
+    mvn spring-boot:run
+    ```
 
-=== ":fontawesome-brands-golang:{.icon .lg-icon .tab-icon} GO"
+=== ":simple-goland:{.icon .lg-icon .tab-icon} GO"
 
+    To run this server application, you'll need [GO](https://go.dev/doc/install){:target="\_blank"} installed in your device.
 
-	1. Clone the repository
-	```bash
-	git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-	```
-	2. Install dependencies
-	```bash
-	TODO
-	```
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Run the server
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/go
+    go run .
+    ```
 
-	3. Run the server
-	```bash
-	TODO
-	```
+=== ":simple-php:{.icon .lg-icon .tab-icon} PHP"
 
-=== ":fontawesome-brands-python:{.icon .lg-icon .tab-icon} Python"
+    To run this server application, you'll need [PHP](https://www.php.net/manual/en/install.php){:target="\_blank"} and [Composer](https://getcomposer.org/download/){:target="\_blank"} installed in your device.
 
-	To run this server application, you'll need [Python3](https://www.python.org/downloads/){:target="\_blank"} installed on your development computer.
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Install dependencies
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/php
+    composer install
+    ```
+    3. Run the server
+    ```bash
+    composer start
+    ```
 
+=== ":simple-python:{.icon .lg-icon .tab-icon} Python"
 
-	1. Clone the repository
-	```bash
-	git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-	```
-	2. Create a python3 environment and activate it
-	```bash
-	cd openvidu-livekit-tutorials/openvidu-basic-python
-	python3 -m venv venv
-	. venv/bin/activate
-	```
+    To run this server application, you'll need [Python3](https://www.python.org/downloads/){:target="\_blank"} installed in your device.
 
-	3. Install dependencies
-	```bash
-	pip install -r requirements.txt
-	```
-
-	4. Run the server
-	```bash
-	python3 app.py
-	```
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Create a python3 environment and activate it
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/python
+    python3 -m venv venv
+    . venv/bin/activate
+    ```
+    3. Install dependencies
+    ```bash
+    pip install -r requirements.txt
+    ```
+    4. Run the server
+    ```bash
+    python3 app.py
+    ```
 
 === ":simple-ruby:{.icon .lg-icon .tab-icon} Ruby"
 
-	To run this server application, you'll need [Ruby](https://www.ruby-lang.org/en/downloads/){:target="\_blank"} installed on your development computer.
+    To run this server application, you'll need [Ruby](https://www.ruby-lang.org/en/downloads/){:target="\_blank"} installed in your device.
 
-	1. Clone the repository
-	```bash
-	git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-	```
-	2. Install dependencies
-	```bash
-	cd openvidu-livekit-tutorials/openvidu-basic-ruby
-	bundle install
-	```
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Install dependencies
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/ruby
+    bundle install
+    ```
+    3. Run the server
+    ```bash
+    ruby app.rb
+    ```
 
-	3. Run the server
-	```bash
-	ruby app.rb
-	```
+=== ":simple-dotnet:{.icon .lg-icon .tab-icon} .NET"
+
+    To run this server application, you'll need [.NET](https://dotnet.microsoft.com/en-us/download){:target="\_blank"} installed in your device.
+
+    1. Clone the repository
+    ```bash
+    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    ```
+    2. Run the server
+    ```bash
+    cd openvidu-livekit-tutorials/application-server/dotnet
+    dotnet run
+    ```

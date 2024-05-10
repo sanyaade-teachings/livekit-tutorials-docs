@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=\_blank }
 
-This OpenVidu application is a simple videoconference app that allows you to assign roles to participants. It includes a basic frontend based on [openvidu-js](../application-client/javascript.md) and two different server implementations: one using **Node.js**, which you can learn more about in the [openvidu-basic-node tutorial](../application-server/nodejs.md), and the other using **Java**, covered in the [openvidu-basic-java tutorial](../application-server/java.md).
+This OpenVidu application is a simple videoconference app that allows you to assign roles to participants. It includes a basic frontend based on [openvidu-js](../application-client/javascript.md) and two different server implementations: one using **Node.js**, which you can learn more about in the [openvidu-basic-node tutorial](../application-server/node.md), and the other using **Java**, covered in the [openvidu-basic-java tutorial](../application-server/java.md).
 
 ## Running this tutorial
 
@@ -80,7 +80,7 @@ We'll focus on explaining the specific code additions related to roles feature.
 
 === ":fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} Node"
 
-    To gain a deeper understanding of the existing code within the server application, we highly recommend exploring the [openvidu-basic-node tutorial](../application-server/nodejs.md) on the server side. This resource will provide valuable insights into the pre-existing codebase.
+    To gain a deeper understanding of the existing code within the server application, we highly recommend exploring the [openvidu-basic-node tutorial](../application-server/node.md) on the server side. This resource will provide valuable insights into the pre-existing codebase.
 
     The **Node.js** project includes the following essential files:
 

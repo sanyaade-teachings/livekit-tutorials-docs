@@ -430,7 +430,7 @@ The `track` property is used to attach the track to the `<video>` element. This 
 
 Under the root project folder, you can see the `openvidu-angular/docker/` directory. Here it is included all the required files yo make it possible the deployment with OpenVidu.
 
-First of all, you will need to create the **openvidu-angular** docker image. Under `openvidu-angular/docker/` directory you will find the `create_image.sh` script. This script will create the docker image with the [openvidu-basic-node](../application-server/nodejs.md) as application server and the static files.
+First of all, you will need to create the **openvidu-angular** docker image. Under `openvidu-angular/docker/` directory you will find the `create_image.sh` script. This script will create the docker image with the [openvidu-basic-node](../application-server/node.md) as application server and the static files.
 
 ```bash
 ./create_image.sh openvidu/openvidu-angular-demo:X.Y.Z

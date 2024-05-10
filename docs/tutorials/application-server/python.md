@@ -1,9 +1,10 @@
-# openvidu-basic-python
+# Python
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/python){ .md-button target=\_blank }
 
-This is a minimal server application sample built for Python with [Flask](https://flask.palletsprojects.com/){:target="\_blank"}.
-It internally uses the [livekit-server-sdk-python](https://github.com/livekit/livekit-server-sdk-python).
+This is a minimal server application built for Python with [Flask](https://flask.palletsprojects.com/){:target="\_blank"} that allows generating LiveKit tokens on demand.
+
+It internally uses [LiveKit Python SDK](https://github.com/livekit/python-sdks){:target="\_blank"}.
 
 ## Running this application
 
@@ -17,7 +18,7 @@ To run this application you will need **Python 3**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/openvidu-basic-python
+cd openvidu-livekit-tutorials/application-server/python
 ```
 
 #### Create a python environment
@@ -43,36 +44,45 @@ python3 app.py
 
 ## Understanding the code
 
-The application is a simple Flask application with a single controller file `app.py` that exports a unique endpoint:
+The application is a simple Flask app with a single controller file `app.py` that exports a unique endpoint:
 
 - `/token` : Generate a token for a given Room name and Participant name
 
-Let's see the code of the controller:
+Let's see the code of the `app.py` file:
 
-```python
-app = Flask(__name__)
+```python title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/python/app.py#L1-L15' target='_blank'>app.py</a>" linenums="1"
+import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from dotenv import load_dotenv
+from livekit import api # (1)!
 
-# Enable CORS support
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+load_dotenv() # (2)!
 
-# Load env variables
-SERVER_PORT = os.environ.get("SERVER_PORT")
-LIVEKIT_API_KEY = os.environ.get("LIVEKIT_API_KEY")
-LIVEKIT_API_SECRET = os.environ.get("LIVEKIT_API_SECRET")
+SERVER_PORT = os.environ.get("SERVER_PORT", 6080) # (3)!
+LIVEKIT_API_KEY = os.environ.get("LIVEKIT_API_KEY", "devkey") # (4)!
+LIVEKIT_API_SECRET = os.environ.get("LIVEKIT_API_SECRET", "secret") # (5)!
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=SERVER_PORT)
+app = Flask(__name__) # (6)!
+
+CORS(app) # (7)!
 ```
 
-Starting by the top, the `app.py` file has the following fields:
+1. Import `api` from `livekit` library
+2. Load environment variables from `.env` file
+3. The port where the application will be listening
+4. The API key of LiveKit Server
+5. The API secret of LiveKit Server
+6. Initialize the Flask application
+7. Enable CORS support
 
-- `app`: Flask application.
-- `cors`: CORS support for Flask application.
-- `SERVER_PORT`: port of the application server.
-- `LIVEKIT_API_KEY`: the API key of the LiveKit deployment.
-- `LIVEKIT_API_SECRET`: the API secret of the LiveKit deployment.
+The `app.py` file imports the required dependencies and loads the necessary environment variables from `.env` file using `dotenv` library:
 
-<br>
+- `SERVER_PORT`: the port where the application will be listening.
+- `LIVEKIT_API_KEY`: the API key of LiveKit Server.
+- `LIVEKIT_API_SECRET`: the API secret of LiveKit Server.
+
+Finally the `Flask` application is initialized and CORS support is enabled.
 
 #### Create token endpoint
 
@@ -81,29 +91,33 @@ The unique endpoint of the application is `/token`. It receives a JSON object wi
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```python
-@app.route("/token", methods=['POST'])
+```python title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/python/app.py#L18-L31' target='_blank'>app.py</a>" linenums="18"
+@app.post("/token")
 def getToken():
     room_name = request.json.get("roomName")
     participant_name = request.json.get("participantName")
 
     if not room_name or not participant_name:
-        return "roomName and participantName are required", 400
+        return jsonify("roomName and participantName are required"), 400
 
-    # Create a VideoGrant with the necessary permissions
-    grant = livekit.VideoGrant(room_join=True, room=room_name)
-
-    # Create an AccessToken with your API key, secret and the VideoGrant
-    access_token = livekit.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, grant=grant, identity=participant_name)
-
-    # Generate the token
-    return access_token.to_jwt()
+    token = (
+        api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET) # (1)!
+        .with_identity(participant_name) # (2)!
+        .with_grants(api.VideoGrants(room_join=True, room=room_name)) # (3)!
+    )
+    return jsonify(token.to_jwt()) # (4)!
 ```
 
-The endpoint first checks if the request body has the `roomName` and `participantName` fields. If not, it returns a `400` error.
+1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
+2. We set participant's identity in the AccessToken.
+3. We set the video grants in the AccessToken. `room_join` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+4. Finally, we convert the AccessToken to a JWT token and send it back to the client.
 
-Then, it creates a new `VideoGrant` object with the necessary permissions. In this case, the grant allows the user to join the room specified in the request body.
+The endpoint first obtains the `roomName` and `participantName` parameters from the request body. If they are not available, it returns a `400` error.
 
-After that, it creates a new `AccessToken` object with the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` environment variables, the `VideoGrant` object, and the participant name.
+If required fields are available, a new JWT token is created. For that we use the [LiveKit Python SDK](https://github.com/livekit/python-sdks){:target="\_blank"}:
 
-Finally, the `AccessToken` is converted to a JWT token and returned in the response body.
+1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
+2. We set participant's identity in the AccessToken.
+3. We set the video grants in the AccessToken. `room_join` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+4. Finally, we convert the AccessToken to a JWT token and send it back to the client.

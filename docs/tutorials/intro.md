@@ -6,7 +6,7 @@ Whether you're new to Livekit or want to explore advanced features, our tutorial
 
 <div class="tutorials-container" markdown>
 
-[:fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} **NodeJS**](./application-server/nodejs.md){ .md-button .md-button--primary .tutorial-link }
+[:fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} **NodeJS**](./application-server/node.md){ .md-button .md-button--primary .tutorial-link }
 
 [:fontawesome-brands-java:{.icon .lg-icon .tab-icon} **Java**](./application-server/java.md){ .md-button .md-button--primary .tutorial-link}
 
@@ -94,7 +94,7 @@ Learn how to implement screensharing in your videoconference app.
 
 Discover the process for assigning roles to participants.
 
-<!-- [With NodeJS](./advanced-tutorials/roles-nodejs.md){ .md-button .card-action-button }
+<!-- [With NodeJS](./advanced-tutorials/roles-node.md){ .md-button .card-action-button }
 [With Java](./advanced-tutorials/roles-java.md){ .md-button .card-action-button} -->
 
 [See more](./advanced-tutorials/roles.md){ .md-button .card-action-button}

@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=\_blank }
 
-This OpenVidu application is a simple videoconference app that allows you to record the room. It includes a basic frontend based on [openvidu-js](../application-client/javascript.md) and two different server implementations: one using **Node.js**, which you can learn more about in the [openvidu-basic-node tutorial](../application-server/nodejs.md), and the other using **Java**, covered in the [openvidu-basic-java tutorial](../application-server/java.md).
+This OpenVidu application is a simple videoconference app that allows you to record the room. It includes a basic frontend based on [openvidu-js](../application-client/javascript.md) and two different server implementations: one using **Node.js**, which you can learn more about in the [openvidu-basic-node tutorial](../application-server/node.md), and the other using **Java**, covered in the [openvidu-basic-java tutorial](../application-server/java.md).
 
 ## Running this tutorial
 
@@ -73,7 +73,7 @@ When these newly introduced buttons are interacted with, the client triggers req
 
 <h3>Backend Enhancements</h3>
 
-In the next sections, we'll dive into detailed explanations of specific REST endpoints related to recording features. These improvements were inspired by the [openvidu-basic-node tutorial](../application-server/nodejs.md) and [openvidu-basic-java tutorial](../application-server/java.md) code examples.
+In the next sections, we'll dive into detailed explanations of specific REST endpoints related to recording features. These improvements were inspired by the [openvidu-basic-node tutorial](../application-server/node.md) and [openvidu-basic-java tutorial](../application-server/java.md) code examples.
 
 === ":fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} Node"
 
