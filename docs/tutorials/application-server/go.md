@@ -18,12 +18,12 @@ To run this application you will need **Go**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/go
 ```
 
 #### Run application
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/go
 go run main.go
 ```
 
@@ -31,7 +31,7 @@ go run main.go
 
 The application is a simple Go app with a single file `main.go` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `main.go` file:
 

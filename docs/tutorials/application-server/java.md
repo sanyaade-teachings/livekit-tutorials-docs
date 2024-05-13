@@ -19,12 +19,12 @@ To run this application you will need **Java** and **Maven**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/java
 ```
 
 #### Run application
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/java
 mvn spring-boot:run
 ```
 
@@ -32,7 +32,7 @@ mvn spring-boot:run
 
 The application is a simple Go app with a single controller `Controller.java` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `Controller.java` file:
 

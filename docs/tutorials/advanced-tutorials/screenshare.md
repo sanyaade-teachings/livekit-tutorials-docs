@@ -8,15 +8,15 @@ This tutorial shows how to use screen sharing in Livekit applications. It is bas
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need a HTTP web server installed on your development computer. If you have Node.js installed, you can easily set up [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
 
@@ -55,11 +55,11 @@ The first thing we need to do is to add a button to the client application to st
 
 ```html
 <input
-	class="btn btn-large"
-	type="button"
-	id="buttonScreenShare"
-	onmouseup="toggleScreenShare()"
-	value="Screen share"
+  class="btn btn-large"
+  type="button"
+  id="buttonScreenShare"
+  onmouseup="toggleScreenShare()"
+  value="Screen share"
 />
 ```
 
@@ -76,16 +76,16 @@ var screenSharePublication;
 // ...
 
 async function toggleScreenShare() {
-	console.log('Toggling screen share');
-	const enabled = !isScreenShared;
+  console.log("Toggling screen share");
+  const enabled = !isScreenShared;
 
-	if (enabled) {
-		// Enable screen sharing
-		// ...
-	} else {
-		// Disable screen sharing
-		await stopScreenSharing();
-	}
+  if (enabled) {
+    // Enable screen sharing
+    // ...
+  } else {
+    // Disable screen sharing
+    await stopScreenSharing();
+  }
 }
 ```
 
@@ -97,40 +97,40 @@ Now we need to implement the logic when the screen sharing is enabled. To do so,
 
 ```javascript
 async function toggleScreenShare() {
-	// ...
+  // ...
 
-	if (enabled) {
-		// Enable screen sharing
-		try {
-			screenSharePublication =
-				await room.localParticipant?.setScreenShareEnabled(enabled);
-		} catch (error) {
-			console.error('Error enabling screen sharing', error);
-		}
+  if (enabled) {
+    // Enable screen sharing
+    try {
+      screenSharePublication =
+        await room.localParticipant?.setScreenShareEnabled(enabled);
+    } catch (error) {
+      console.error("Error enabling screen sharing", error);
+    }
 
-		if (screenSharePublication) {
-			console.log('Screen sharing enabled', screenSharePublication);
-			isScreenShared = enabled;
+    if (screenSharePublication) {
+      console.log("Screen sharing enabled", screenSharePublication);
+      isScreenShared = enabled;
 
-			// Attach the screen share track to the video container
-			const element = screenSharePublication.track.attach();
-			element.id = screenSharePublication.trackSid;
-			element.className = 'removable';
-			document.getElementById('video-container').appendChild(element);
+      // Attach the screen share track to the video container
+      const element = screenSharePublication.track.attach();
+      element.id = screenSharePublication.trackSid;
+      element.className = "removable";
+      document.getElementById("video-container").appendChild(element);
 
-			// Add user data for the screen share
-			appendUserData(element, `${myUserName}_SCREEN`);
+      // Add user data for the screen share
+      appendUserData(element, `${myUserName}_SCREEN`);
 
-			// Listen for the 'ended' event to handle screen sharing stop
-			screenSharePublication.addListener('ended', async () => {
-				console.debug('Clicked native stop button. Stopping screen sharing');
-				await stopScreenSharing();
-			});
-		}
-	} else {
-		// Disable screen sharing
-		await stopScreenSharing();
-	}
+      // Listen for the 'ended' event to handle screen sharing stop
+      screenSharePublication.addListener("ended", async () => {
+        console.debug("Clicked native stop button. Stopping screen sharing");
+        await stopScreenSharing();
+      });
+    }
+  } else {
+    // Disable screen sharing
+    await stopScreenSharing();
+  }
 }
 ```
 
@@ -146,24 +146,23 @@ Now we need to implement the logic when the screen sharing is disabled. To do so
 
 ```javascript
 async function stopScreenSharing() {
-	try {
-		await room.localParticipant?.setScreenShareEnabled(false);
-		isScreenShared = false;
-		const trackSid = screenSharePublication?.trackSid;
+  try {
+    await room.localParticipant?.setScreenShareEnabled(false);
+    isScreenShared = false;
+    const trackSid = screenSharePublication?.trackSid;
 
-		if (trackSid) {
-			document.getElementById(trackSid)?.remove();
-			removeUserData({ identity: `${myUserName}_SCREEN` });
-		}
-		screenSharePublication = undefined;
-	} catch (error) {
-		console.error('Error stopping screen sharing', error);
-	}
+    if (trackSid) {
+      document.getElementById(trackSid)?.remove();
+      removeUserData({ identity: `${myUserName}_SCREEN` });
+    }
+    screenSharePublication = undefined;
+  } catch (error) {
+    console.error("Error stopping screen sharing", error);
+  }
 }
 ```
 
 Here, we also have to call the `setScreenShareEnabled()` method of the local participant to disable the screen sharing with the `false` parameter. Once the screen sharing has been disabled, we will update the `isScreenShared` variable to `false` and remove the screen share track from the video container. We will also remove the user data from the screen share track.
-
 
 ## Deploying openvidu-js-screen-share (TODO)
 

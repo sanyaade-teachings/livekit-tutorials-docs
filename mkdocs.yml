@@ -19,11 +19,12 @@ nav:
   - Application Server:
       - tutorials/application-server/index.md
       - Node.js: tutorials/application-server/node.md
-      - Java: tutorials/application-server/java.md
       - Go: tutorials/application-server/go.md
-      - PHP: tutorials/application-server/php.md
-      - Python: tutorials/application-server/python.md
       - Ruby: tutorials/application-server/ruby.md
+      - Java: tutorials/application-server/java.md
+      - Python: tutorials/application-server/python.md
+      - Rust: tutorials/application-server/rust.md
+      - PHP: tutorials/application-server/php.md
       - .NET: tutorials/application-server/dotnet.md
   - Advanced Features:
       - tutorials/advanced-tutorials/index.md

@@ -4,20 +4,19 @@
 
 This tutorial is a simple video-call application built with Angular Framework which intents and purposes the same as [Livekit JavaScript tutorial](./javascript.md) but using Angular framework instead of plain web technologies.
 
-
 ## Running this tutorial
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -69,13 +68,13 @@ In the beginning, we import several essential objects from the `livekit-client` 
 
 ```javascript
 import {
-	Room,
-	RoomEvent,
-	RemoteParticipant,
-	RemoteTrackPublication,
-	RemoteTrack,
-	LocalTrackPublication,
-} from 'livekit-client';
+  Room,
+  RoomEvent,
+  RemoteParticipant,
+  RemoteTrackPublication,
+  RemoteTrack,
+  LocalTrackPublication,
+} from "livekit-client";
 ```
 
 These imported objects are crucial for establishing and managing video calls. They represent different components and events associated with the video call system. We'll use them in subsequent parts of our code to create and manage video calls.
@@ -87,24 +86,24 @@ After importing the required objects, we define a few variables that will be use
 ```typescript
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = '';
-let LIVEKIT_URL = '';
+let APPLICATION_SERVER_URL = "";
+let LIVEKIT_URL = "";
 
 // ...
 
 export class AppComponent implements OnDestroy {
-	APPLICATION_SERVER_URL = environment.applicationServerUrl;
-	room: Room;
-	localPublication: LocalTrackPublication;
-	remotePublications: RemoteTrackPublication[] = [];
+  APPLICATION_SERVER_URL = environment.applicationServerUrl;
+  room: Room;
+  localPublication: LocalTrackPublication;
+  remotePublications: RemoteTrackPublication[] = [];
 
-	// Join form
-	myRoomName: string;
-	myParticipantName: string;
+  // Join form
+  myRoomName: string;
+  myParticipantName: string;
 
-	mainPublication: LocalTrackPublication | RemoteTrackPublication;
+  mainPublication: LocalTrackPublication | RemoteTrackPublication;
 
-	// ...
+  // ...
 }
 ```
 
@@ -145,7 +144,7 @@ The first two variables in the code are `APPLICATION_SERVER_URL` and `LIVEKIT_UR
 		// If LIVEKIT_URL is not configured, use default value from local development
 		if (!LIVEKIT_URL) {
 			if (window.location.hostname === 'localhost') {
-				LIVEKIT_URL = 'ws://localhost:7880/';	
+				LIVEKIT_URL = 'ws://localhost:7880/';
 			} else {
 				LIVEKIT_URL = 'wss://' + window.location.hostname + ':7443/';
 			}
@@ -204,8 +203,8 @@ This code block performs the following actions:
 
    ```html
    <div *ngFor="let publication of remotePublications">
-   	<ov-video [track]="publication.videoTrack"></ov-video>
-   	<ov-audio [track]="publication.audioTrack"></ov-audio>
+     <ov-video [track]="publication.videoTrack"></ov-video>
+     <ov-audio [track]="publication.audioTrack"></ov-audio>
    </div>
    ```
 
@@ -358,28 +357,28 @@ These components are responsible for presenting video and audio tracks, and you 
 ```html
 <!-- Local video -->
 <div *ngIf="localPublication">
-	<ov-video
-		*ngIf="localPublication.videoTrack"
-		[track]="localPublication.videoTrack"
-		(click)="updateMainStreamManager(localPublication)"
-	></ov-video>
+  <ov-video
+    *ngIf="localPublication.videoTrack"
+    [track]="localPublication.videoTrack"
+    (click)="updateMainStreamManager(localPublication)"
+  ></ov-video>
 </div>
 
 <!-- Remote videos -->
 <div
-	*ngFor="let publication of remotePublications"
-	[ngClass]="{hidden: publication.kind==='audio'}"
+  *ngFor="let publication of remotePublications"
+  [ngClass]="{hidden: publication.kind==='audio'}"
 >
-	<ov-video
-		*ngIf="publication.videoTrack"
-		[track]="publication.videoTrack"
-		(click)="updateMainStreamManager(publication)"
-	></ov-video>
+  <ov-video
+    *ngIf="publication.videoTrack"
+    [track]="publication.videoTrack"
+    (click)="updateMainStreamManager(publication)"
+  ></ov-video>
 
-	<ov-audio
-		*ngIf="publication.audioTrack"
-		[track]="publication.audioTrack"
-	></ov-audio>
+  <ov-audio
+    *ngIf="publication.audioTrack"
+    [track]="publication.audioTrack"
+  ></ov-audio>
 </div>
 ```
 
@@ -400,23 +399,23 @@ Both the audio and video components receive a track, which is then attached to t
 
 ```typescript
 @Component({
-	selector: 'ov-video',
-	template: '<video #videoElement></video>',
+  selector: "ov-video",
+  template: "<video #videoElement></video>",
 })
 export class OpenViduVideoComponent implements AfterViewInit {
-	@ViewChild('videoElement') elementRef: ElementRef;
+  @ViewChild("videoElement") elementRef: ElementRef;
 
-	_track: LocalVideoTrack | RemoteVideoTrack;
+  _track: LocalVideoTrack | RemoteVideoTrack;
 
-	// ...
+  // ...
 
-	@Input()
-	set track(track: LocalVideoTrack | RemoteVideoTrack) {
-		this._track = track;
-		if (this.elementRef) {
-			this._track.attach(this.elementRef.nativeElement);
-		}
-	}
+  @Input()
+  set track(track: LocalVideoTrack | RemoteVideoTrack) {
+    this._track = track;
+    if (this.elementRef) {
+      this._track.attach(this.elementRef.nativeElement);
+    }
+  }
 }
 ```
 

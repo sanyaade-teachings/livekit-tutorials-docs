@@ -12,19 +12,19 @@ It internally uses [LiveKit PHP SDK](https://github.com/agence104/livekit-server
 
 To run this application you will need **PHP** and **Composer**:
 
-- [PHP](https://www.php.net/downloads)
-- [Composer](https://getcomposer.org/download/)
+- [PHP](https://www.php.net/downloads){:target="\_blank"}
+- [Composer](https://getcomposer.org/download/){:target="\_blank"}
 
 #### Download repository
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/php
 ```
 
 #### Install dependencies
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/php
 composer install
 ```
 
@@ -38,7 +38,7 @@ composer start
 
 The application is a simple PHP app with a single file `index.php` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `index.php` file:
 
@@ -63,7 +63,7 @@ $LIVEKIT_API_KEY = $_ENV["LIVEKIT_API_KEY"] ?? "devkey"; // (3)!
 $LIVEKIT_API_SECRET = $_ENV["LIVEKIT_API_SECRET"] ?? "secret"; // (4)!
 ```
 
-1. Import all necessary dependencies from the PHP livekit library.
+1. Import all necessary dependencies from the PHP LiveKit library.
 2. Configure HTTP headers for the web server: enables CORS support, sets the content type to JSON, and allows only OPTIONS and POST requests.
 3. The API key of LiveKit Server.
 4. The API secret of LiveKit Server.

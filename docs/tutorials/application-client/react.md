@@ -8,15 +8,15 @@ This tutorial is a simple video-call application built with **React** which inte
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -67,12 +67,12 @@ In the beginning, we import several essential objects from the `livekit-client` 
 
 ```javascript
 import {
-	LocalTrackPublication,
-	RemoteTrack,
-	RemoteTrackPublication,
-	Room,
-	RoomEvent,
-} from 'livekit-client';
+  LocalTrackPublication,
+  RemoteTrack,
+  RemoteTrackPublication,
+  Room,
+  RoomEvent,
+} from "livekit-client";
 ```
 
 These imported objects are crucial for establishing and managing video calls. They represent different components and events associated with the video call system. We'll use them in subsequent parts of our code to create and manage video calls.
@@ -83,43 +83,43 @@ After importing the required objects, we define a few variables that will be use
 
 ```typescript
 const App = () => {
-	// For local development, leave these variables empty
-	// For production, configure them with correct URLs depending on your deployment
-	let APPLICATION_SERVER_URL = '';
-	let LIVEKIT_URL = '';
+  // For local development, leave these variables empty
+  // For production, configure them with correct URLs depending on your deployment
+  let APPLICATION_SERVER_URL = "";
+  let LIVEKIT_URL = "";
 
-	// If APPLICATION_SERVER_URL is not configured, use default value from local development
-	if (!APPLICATION_SERVER_URL) {
-		if (window.location.hostname === 'localhost') {
-			APPLICATION_SERVER_URL = 'http://localhost:6080/';
-		} else {
-			APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/';
-		}
-	}
+  // If APPLICATION_SERVER_URL is not configured, use default value from local development
+  if (!APPLICATION_SERVER_URL) {
+    if (window.location.hostname === "localhost") {
+      APPLICATION_SERVER_URL = "http://localhost:6080/";
+    } else {
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+    }
+  }
 
-	// If LIVEKIT_URL is not configured, use default value from local development
-	if (!LIVEKIT_URL) {
-		if (window.location.hostname === 'localhost') {
-			LIVEKIT_URL = 'ws://localhost:7880/';
-		} else {
-			LIVEKIT_URL = 'wss://' + window.location.hostname + ':7443/';
-		}
-	}
+  // If LIVEKIT_URL is not configured, use default value from local development
+  if (!LIVEKIT_URL) {
+    if (window.location.hostname === "localhost") {
+      LIVEKIT_URL = "ws://localhost:7880/";
+    } else {
+      LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+    }
+  }
 
-	const [room, setRoom] = useState<Room | undefined>(undefined);
-	const [myMainPublication, setMyMainPublication] = useState<
-		LocalTrackPublication | RemoteTrackPublication | undefined
-	>(undefined);
-	const [localPublication, setLocalPublication] = useState<
-		LocalTrackPublication | undefined
-	>(undefined);
-	const [remotePublications, setRemotePublications] = useState<
-		RemoteTrackPublication[]
-	>([]);
+  const [room, setRoom] = useState<Room | undefined>(undefined);
+  const [myMainPublication, setMyMainPublication] = useState<
+    LocalTrackPublication | RemoteTrackPublication | undefined
+  >(undefined);
+  const [localPublication, setLocalPublication] = useState<
+    LocalTrackPublication | undefined
+  >(undefined);
+  const [remotePublications, setRemotePublications] = useState<
+    RemoteTrackPublication[]
+  >([]);
 
-	const [myRoomName, setMyRoomName] = useState('');
-	const [myParticipantName, setMyParticipantName] = useState('');
-	// ...
+  const [myRoomName, setMyRoomName] = useState("");
+  const [myParticipantName, setMyParticipantName] = useState("");
+  // ...
 };
 export default App;
 ```
@@ -144,37 +144,37 @@ The `joinRoom()` method is responsible for initializing the room and configuring
 
 ```typescript
 const App = () => {
-	const joinRoom = () => {
-		// --- 1) Get a Room object ---
-		const room = new Room();
-		setRoom(room);
+  const joinRoom = () => {
+    // --- 1) Get a Room object ---
+    const room = new Room();
+    setRoom(room);
 
-		// --- 2) Specify the actions when events take place in the room ---
+    // --- 2) Specify the actions when events take place in the room ---
 
-		// On every new Track received...
-		room.on(
-			RoomEvent.TrackSubscribed,
-			(_track: RemoteTrack, publication: RemoteTrackPublication) => {
-				// Store the new publication in remotePublications array
-				setRemotePublications((prevPublications) => [
-					...prevPublications,
-					publication,
-				]);
-			}
-		);
+    // On every new Track received...
+    room.on(
+      RoomEvent.TrackSubscribed,
+      (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+        // Store the new publication in remotePublications array
+        setRemotePublications((prevPublications) => [
+          ...prevPublications,
+          publication,
+        ]);
+      }
+    );
 
-		// On every track destroyed...
-		room.on(
-			RoomEvent.TrackUnsubscribed,
-			(_track: RemoteTrack, publication: RemoteTrackPublication) => {
-				// Remove the publication from 'remotePublications' array
-				deleteRemoteTrackPublication(publication);
-			}
-		);
+    // On every track destroyed...
+    room.on(
+      RoomEvent.TrackUnsubscribed,
+      (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+        // Remove the publication from 'remotePublications' array
+        deleteRemoteTrackPublication(publication);
+      }
+    );
 
-		// Additional event handling can be added here...
-	};
-	// ...
+    // Additional event handling can be added here...
+  };
+  // ...
 };
 ```
 
@@ -189,8 +189,8 @@ This code block performs the following actions:
    ```html
    { remotePublications.map((publication) => (
    <div key="{publication.trackSid}">
-   	{publication.videoTrack && <OvVideo track="{publication.videoTrack}" />}
-   	{publication.audioTrack && <OvAudio track="{publication.audioTrack}" />}
+     {publication.videoTrack && <OvVideo track="{publication.videoTrack}" />}
+     {publication.audioTrack && <OvAudio track="{publication.audioTrack}" />}
    </div>
    )); }
    ```
@@ -217,34 +217,34 @@ Here's how this is implemented in the code:
 
 ```typescript
 const App = () => {
-	const joinRoom = () => {
-		// ...
+  const joinRoom = () => {
+    // ...
 
-		getToken(myRoomName, myParticipantName).then(async (token: string) => {});
-	};
-	// ...
+    getToken(myRoomName, myParticipantName).then(async (token: string) => {});
+  };
+  // ...
 
-	const getToken = useMemo(
-		() =>
-			async (roomName: string, participantName: string): Promise<string> => {
-				try {
-					const response = await axios.post(
-						APPLICATION_SERVER_URL + 'token',
-						{ roomName, participantName },
-						{
-							headers: { 'Content-Type': 'application/json' },
-							responseType: 'text',
-						}
-					);
-					return response.data;
-				} catch (error) {
-					// Handle errors here
-					console.error('Error getting token:', error);
-					throw error;
-				}
-			},
-		[APPLICATION_SERVER_URL]
-	);
+  const getToken = useMemo(
+    () =>
+      async (roomName: string, participantName: string): Promise<string> => {
+        try {
+          const response = await axios.post(
+            APPLICATION_SERVER_URL + "token",
+            { roomName, participantName },
+            {
+              headers: { "Content-Type": "application/json" },
+              responseType: "text",
+            }
+          );
+          return response.data;
+        } catch (error) {
+          // Handle errors here
+          console.error("Error getting token:", error);
+          throw error;
+        }
+      },
+    [APPLICATION_SERVER_URL]
+  );
 };
 ```
 
@@ -258,34 +258,34 @@ The final step involves connecting to the room using the obtained access token a
 
 ```typescript
 const App = () => {
-	const joinRoom = () => {
-		// ...
+  const joinRoom = () => {
+    // ...
 
-		// --- 3) Connect to the room with a valid access token ---
+    // --- 3) Connect to the room with a valid access token ---
 
-		// Get a token from the application backend
-		getToken(myRoomName, myParticipantName).then(async (token: string) => {
-			// First param is the LiveKit server URL. Second param is the access token
-			try {
-				await room.connect(LIVEKIT_URL, token);
-				// --- 4) Publish your local tracks ---
-				await room.localParticipant.setMicrophoneEnabled(true);
-				const videoPublication = await room.localParticipant.setCameraEnabled(
-					true
-				);
+    // Get a token from the application backend
+    getToken(myRoomName, myParticipantName).then(async (token: string) => {
+      // First param is the LiveKit server URL. Second param is the access token
+      try {
+        await room.connect(LIVEKIT_URL, token);
+        // --- 4) Publish your local tracks ---
+        await room.localParticipant.setMicrophoneEnabled(true);
+        const videoPublication = await room.localParticipant.setCameraEnabled(
+          true
+        );
 
-				// Set the main video in the page to display our webcam and store our localPublication
-				setLocalPublication(videoPublication);
-				setMyMainPublication(videoPublication);
-			} catch (error) {
-				console.log(
-					'There was an error connecting to the room:',
-					error.code,
-					error.message
-				);
-			}
-		});
-	};
+        // Set the main video in the page to display our webcam and store our localPublication
+        setLocalPublication(videoPublication);
+        setMyMainPublication(videoPublication);
+      } catch (error) {
+        console.log(
+          "There was an error connecting to the room:",
+          error.code,
+          error.message
+        );
+      }
+    });
+  };
 };
 ```
 
@@ -309,16 +309,16 @@ It is called when the user clicks the "Leave" button on the page. Here's how it'
 
 ```typescript
 const leaveRoom = () => {
-	// --- 5) Leave the room by calling 'disconnect' method over the Room object ---
+  // --- 5) Leave the room by calling 'disconnect' method over the Room object ---
 
-	if (room) {
-		room.disconnect();
-	}
+  if (room) {
+    room.disconnect();
+  }
 
-	// Empty all properties...
-	setRemotePublications([]);
-	setLocalPublication(undefined);
-	setRoom(new Room());
+  // Empty all properties...
+  setRemotePublications([]);
+  setLocalPublication(undefined);
+  setRoom(new Room());
 };
 ```
 
@@ -382,21 +382,21 @@ Both the audio and video components receive a track, which is then attached to t
 
 ```javascript
 interface OvVideoProps {
-	track: LocalVideoTrack | RemoteVideoTrack;
-	onClick?: () => void;
+  track: LocalVideoTrack | RemoteVideoTrack;
+  onClick?: () => void;
 }
 
 const OvVideo: FC<OvVideoProps> = ({ track, onClick }) => {
-	const videoRef: React.MutableRefObject<null | HTMLVideoElement> =
-		useRef(null);
+  const videoRef: React.MutableRefObject<null | HTMLVideoElement> =
+    useRef(null);
 
-	useEffect(() => {
-		if (videoRef.current) {
-			track.attach(videoRef.current);
-		}
-	}, [track]);
+  useEffect(() => {
+    if (videoRef.current) {
+      track.attach(videoRef.current);
+    }
+  }, [track]);
 
-	return <video onClick={onClick} ref={videoRef} playsInline autoPlay={true} />;
+  return <video onClick={onClick} ref={videoRef} playsInline autoPlay={true} />;
 };
 
 export default OvVideo;

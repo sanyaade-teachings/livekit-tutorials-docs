@@ -8,12 +8,12 @@ This OpenVidu application is a simple videoconference app that allows you to rec
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
 !!! info "Livekit Egress"
-	If you want to use the Livekit distribution instead of OpenVidu, you will need to configure the egress server. You can find more information about this in the [Livekit documentation](https://docs.livekit.io/egress-ingress/egress/self-hosting/){:target="\_blank"}.
+If you want to use the Livekit distribution instead of OpenVidu, you will need to configure the egress server. You can find more information about this in the [Livekit documentation](https://docs.livekit.io/egress-ingress/egress/self-hosting/){:target="\_blank"}.
 
 <h3>2. Launch the client and server application</h3>
 
@@ -81,7 +81,7 @@ In the next sections, we'll dive into detailed explanations of specific REST end
 
     - `server.js`: This file holds the server application.
 
-	And the following essential **frontend** files under the `/public` directory:
+    And the following essential **frontend** files under the `/public` directory:
 
     - `index.html`: Inside here, you'll find the client application's main HTML file.
     - `app.js`: This file houses the client application's logic and functionality.
@@ -111,7 +111,6 @@ For handling recording features, this tutorial has been enhanced with new REST A
 - **`GET /recordings/list`** - This endpoint lists all the recordings stored in the `/recordings` folder.
 - **`DELETE /recordings`** - This endpoint deletes all the recordings stored in the `/recordings` folder.
 
-
 <h4 markdown>Start recording</h4>
 
 There are two ways to start recording a room:
@@ -121,7 +120,7 @@ There are two ways to start recording a room:
 - `INDIVIDUAL`: The server will record each published track into a separate video file.
 
 !!! warning TODO
-	Update this section properly when openvidu-dev is stable
+Update this section properly when openvidu-dev is stable
 
 All recordings will be stored in the `/recordings` folder by default.
 
@@ -144,11 +143,11 @@ All recordings will be stored in the `/recordings` folder by default.
     		videoTrackId,
     	} = req.body;
 
-		const output = {
-			fileType: 0, // file type chosen based on codecs
-			filepath: `/recordings/${roomName}-${new Date().getTime()}`,
-			disableManifest: true,
-		};
+    	const output = {
+    		fileType: 0, // file type chosen based on codecs
+    		filepath: `/recordings/${roomName}-${new Date().getTime()}`,
+    		disableManifest: true,
+    	};
 
     	try {
     		let egressInfo;
@@ -185,51 +184,50 @@ All recordings will be stored in the `/recordings` folder by default.
 
 === ":fontawesome-brands-java:{.icon .lg-icon .tab-icon} Java"
 
-	```java hl_lines="23-25 27-29"
+    ```java hl_lines="23-25 27-29"
 
-	@RequestMapping(value = "/recordings/start", method = RequestMethod.POST)
-	public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
-		try {
-			String roomName = (String) params.get("roomName");
-			String outputMode = (String) params.get("outputMode");
-			Boolean videoOnly = (Boolean) params.get("videoOnly");
-			Boolean audioOnly = (Boolean) params.get("audioOnly");
-			String audioTrackId = (String) params.get("audioTrackId");
-			String videoTrackId = (String) params.get("videoTrackId");
+    @RequestMapping(value = "/recordings/start", method = RequestMethod.POST)
+    public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
+    	try {
+    		String roomName = (String) params.get("roomName");
+    		String outputMode = (String) params.get("outputMode");
+    		Boolean videoOnly = (Boolean) params.get("videoOnly");
+    		Boolean audioOnly = (Boolean) params.get("audioOnly");
+    		String audioTrackId = (String) params.get("audioTrackId");
+    		String videoTrackId = (String) params.get("videoTrackId");
 
-			Builder outputBuilder = LivekitEgress.EncodedFileOutput.newBuilder()
-					.setFileType(EncodedFileType.DEFAULT_FILETYPE)
-					.setFilepath("/recordings/" + roomName + "-" + new Date().getTime())
-					.setDisableManifest(true);
+    		Builder outputBuilder = LivekitEgress.EncodedFileOutput.newBuilder()
+    				.setFileType(EncodedFileType.DEFAULT_FILETYPE)
+    				.setFilepath("/recordings/" + roomName + "-" + new Date().getTime())
+    				.setDisableManifest(true);
 
-			EncodedFileOutput output = outputBuilder.build();
+    		EncodedFileOutput output = outputBuilder.build();
 
-			System.out.println("Starting recording " + roomName);
+    		System.out.println("Starting recording " + roomName);
 
-			LivekitEgress.EgressInfo egressInfo;
+    		LivekitEgress.EgressInfo egressInfo;
 
-			if ("COMPOSED".equals(outputMode)) {
-				egressInfo = this.egressClient
-						.startRoomCompositeEgress(roomName, output, "grid", null, null, audioOnly, videoOnly)
-						.execute().body();
-			} else if ("INDIVIDUAL".equals(outputMode)) {
-				System.out.println("Starting INDIVIDUAL recording " + roomName);
-				egressInfo = this.egressClient.startTrackCompositeEgress(roomName, output, audioTrackId, videoTrackId)
-						.execute().body();
-			} else {
-				return ResponseEntity.badRequest().body("outputMode is required");
-			}
+    		if ("COMPOSED".equals(outputMode)) {
+    			egressInfo = this.egressClient
+    					.startRoomCompositeEgress(roomName, output, "grid", null, null, audioOnly, videoOnly)
+    					.execute().body();
+    		} else if ("INDIVIDUAL".equals(outputMode)) {
+    			System.out.println("Starting INDIVIDUAL recording " + roomName);
+    			egressInfo = this.egressClient.startTrackCompositeEgress(roomName, output, audioTrackId, videoTrackId)
+    					.execute().body();
+    		} else {
+    			return ResponseEntity.badRequest().body("outputMode is required");
+    		}
 
-			return ResponseEntity.ok().body(generateEgressInfoResponse(egressInfo));
+    		return ResponseEntity.ok().body(generateEgressInfoResponse(egressInfo));
 
-		} catch (Exception e) {
-			System.out.println("Error starting recording " + e.getMessage());
-			return ResponseEntity.badRequest().body("Error starting recording");
-		}
-	}
+    	} catch (Exception e) {
+    		System.out.println("Error starting recording " + e.getMessage());
+    		return ResponseEntity.badRequest().body("Error starting recording");
+    	}
+    }
 
-	```
-
+    ```
 
 <h4 markdown>Stop recording</h4>
 
@@ -260,24 +258,24 @@ This endpoint will stop the recording and return the recording information.
 === ":fontawesome-brands-java:{.icon .lg-icon .tab-icon} Java"
 
     ```java hl_lines="11"
-	@RequestMapping(value = "/recordings/stop", method = RequestMethod.POST)
-	public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
+    @RequestMapping(value = "/recordings/stop", method = RequestMethod.POST)
+    public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
 
-		String recordingId = (String) params.get("recordingId");
+    	String recordingId = (String) params.get("recordingId");
 
-		if (recordingId == null) {
-			return ResponseEntity.badRequest().body("recordingId is required");
-		}
+    	if (recordingId == null) {
+    		return ResponseEntity.badRequest().body("recordingId is required");
+    	}
 
-		try {
-			LivekitEgress.EgressInfo egressInfo = this.egressClient.stopEgress(recordingId).execute().body();
-			return ResponseEntity.ok().body(generateEgressInfoResponse(egressInfo));
-		} catch (Exception e) {
-			System.out.println("Error stoping recording " + e.getMessage());
-			return ResponseEntity.badRequest().body("Error stoping recording");
-		}
-	}
-	```
+    	try {
+    		LivekitEgress.EgressInfo egressInfo = this.egressClient.stopEgress(recordingId).execute().body();
+    		return ResponseEntity.ok().body(generateEgressInfoResponse(egressInfo));
+    	} catch (Exception e) {
+    		System.out.println("Error stoping recording " + e.getMessage());
+    		return ResponseEntity.badRequest().body("Error stoping recording");
+    	}
+    }
+    ```
 
 <h4 markdown>Delete recordings</h4>
 
@@ -302,24 +300,24 @@ This tutorial also provides the ability to delete all recordings stored in the `
 
 === ":fontawesome-brands-java:{.icon .lg-icon .tab-icon} Java"
 
-	```java
-	@RequestMapping(value = "/recordings", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteRecordings() {
+    ```java
+    @RequestMapping(value = "/recordings", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteRecordings() {
 
-		try {
-			File recordingsDir = ResourceUtils.getFile("classpath:static");
-			deleteFiles(new File(RECORDINGS_PATH));
-			deleteFiles(new File(recordingsDir.getAbsolutePath()));
-			JSONObject response = new JSONObject();
-			response.put("message", "All recordings deleted");
+    	try {
+    		File recordingsDir = ResourceUtils.getFile("classpath:static");
+    		deleteFiles(new File(RECORDINGS_PATH));
+    		deleteFiles(new File(recordingsDir.getAbsolutePath()));
+    		JSONObject response = new JSONObject();
+    		response.put("message", "All recordings deleted");
 
-			return ResponseEntity.ok().body(response.toMap());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting recordings");
-		}
-	}
-	```
+    		return ResponseEntity.ok().body(response.toMap());
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting recordings");
+    	}
+    }
+    ```
 
 <h4 markdown>List recordings</h4>
 
@@ -342,44 +340,42 @@ The `List recordings` button triggers a request to the `/recordings/list` endpoi
 
 === ":fontawesome-brands-java:{.icon .lg-icon .tab-icon} Java"
 
-	```java
-	@RequestMapping(value = "/recordings/list", method = RequestMethod.GET)
-	public ResponseEntity<?> listRecordings() {
+    ```java
+    @RequestMapping(value = "/recordings/list", method = RequestMethod.GET)
+    public ResponseEntity<?> listRecordings() {
 
-		List<JSONObject> recordings = new ArrayList<>();
+    	List<JSONObject> recordings = new ArrayList<>();
 
-		try {
-			File recordingsDir = ResourceUtils.getFile("classpath:static");
-			Files.walk(Path.of(RECORDINGS_PATH)).forEach(filePath -> {
-				JSONObject recordingsMap = new JSONObject();
+    	try {
+    		File recordingsDir = ResourceUtils.getFile("classpath:static");
+    		Files.walk(Path.of(RECORDINGS_PATH)).forEach(filePath -> {
+    			JSONObject recordingsMap = new JSONObject();
 
-				if (Files.isRegularFile(filePath)) {
-					String fileName = filePath.getFileName().toString();
-					String destinationPath = recordingsDir.getAbsolutePath() + File.separator + fileName;
+    			if (Files.isRegularFile(filePath)) {
+    				String fileName = filePath.getFileName().toString();
+    				String destinationPath = recordingsDir.getAbsolutePath() + File.separator + fileName;
 
-					try {
-						Files.copy(filePath, Path.of(destinationPath), StandardCopyOption.REPLACE_EXISTING);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+    				try {
+    					Files.copy(filePath, Path.of(destinationPath), StandardCopyOption.REPLACE_EXISTING);
+    				} catch (IOException e) {
+    					e.printStackTrace();
+    				}
 
-					recordingsMap.put("name", fileName);
-					recordingsMap.put("path", "/" + fileName);
-					recordings.add(recordingsMap);
-				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+    				recordingsMap.put("name", fileName);
+    				recordingsMap.put("path", "/" + fileName);
+    				recordings.add(recordingsMap);
+    			}
+    		});
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
 
-		JSONObject response = new JSONObject();
-		response.put("recordings", recordings);
-		return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
-	}
-	```
-
-
+    	JSONObject response = new JSONObject();
+    	response.put("recordings", recordings);
+    	return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
+    ```
 
 ## Deploying openvidu-recording (TODO)
 

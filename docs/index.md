@@ -75,15 +75,17 @@ Every application server below has only one single purpose: generate LiveKit tok
 
 [:simple-nodedotjs:{.icon .lg-icon .tab-icon} **NodeJS**](./tutorials/application-server/node.md){ .md-button .md-button--primary .tutorial-link }
 
-[:fontawesome-brands-java:{.icon .lg-icon .tab-icon} **Java**](./tutorials/application-server/java.md){ .md-button .md-button--primary .tutorial-link}
-
 [:simple-goland:{.icon .lg-icon .tab-icon} **Go**](./tutorials/application-server/go.md){ .md-button .md-button--primary .tutorial-link}
 
-[:simple-php:{.icon .lg-icon .tab-icon} **PHP**](./tutorials/application-server/php.md){ .md-button .md-button--primary .tutorial-link}
+[:simple-ruby:{.icon .lg-icon .tab-icon} **Ruby**](./tutorials/application-server/ruby.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-java:{.icon .lg-icon .tab-icon} **Java**](./tutorials/application-server/java.md){ .md-button .md-button--primary .tutorial-link}
 
 [:simple-python:{.icon .lg-icon .tab-icon} **Python**](./tutorials/application-server/python.md){ .md-button .md-button--primary .tutorial-link}
 
-[:simple-ruby:{.icon .lg-icon .tab-icon} **Ruby**](./tutorials/application-server/ruby.md){ .md-button .md-button--primary .tutorial-link}
+[:simple-rust:{.icon .lg-icon .tab-icon} **Rust**](./tutorials/application-server/rust.md){ .md-button .md-button--primary .tutorial-link}
+
+[:simple-php:{.icon .lg-icon .tab-icon} **PHP**](./tutorials/application-server/php.md){ .md-button .md-button--primary .tutorial-link}
 
 [:simple-dotnet:{.icon .lg-icon .tab-icon} **.NET**](./tutorials/application-server/dotnet.md){ .md-button .md-button--primary .tutorial-link}
 

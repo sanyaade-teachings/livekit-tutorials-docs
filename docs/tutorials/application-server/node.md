@@ -18,12 +18,12 @@ To run this application you will need **Node**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/node
 ```
 
 #### Install dependencies
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/node
 npm install
 ```
 
@@ -37,7 +37,7 @@ node index.js
 
 The application is a simple Express app with a single file `index.js` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `index.js` file:
 
@@ -57,13 +57,13 @@ app.use(cors()); // (6)!
 app.use(express.json()); // (7)!
 ```
 
-1. Import `AccessToken` from `livekit-server-sdk`
-2. The port where the application will be listening
-3. The API key of LiveKit Server
-4. The API secret of LiveKit Server
-5. Initialize the Express application
-6. Enable CORS support
-7. Enable JSON body parsing
+1. Import `AccessToken` from `livekit-server-sdk`.
+2. The port where the application will be listening.
+3. The API key of LiveKit Server.
+4. The API secret of LiveKit Server.
+5. Initialize the Express application.
+6. Enable CORS support.
+7. Enable JSON body parsing.
 
 The `index.js` file imports the required dependencies and loads the necessary environment variables:
 

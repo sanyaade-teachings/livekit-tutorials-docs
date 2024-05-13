@@ -12,18 +12,18 @@ Unfortunately there is no .NET SDK for LiveKit available, so the application has
 
 To run this application you will need **.NET**:
 
-- [.NET 8.0](https://dotnet.microsoft.com/en-us/download){:target="\_blank"}
+- [.NET](https://dotnet.microsoft.com/en-us/download){:target="\_blank"}
 
 #### Download repository
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/dotnet
 ```
 
 #### Run application
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/dotnet
 dotnet run
 ```
 
@@ -31,7 +31,7 @@ dotnet run
 
 The application is a simple ASP.NET Core Minimal APIs app with a single file `Program.cs` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code `Program.cs` file:
 

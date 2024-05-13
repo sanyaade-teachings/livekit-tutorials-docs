@@ -8,15 +8,15 @@ This tutorial is a simple video-call application built with [Vue.js](https://vue
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -66,9 +66,9 @@ To understand how the `livekit-client` NPM package is used in `App.vue`, let's b
 In the beginning, we import several essential objects from the `livekit-client` package that will be used throughout the code. These objects include:
 
 ```javascript
-import OvVideo from './components/OvVideo.vue';
-import OvAudio from './components/OvAudio.vue';
-import { Room, RoomEvent } from 'livekit-client';
+import OvVideo from "./components/OvVideo.vue";
+import OvAudio from "./components/OvAudio.vue";
+import { Room, RoomEvent } from "livekit-client";
 ```
 
 These imported objects are crucial for establishing and managing video calls. They represent different components and events associated with the video call system. We'll use them in subsequent parts of our code to create and manage video calls.
@@ -80,50 +80,50 @@ After importing the required objects, we define a few variables that will be use
 ```javascript
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = ''
-let LIVEKIT_URL = ''
+let APPLICATION_SERVER_URL = "";
+let LIVEKIT_URL = "";
 
 // If APPLICATION_SERVER_URL is not configured, use default value from local development
 if (!APPLICATION_SERVER_URL) {
-	if (window.location.hostname === 'localhost') {
-		APPLICATION_SERVER_URL = 'http://localhost:6080/'
-	} else {
-		APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/'
-	}
+  if (window.location.hostname === "localhost") {
+    APPLICATION_SERVER_URL = "http://localhost:6080/";
+  } else {
+    APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+  }
 }
 
 // If LIVEKIT_URL is not configured, use default value from local development
 if (!LIVEKIT_URL) {
-	if (window.location.hostname === 'localhost') {
-		LIVEKIT_URL = 'ws://localhost:7880/'
-	} else {
-		LIVEKIT_URL = 'wss://' + window.location.hostname + ':7443/'
-	}
+  if (window.location.hostname === "localhost") {
+    LIVEKIT_URL = "ws://localhost:7880/";
+  } else {
+    LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+  }
 }
 
 export default {
-	name: 'App',
+  name: "App",
 
-	components: {
-		OvVideo,
-		OvAudio,
-	},
+  components: {
+    OvVideo,
+    OvAudio,
+  },
 
-	data() {
-		return {
-			// OpenVidu objects
-			room: undefined,
-			mainPublication: undefined,
-			localPublication: undefined,
-			remotePublications: [],
+  data() {
+    return {
+      // OpenVidu objects
+      room: undefined,
+      mainPublication: undefined,
+      localPublication: undefined,
+      remotePublications: [],
 
-			// Join form
-			myRoomName: 'RoomA',
-			myParticipantName: 'Participant' + Math.floor(Math.random() * 100),
-		};
-	},
+      // Join form
+      myRoomName: "RoomA",
+      myParticipantName: "Participant" + Math.floor(Math.random() * 100),
+    };
+  },
 
-	// ...
+  // ...
 };
 ```
 
@@ -147,38 +147,38 @@ The `joinRoom()` method is responsible for initializing the room and configuring
 
 ```javascript
 export default {
-	// ...
+  // ...
 
-	methods: {
-		joinRoom() {
-			// --- 1) Init a room ---
-			this.room = new Room();
+  methods: {
+    joinRoom() {
+      // --- 1) Init a room ---
+      this.room = new Room();
 
-			// --- 2) Specify the actions when events take place in the room ---
+      // --- 2) Specify the actions when events take place in the room ---
 
-			// On every new Track received...
-			this.room.on(
-				RoomEvent.TrackSubscribed,
-				(track, publication, participant) => {
-					console.log('Track subscribed', track, publication, participant);
-					// Store the new publication in remotePublications array
-					this.remotePublications.push(publication);
-				}
-			);
+      // On every new Track received...
+      this.room.on(
+        RoomEvent.TrackSubscribed,
+        (track, publication, participant) => {
+          console.log("Track subscribed", track, publication, participant);
+          // Store the new publication in remotePublications array
+          this.remotePublications.push(publication);
+        }
+      );
 
-			// On every track destroyed...
-			this.room.on(
-				RoomEvent.TrackUnsubscribed,
-				(track, publication, participant) => {
-					console.log('Track unsubscribed', track, publication, participant);
-					// Remove the publication from 'remotePublications' array
-					this.deleteRemoteTrackPublication(publication);
-				}
-			);
+      // On every track destroyed...
+      this.room.on(
+        RoomEvent.TrackUnsubscribed,
+        (track, publication, participant) => {
+          console.log("Track unsubscribed", track, publication, participant);
+          // Remove the publication from 'remotePublications' array
+          this.deleteRemoteTrackPublication(publication);
+        }
+      );
 
-			// Additional event handling can be added here...
-		},
-	},
+      // Additional event handling can be added here...
+    },
+  },
 };
 ```
 
@@ -192,8 +192,8 @@ This code block performs the following actions:
 
    ```html
    <div v-for="publication in remotePublications" :key="publication.trackSid">
-   	<OvVideo :track="publication.videoTrack" />
-   	<OvAudio :track="publication.audioTrack" />
+     <OvVideo :track="publication.videoTrack" />
+     <OvAudio :track="publication.audioTrack" />
    </div>
    ```
 
@@ -219,38 +219,38 @@ Here's how this is implemented in the code:
 
 ```javascript
 export default {
-	// ...
+  // ...
 
-	methods: {
-		joinRoom() {
-			// ...
+  methods: {
+    joinRoom() {
+      // ...
 
-			// --- 3) Connect to the room with a valid access token ---
+      // --- 3) Connect to the room with a valid access token ---
 
-			// Get a token from the application backend
-			this.getToken(this.myRoomName, this.myParticipantName).then((token) => {
-				// See next point to see how to connect to the session using 'token'
-			});
-		},
+      // Get a token from the application backend
+      this.getToken(this.myRoomName, this.myParticipantName).then((token) => {
+        // See next point to see how to connect to the session using 'token'
+      });
+    },
 
-		async getToken(roomName, participantName) {
-			try {
-				const response = await axios.post(
-					APPLICATION_SERVER_URL + 'token',
-					{ roomName, participantName },
-					{
-						headers: { 'Content-Type': 'application/json' },
-						responseType: 'text',
-					}
-				);
-				return response.data;
-			} catch (error) {
-				// Handle errors here
-				console.error('Error getting token:', error);
-				throw error;
-			}
-		},
-	},
+    async getToken(roomName, participantName) {
+      try {
+        const response = await axios.post(
+          APPLICATION_SERVER_URL + "token",
+          { roomName, participantName },
+          {
+            headers: { "Content-Type": "application/json" },
+            responseType: "text",
+          }
+        );
+        return response.data;
+      } catch (error) {
+        // Handle errors here
+        console.error("Error getting token:", error);
+        throw error;
+      }
+    },
+  },
 };
 ```
 
@@ -264,39 +264,39 @@ The final step involves connecting to the room using the obtained access token a
 
 ```javascript
 export default {
-	// ...
+  // ...
 
-	methods: {
-		joinRoom() {
-			// ...
+  methods: {
+    joinRoom() {
+      // ...
 
-			// --- 3) Connect to the room with a valid access token ---
+      // --- 3) Connect to the room with a valid access token ---
 
-			// Get a token from the application backend
-			this.getToken(this.myRoomName, this.myParticipantName).then(
-				async (token) => {
-					// First param is the LiveKit server URL. Second param is the access token
-					try {
-						await this.room.connect(LIVEKIT_URL, token);
-						// --- 4) Publish your local tracks ---
-						await this.room.localParticipant.setMicrophoneEnabled(true);
-						const videoPublication =
-							await this.room.localParticipant.setCameraEnabled(true);
+      // Get a token from the application backend
+      this.getToken(this.myRoomName, this.myParticipantName).then(
+        async (token) => {
+          // First param is the LiveKit server URL. Second param is the access token
+          try {
+            await this.room.connect(LIVEKIT_URL, token);
+            // --- 4) Publish your local tracks ---
+            await this.room.localParticipant.setMicrophoneEnabled(true);
+            const videoPublication =
+              await this.room.localParticipant.setCameraEnabled(true);
 
-						// Set the main video in the page to display our webcam and store our localPublication
-						this.localPublication = videoPublication;
-						this.mainPublication = videoPublication;
-					} catch (error) {
-						console.log(
-							'There was an error connecting to the room:',
-							error.code,
-							error.message
-						);
-					}
-				}
-			);
-		},
-	},
+            // Set the main video in the page to display our webcam and store our localPublication
+            this.localPublication = videoPublication;
+            this.mainPublication = videoPublication;
+          } catch (error) {
+            console.log(
+              "There was an error connecting to the room:",
+              error.code,
+              error.message
+            );
+          }
+        }
+      );
+    },
+  },
 };
 ```
 
@@ -320,26 +320,26 @@ It is called when the user clicks the "Leave" button on the page. Here's how it'
 
 ```javascript
 export default {
-	// ...
+  // ...
 
-	methods: {
-		leaveRoom() {
-			// --- 5) Leave the session by calling 'disconnect' method over the Room object ---
+  methods: {
+    leaveRoom() {
+      // --- 5) Leave the session by calling 'disconnect' method over the Room object ---
 
-			if (this.room) {
-				this.room.disconnect();
-			}
+      if (this.room) {
+        this.room.disconnect();
+      }
 
-			// Empty all properties...
-			this.room = undefined;
-			this.mainPublication = undefined;
-			this.localPublication = undefined;
-			this.remotePublications = [];
+      // Empty all properties...
+      this.room = undefined;
+      this.mainPublication = undefined;
+      this.localPublication = undefined;
+      this.remotePublications = [];
 
-			// Remove beforeunload listener
-			window.removeEventListener('beforeunload', this.leaveRoom);
-		},
-	},
+      // Remove beforeunload listener
+      window.removeEventListener("beforeunload", this.leaveRoom);
+    },
+  },
 };
 ```
 
@@ -347,15 +347,15 @@ We also configure the `beforeunload` event to call the `leaveRoom()` method when
 
 ```javascript
 export default {
-	// ...
+  // ...
 
-	methods: {
-		joinRoom() {
-			// ...
+  methods: {
+    joinRoom() {
+      // ...
 
-			window.addEventListener('beforeunload', this.leaveRoom);
-		},
-	},
+      window.addEventListener("beforeunload", this.leaveRoom);
+    },
+  },
 };
 ```
 
@@ -370,29 +370,29 @@ These components are responsible for presenting video and audio tracks, and you 
 ```html
 <!-- Local video -->
 <div
-	v-if="localPublication && localPublication.videoTrack"
-	id="video-container"
-	class="col-md-6"
+  v-if="localPublication && localPublication.videoTrack"
+  id="video-container"
+  class="col-md-6"
 >
-	<p class="participant-name">{{ myParticipantName }}</p>
-	<OvVideo
-		:track="localPublication.videoTrack"
-		@click="updateMainPublication(localPublication)"
-	/>
+  <p class="participant-name">{{ myParticipantName }}</p>
+  <OvVideo
+    :track="localPublication.videoTrack"
+    @click="updateMainPublication(localPublication)"
+  />
 </div>
 
 <!-- Remote videos -->
 <div v-for="publication in remotePublications" :key="publication.trackSid">
-	<p v-if="publication.videoTrack" class="participant-name">
-		{{ getParticipantName(publication.trackSid) }}
-	</p>
+  <p v-if="publication.videoTrack" class="participant-name">
+    {{ getParticipantName(publication.trackSid) }}
+  </p>
 
-	<OvVideo
-		v-if="publication.videoTrack"
-		:track="publication.videoTrack"
-		@click="updateMainPublication(publication)"
-	/>
-	<OvAudio v-if="publication.audioTrack" :track="publication.audioTrack" />
+  <OvVideo
+    v-if="publication.videoTrack"
+    :track="publication.videoTrack"
+    @click="updateMainPublication(publication)"
+  />
+  <OvAudio v-if="publication.audioTrack" :track="publication.audioTrack" />
 </div>
 ```
 

@@ -8,15 +8,15 @@ This tutorial is a simple video-call application built with plain JavaScript, HT
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need a HTTP web server installed on your development computer. If you have Node.js installed, you can easily set up [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
 
@@ -74,25 +74,25 @@ The first two variables in the code are `APPLICATION_SERVER_URL` and `LIVEKIT_UR
 ```javascript
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-var APPLICATION_SERVER_URL = '';
-var LIVEKIT_URL = '';
+var APPLICATION_SERVER_URL = "";
+var LIVEKIT_URL = "";
 
 // If APPLICATION_SERVER_URL is not configured, use default value from local development
 if (!APPLICATION_SERVER_URL) {
-	if (window.location.hostname === 'localhost') {
-		APPLICATION_SERVER_URL = 'http://localhost:6080/';
-	} else {
-		APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/';
-	}
+  if (window.location.hostname === "localhost") {
+    APPLICATION_SERVER_URL = "http://localhost:6080/";
+  } else {
+    APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+  }
 }
 
 // If LIVEKIT_URL is not configured, use default value from local development
 if (!LIVEKIT_URL) {
-	if (window.location.hostname === 'localhost') {
-		LIVEKIT_URL = 'ws://localhost:7880/';	
-	} else {
-		LIVEKIT_URL = 'wss://' + window.location.hostname + ':7443/';
-	}
+  if (window.location.hostname === "localhost") {
+    LIVEKIT_URL = "ws://localhost:7880/";
+  } else {
+    LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+  }
 }
 ```
 
@@ -111,10 +111,10 @@ Further, within the `joinSession` method, we initialize two parameters with valu
 
 ```javascript
 function joinRoom() {
-	var myRoomName = document.getElementById('roomName').value;
-	var myUserName = document.getElementById('userName').value;
+  var myRoomName = document.getElementById("roomName").value;
+  var myUserName = document.getElementById("userName").value;
 
-	// ...
+  // ...
 }
 ```
 
@@ -124,41 +124,41 @@ In this section, we initialize a new room and configure event handling for vario
 
 ```javascript
 function joinRoom() {
-	// ...
+  // ...
 
-	// --- 1) Get a Room object ---
+  // --- 1) Get a Room object ---
 
-	room = new LivekitClient.Room();
+  room = new LivekitClient.Room();
 
-	// --- 2) Specify the actions when events take place in the room ---
+  // --- 2) Specify the actions when events take place in the room ---
 
-	// On every new Track received...
-	room.on(
-		LivekitClient.RoomEvent.TrackSubscribed,
-		(track, publication, participant) => {
-			const element = track.attach();
-			element.id = track.sid;
-			element.className = 'removable';
-			document.getElementById('video-container').appendChild(element);
-			if (track.kind === 'video') {
-				appendUserData(element, participant.identity);
-			}
-		}
-	);
+  // On every new Track received...
+  room.on(
+    LivekitClient.RoomEvent.TrackSubscribed,
+    (track, publication, participant) => {
+      const element = track.attach();
+      element.id = track.sid;
+      element.className = "removable";
+      document.getElementById("video-container").appendChild(element);
+      if (track.kind === "video") {
+        appendUserData(element, participant.identity);
+      }
+    }
+  );
 
-	// On every new Track destroyed...
-	room.on(
-		LivekitClient.RoomEvent.TrackUnsubscribed,
-		(track, publication, participant) => {
-			track.detach();
-			document.getElementById(track.sid)?.remove();
-			if (track.kind === 'video') {
-				removeUserData(participant);
-			}
-		}
-	);
+  // On every new Track destroyed...
+  room.on(
+    LivekitClient.RoomEvent.TrackUnsubscribed,
+    (track, publication, participant) => {
+      track.detach();
+      document.getElementById(track.sid)?.remove();
+      if (track.kind === "video") {
+        removeUserData(participant);
+      }
+    }
+  );
 
-	// Additional event handling can be added here...
+  // Additional event handling can be added here...
 }
 ```
 
@@ -190,30 +190,30 @@ Here's how this is implemented in the code:
 
 ```javascript
 function joinRoom() {
-	// ...
+  // ...
 
-	// --- 3) Connect to the room with a valid access token ---
+  // --- 3) Connect to the room with a valid access token ---
 
-	// Get a token from the application backend
-	getToken(myRoomName, myUserName).then((token) => {
-		// See next point to see how to connect to the session using 'token'
-	});
+  // Get a token from the application backend
+  getToken(myRoomName, myUserName).then((token) => {
+    // See next point to see how to connect to the session using 'token'
+  });
 }
 
 function getToken(roomName, participantName) {
-	return new Promise((resolve, reject) => {
-		$.ajax({
-			type: 'POST',
-			url: APPLICATION_SERVER_URL + 'token',
-			data: JSON.stringify({
-				roomName,
-				participantName,
-			}),
-			headers: { 'Content-Type': 'application/json' },
-			success: (token) => resolve(token),
-			error: (error) => reject(error),
-		});
-	});
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: APPLICATION_SERVER_URL + "token",
+      data: JSON.stringify({
+        roomName,
+        participantName,
+      }),
+      headers: { "Content-Type": "application/json" },
+      success: (token) => resolve(token),
+      error: (error) => reject(error),
+    });
+  });
 }
 ```
 
@@ -227,41 +227,41 @@ The final step involves connecting to the room using the obtained access token a
 
 ```javascript
 function joinRoom() {
-	// ...
+  // ...
 
-	// --- 3) Connect to the room with a valid access token ---
+  // --- 3) Connect to the room with a valid access token ---
 
-	// Get a token from the application backend
-	getToken(myRoomName, myUserName).then((token) => {
-		// First param is the LiveKit server URL. Second param is the access token
-		room
-			.connect(LIVEKIT_URL, token)
-			.then(() => {
-				// --- 4) Set page layout for active call ---
+  // Get a token from the application backend
+  getToken(myRoomName, myUserName).then((token) => {
+    // First param is the LiveKit server URL. Second param is the access token
+    room
+      .connect(LIVEKIT_URL, token)
+      .then(() => {
+        // --- 4) Set page layout for active call ---
 
-				document.getElementById('room-title').innerText = myRoomName;
-				document.getElementById('join').style.display = 'none';
-				document.getElementById('room').style.display = 'block';
+        document.getElementById("room-title").innerText = myRoomName;
+        document.getElementById("join").style.display = "none";
+        document.getElementById("room").style.display = "block";
 
-				// --- 5) Publish your local tracks ---
+        // --- 5) Publish your local tracks ---
 
-				room.localParticipant.setMicrophoneEnabled(true);
-				room.localParticipant.setCameraEnabled(true).then((publication) => {
-					const element = publication.track.attach();
-					document.getElementById('video-container').appendChild(element);
-					initMainVideo(element, myUserName);
-					appendUserData(element, myUserName);
-					element.className = 'removable';
-				});
-			})
-			.catch((error) => {
-				console.log(
-					'There was an error connecting to the room:',
-					error.code,
-					error.message
-				);
-			});
-	});
+        room.localParticipant.setMicrophoneEnabled(true);
+        room.localParticipant.setCameraEnabled(true).then((publication) => {
+          const element = publication.track.attach();
+          document.getElementById("video-container").appendChild(element);
+          initMainVideo(element, myUserName);
+          appendUserData(element, myUserName);
+          element.className = "removable";
+        });
+      })
+      .catch((error) => {
+        console.log(
+          "There was an error connecting to the room:",
+          error.code,
+          error.message
+        );
+      });
+  });
 }
 ```
 
@@ -285,21 +285,21 @@ Whenever we want a user to leave the room, we just need to call `room.disconnect
 
 ```javascript
 function leaveRoom() {
-	// --- 6) Leave the room by calling 'disconnect' method over the Room object ---
+  // --- 6) Leave the room by calling 'disconnect' method over the Room object ---
 
-	room.disconnect();
+  room.disconnect();
 
-	// Removing all HTML elements with user's nicknames.
-	// HTML videos are automatically removed when leaving a Room
-	removeAllUserData();
+  // Removing all HTML elements with user's nicknames.
+  // HTML videos are automatically removed when leaving a Room
+  removeAllUserData();
 
-	// Back to 'Join room' page
-	document.getElementById('join').style.display = 'block';
-	document.getElementById('room').style.display = 'none';
+  // Back to 'Join room' page
+  document.getElementById("join").style.display = "block";
+  document.getElementById("room").style.display = "none";
 }
 
 window.onbeforeunload = function () {
-	if (room) room.disconnect();
+  if (room) room.disconnect();
 };
 ```
 

@@ -8,15 +8,15 @@ This tutorial is a simple Ionic application build with [Capacitor](https://capac
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -131,32 +131,32 @@ As mobile device and backend communication may be hard to set up, this class inc
 
 ```typescript
 export class HomePage {
-	APPLICATION_SERVER_URL = 'http://localhost:5000/';
-	WS_LIVEKIT_URL = 'ws://localhost:7880/';
-	private IS_DEVICE_DEV_MODE = false;
+  APPLICATION_SERVER_URL = "http://localhost:5000/";
+  WS_LIVEKIT_URL = "ws://localhost:7880/";
+  private IS_DEVICE_DEV_MODE = false;
 
-	// ...
+  // ...
 
-	ngOnInit() {
-		/**
-		 * WARNING!! To make the mobile development easier, this code allows
-		 * using your local IP address for communicating with the backend.
-		 * For production uses, the server should be accessible from the Internet
-		 * and the code below should be removed.
-		 */
-		if (this.platform.is('hybrid') && environment.externalIp) {
-			this.IS_DEVICE_DEV_MODE = true;
-			this.prepareForDeviceDevelopment();
-		}
-	}
+  ngOnInit() {
+    /**
+     * WARNING!! To make the mobile development easier, this code allows
+     * using your local IP address for communicating with the backend.
+     * For production uses, the server should be accessible from the Internet
+     * and the code below should be removed.
+     */
+    if (this.platform.is("hybrid") && environment.externalIp) {
+      this.IS_DEVICE_DEV_MODE = true;
+      this.prepareForDeviceDevelopment();
+    }
+  }
 
-	// ...
+  // ...
 
-	private prepareForDeviceDevelopment() {
-		// Pointing to our proxy server through https/wss and our local IP address
-		this.APPLICATION_SERVER_URL = `https://${environment.externalIp}:5001/`;
-		this.WS_LIVEKIT_URL = `wss://${environment.externalIp}:5001/`;
-	}
+  private prepareForDeviceDevelopment() {
+    // Pointing to our proxy server through https/wss and our local IP address
+    this.APPLICATION_SERVER_URL = `https://${environment.externalIp}:5001/`;
+    this.WS_LIVEKIT_URL = `wss://${environment.externalIp}:5001/`;
+  }
 }
 ```
 
@@ -166,32 +166,32 @@ Once the development environment is set up, we are ready to ask for the token an
 
 ```typescript
 export class HomePage {
-	// ...
-	async joinRoom() {
-		// ...
+  // ...
+  async joinRoom() {
+    // ...
 
-		try {
-			const token = await this.getToken(
-				this.myRoomName,
-				this.myParticipantName
-			);
+    try {
+      const token = await this.getToken(
+        this.myRoomName,
+        this.myParticipantName
+      );
 
-			if (!this.IS_DEVICE_DEV_MODE) {
-				// Get the Livekit WebSocket URL from the token metadata if not in device dev mode
-				this.WS_LIVEKIT_URL = this.getLivekitUrlFromMetadata(token);
-			}
+      if (!this.IS_DEVICE_DEV_MODE) {
+        // Get the Livekit WebSocket URL from the token metadata if not in device dev mode
+        this.WS_LIVEKIT_URL = this.getLivekitUrlFromMetadata(token);
+      }
 
-			await this.room.connect(livekitUrl, token);
+      await this.room.connect(livekitUrl, token);
 
-			// ...
-		} catch (error) {
-			console.log(
-				'There was an error connecting to the room:',
-				error.code,
-				error.message
-			);
-		}
-	}
+      // ...
+    } catch (error) {
+      console.log(
+        "There was an error connecting to the room:",
+        error.code,
+        error.message
+      );
+    }
+  }
 }
 ```
 
@@ -205,37 +205,37 @@ The tutorial provides the functionality to manage the media devices (camera and 
 
 ```typescript
 export class HomePage {
-	private cameras: MediaDeviceInfo[] = [];
-	private cameraSelected!: MediaDeviceInfo;
+  private cameras: MediaDeviceInfo[] = [];
+  private cameraSelected!: MediaDeviceInfo;
 
-	// ...
-	async toggleCamera() {
-		if (this.room) {
-			const enabled = !this.room.localParticipant.isCameraEnabled;
-			await this.room.localParticipant.setCameraEnabled(enabled);
-			this.refreshVideos();
-			this.cameraIcon = enabled ? 'videocam' : 'eye-off';
-		}
-	}
+  // ...
+  async toggleCamera() {
+    if (this.room) {
+      const enabled = !this.room.localParticipant.isCameraEnabled;
+      await this.room.localParticipant.setCameraEnabled(enabled);
+      this.refreshVideos();
+      this.cameraIcon = enabled ? "videocam" : "eye-off";
+    }
+  }
 
-	async swapCamera() {
-		try {
-			const newCamera = this.cameras.find(
-				(cam) => cam.deviceId !== this.cameraSelected.deviceId
-			);
+  async swapCamera() {
+    try {
+      const newCamera = this.cameras.find(
+        (cam) => cam.deviceId !== this.cameraSelected.deviceId
+      );
 
-			if (newCamera && this.room) {
-				await this.room.switchActiveDevice('videoinput', newCamera.deviceId);
-				this.cameraSelected = newCamera;
+      if (newCamera && this.room) {
+        await this.room.switchActiveDevice("videoinput", newCamera.deviceId);
+        this.cameraSelected = newCamera;
 
-				this.refreshVideos();
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	}
+        this.refreshVideos();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-	// ...
+  // ...
 }
 ```
 
@@ -243,16 +243,16 @@ export class HomePage {
 
 ```typescript
 export class HomePage {
-	// ...
+  // ...
 
-	async toggleMicrophone() {
-		if (this.room) {
-			const enabled = !this.room.localParticipant.isMicrophoneEnabled;
-			await this.room.localParticipant.setMicrophoneEnabled(enabled);
-			this.microphoneIcon = enabled ? 'mic' : 'mic-off';
-		}
-	}
-	// ...
+  async toggleMicrophone() {
+    if (this.room) {
+      const enabled = !this.room.localParticipant.isMicrophoneEnabled;
+      await this.room.localParticipant.setMicrophoneEnabled(enabled);
+      this.microphoneIcon = enabled ? "mic" : "mic-off";
+    }
+  }
+  // ...
 }
 ```
 

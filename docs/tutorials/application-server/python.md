@@ -18,14 +18,14 @@ To run this application you will need **Python 3**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/python
 ```
 
 #### Create a python environment
 
-You can create a new pyhton environment with the aim of isolating the dependencies of this application:
+Create a new pyhton environment with the aim of isolating the dependencies of this application:
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/python
 python3 -m venv venv
 . venv/bin/activate
 ```
@@ -46,7 +46,7 @@ python3 app.py
 
 The application is a simple Flask app with a single controller file `app.py` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `app.py` file:
 

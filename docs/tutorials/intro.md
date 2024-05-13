@@ -8,13 +8,19 @@ Whether you're new to Livekit or want to explore advanced features, our tutorial
 
 [:fontawesome-brands-node-js:{.icon .lg-icon .tab-icon} **NodeJS**](./application-server/node.md){ .md-button .md-button--primary .tutorial-link }
 
-[:fontawesome-brands-java:{.icon .lg-icon .tab-icon} **Java**](./application-server/java.md){ .md-button .md-button--primary .tutorial-link}
-
 [:material-language-go:{.icon .lg-icon .tab-icon} **Go**](./application-server/go.md){ .md-button .md-button--primary .tutorial-link}
 
-[:fontawesome-brands-python:{.icon .lg-icon .tab-icon} **Python**](./application-server//python.md){ .md-button .md-button--primary .tutorial-link}
-
 [:material-language-ruby:{.icon .lg-icon .tab-icon} **Ruby**](./application-server/ruby.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-java:{.icon .lg-icon .tab-icon} **Java**](./application-server/java.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-python:{.icon .lg-icon .tab-icon} **Python**](./application-server/python.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-python:{.icon .lg-icon .tab-icon} **Rust**](./application-server/rust.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-python:{.icon .lg-icon .tab-icon} **PHP**](./application-server/php.md){ .md-button .md-button--primary .tutorial-link}
+
+[:fontawesome-brands-python:{.icon .lg-icon .tab-icon} **.NET**](./application-server/dotnet.md){ .md-button .md-button--primary .tutorial-link}
 
 </div>
 

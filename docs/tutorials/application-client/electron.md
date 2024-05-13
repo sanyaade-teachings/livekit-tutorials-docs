@@ -8,15 +8,15 @@ This tutorial shows how to build an **Electron** application using Livekit. It c
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
-<h3>2. Start your preferred server application sample</h3>
+### 2. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-<h3>3. Launch the client application tutorial</h3>
+### 3. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -69,7 +69,7 @@ To understand how the `livekit-client` NPM package is used in `index.js`, let's 
 In the beginning, we import several essential objects from the `livekit-client` package that will be used throughout the code. These objects include:
 
 ```javascript
-const { Room, RoomEvent } = require('livekit-client');
+const { Room, RoomEvent } = require("livekit-client");
 ```
 
 These imported objects are crucial for establishing and managing video calls. They represent different components and events associated with the video call system. We'll use them in subsequent parts of our code to create and manage video calls.
@@ -79,8 +79,8 @@ These imported objects are crucial for establishing and managing video calls. Th
 After importing the required objects, we define a few variables that will be used later in the code:
 
 ```javascript
-const ipcRenderer = require('electron').ipcRenderer;
-const { BrowserWindow } = require('@electron/remote');
+const ipcRenderer = require("electron").ipcRenderer;
+const { BrowserWindow } = require("@electron/remote");
 var room;
 var publisher;
 var myParticipantName;
@@ -89,8 +89,8 @@ var isScreenShared = false;
 var screenSharePublication;
 
 // Configure this constants with correct URLs depending on your deployment
-const APPLICATION_SERVER_URL = 'http://localhost:6080/';
-const LIVEKIT_URL = 'ws://localhost:7880/';
+const APPLICATION_SERVER_URL = "http://localhost:6080/";
+const LIVEKIT_URL = "ws://localhost:7880/";
 ```
 
 - `ipcRenderer`: This object facilitates communication with the main process. It is used to send and receive messages from the main process and it is used for the screen sharing dialog.
@@ -106,7 +106,7 @@ const LIVEKIT_URL = 'ws://localhost:7880/';
 
 !!! warning "Configure the URLs"
 
-	You should configure `APPLICATION_SERVER_URL` and `LIVEKIT_URL` constants with the correct URLs depending on your deployment.
+    You should configure `APPLICATION_SERVER_URL` and `LIVEKIT_URL` constants with the correct URLs depending on your deployment.
 
 <h3 markdown>Configuring the Room events</h3>
 
@@ -114,29 +114,29 @@ In this section, we initialize a new room and configure event handling for vario
 
 ```javascript
 async function joinRoom() {
-	myRoomName = document.getElementById('roomName').value;
-	myParticipantName = document.getElementById('participantName').value;
+  myRoomName = document.getElementById("roomName").value;
+  myParticipantName = document.getElementById("participantName").value;
 
-	// --- 1) Get a Room object ---
-	room = new Room();
+  // --- 1) Get a Room object ---
+  room = new Room();
 
-	// --- 2) Specify the actions when events take place in the room ---
+  // --- 2) Specify the actions when events take place in the room ---
 
-	// On every new Track received...
-	room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-		const element = track.attach();
-		element.id = track.sid;
-		element.className = 'removable';
-		document.getElementById('remote-participants').appendChild(element);
-	});
+  // On every new Track received...
+  room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+    const element = track.attach();
+    element.id = track.sid;
+    element.className = "removable";
+    document.getElementById("remote-participants").appendChild(element);
+  });
 
-	// On every new Track destroyed...
-	room.on(RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
-		track.detach();
-		document.getElementById(track.sid)?.remove();
-	});
+  // On every new Track destroyed...
+  room.on(RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+    track.detach();
+    document.getElementById(track.sid)?.remove();
+  });
 
-	// Additional event handling can be added here...
+  // Additional event handling can be added here...
 }
 ```
 
@@ -168,34 +168,34 @@ Here's how this is implemented in the code:
 
 ```javascript
 async function joinRoom() {
-	// ...
+  // ...
 
-	// Get a token from the application backend
-	const token = await getToken(myRoomName, myParticipantName);
-	// See next point to see how to connect to the session using 'token'
+  // Get a token from the application backend
+  const token = await getToken(myRoomName, myParticipantName);
+  // See next point to see how to connect to the session using 'token'
 
-	// ...
+  // ...
 }
 
 async function getToken(roomName, participantName) {
-	try {
-		const response = await axios.post(
-			APPLICATION_SERVER_URL + 'token',
-			{
-				roomName,
-				participantName,
-			},
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		);
+  try {
+    const response = await axios.post(
+      APPLICATION_SERVER_URL + "token",
+      {
+        roomName,
+        participantName,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-		return response.data;
-	} catch (error) {
-		console.error('No connection to application server', error);
-	}
+    return response.data;
+  } catch (error) {
+    console.error("No connection to application server", error);
+  }
 }
 ```
 
@@ -209,20 +209,20 @@ The final step involves connecting to the room using the obtained access token a
 
 ```javascript
 async function getToken(roomName, participantName) {
-	// ...
+  // ...
 
-	// Get a token from the application backend
-	const token = await getToken(myRoomName, myParticipantName);
+  // Get a token from the application backend
+  const token = await getToken(myRoomName, myParticipantName);
 
-	await room.connect(LIVEKIT_URL, token);
+  await room.connect(LIVEKIT_URL, token);
 
-	showRoom();
-	// --- 4) Publish your local tracks ---
-	await room.localParticipant.setMicrophoneEnabled(true);
-	const publication = await room.localParticipant.setCameraEnabled(true);
-	const element = publication.track.attach();
-	element.className = 'removable';
-	document.getElementById('local-participant').appendChild(element);
+  showRoom();
+  // --- 4) Publish your local tracks ---
+  await room.localParticipant.setMicrophoneEnabled(true);
+  const publication = await room.localParticipant.setCameraEnabled(true);
+  const element = publication.track.attach();
+  element.className = "removable";
+  document.getElementById("local-participant").appendChild(element);
 }
 ```
 
@@ -246,12 +246,12 @@ It is called when the user clicks the "Leave" button on the page. Here's how it'
 
 ```javascript
 function leaveRoom() {
-	// --- 5) Leave the room by calling 'disconnect' method over the Room object ---
+  // --- 5) Leave the room by calling 'disconnect' method over the Room object ---
 
-	room.disconnect();
-	// Remove all HTML elements associated with the participant
-	removeAllParticipantElements();
-	hideRoom();
+  room.disconnect();
+  // Remove all HTML elements associated with the participant
+  removeAllParticipantElements();
+  hideRoom();
 }
 ```
 
@@ -273,13 +273,13 @@ First of all, the tutorial has a button to toggle screen sharing. When the user 
 
 ```javascript
 async function toggleScreenShare() {
-	const enabled = !isScreenShared;
+  const enabled = !isScreenShared;
 
-	if (enabled) {
-		openScreenShareModal();
-	} else {
-		// Disable screen sharing
-	}
+  if (enabled) {
+    openScreenShareModal();
+  } else {
+    // Disable screen sharing
+  }
 }
 ```
 
@@ -289,26 +289,26 @@ The `openScreenShareModal()` method is responsible for opening the screen sharin
 
 ```javascript
 function openScreenShareModal() {
-	let win = new BrowserWindow({
-		parent: require('@electron/remote').getCurrentWindow(),
-		modal: true,
-		minimizable: false,
-		maximizable: false,
-		webPreferences: {
-			nodeIntegration: true,
-			enableRemoteModule: true,
-			contextIsolation: false,
-		},
-		resizable: false,
-	});
-	require('@electron/remote')
-		.require('@electron/remote/main')
-		.enable(win.webContents);
+  let win = new BrowserWindow({
+    parent: require("@electron/remote").getCurrentWindow(),
+    modal: true,
+    minimizable: false,
+    maximizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    },
+    resizable: false,
+  });
+  require("@electron/remote")
+    .require("@electron/remote/main")
+    .enable(win.webContents);
 
-	win.setMenu(null);
+  win.setMenu(null);
 
-	var theUrl = 'file://' + __dirname + '/modal.html';
-	win.loadURL(theUrl);
+  var theUrl = "file://" + __dirname + "/modal.html";
+  win.loadURL(theUrl);
 }
 ```
 
@@ -323,33 +323,33 @@ var htmlElements = [];
 var selectedElement;
 
 // Import required Electron modules
-const desktopCapturer = require('@electron/remote').desktopCapturer;
-const ipcRenderer = require('electron').ipcRenderer;
+const desktopCapturer = require("@electron/remote").desktopCapturer;
+const ipcRenderer = require("electron").ipcRenderer;
 
 // Call Electron API to list all available screens
 desktopCapturer
-	.getSources({ types: ['window', 'screen'] })
-	.then(async (sources) => {
-		const list = document.getElementById('list-of-screens');
-		sources.forEach((source) => {
-			// Create a new element for each screen and add it to the list of screens
-			// ...
-		});
-	});
+  .getSources({ types: ["window", "screen"] })
+  .then(async (sources) => {
+    const list = document.getElementById("list-of-screens");
+    sources.forEach((source) => {
+      // Create a new element for each screen and add it to the list of screens
+      // ...
+    });
+  });
 
 // Send the selected screen to the main process
 function sendScreenSelection() {
-	ipcRenderer.send(
-		'screen-share-selected',
-		availableScreens[htmlElements.indexOf(selectedElement)].id
-	);
-	closeWindow();
+  ipcRenderer.send(
+    "screen-share-selected",
+    availableScreens[htmlElements.indexOf(selectedElement)].id
+  );
+  closeWindow();
 }
 
 // Cancel screen selection
 function cancelSelection() {
-	ipcRenderer.send('screen-share-selected', undefined);
-	closeWindow();
+  ipcRenderer.send("screen-share-selected", undefined);
+  closeWindow();
 }
 
 // ...
@@ -365,36 +365,34 @@ This `modal.html` file utilizes the `desktopCapturer` API to list all available 
 
 The same is done by the `cancelSelection()` method when the user clicks the "_Cancel_" button but sending `undefined` as the selected screen.
 
-
 Next, as the **index.js** file is responsible for receiving the selected screen and publishing it to the room, we need to handle the `screen-share-selected` event in the main process:
 
-
 ```javascript
-ipcRenderer.on('screen-share-ready', async (event, sourceId) => {
-	if (sourceId) {
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
-				audio: false,
-				video: {
-					mandatory: {
-						chromeMediaSource: 'desktop',
-						chromeMediaSourceId: sourceId,
-					},
-				},
-			});
+ipcRenderer.on("screen-share-ready", async (event, sourceId) => {
+  if (sourceId) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          mandatory: {
+            chromeMediaSource: "desktop",
+            chromeMediaSourceId: sourceId,
+          },
+        },
+      });
 
-			const track = stream.getVideoTracks()[0];
-			const screenPublication = await room.localParticipant.publishTrack(track);
-			isScreenShared = true;
-			screenSharePublication = screenPublication;
-			const element = screenPublication.track.attach();
-			element.id = screenPublication.trackSid;
-			element.className = 'removable';
-			document.getElementById('local-participant').appendChild(element);
-		} catch (error) {
-			console.error('Error enabling screen sharing', error);
-		}
-	}
+      const track = stream.getVideoTracks()[0];
+      const screenPublication = await room.localParticipant.publishTrack(track);
+      isScreenShared = true;
+      screenSharePublication = screenPublication;
+      const element = screenPublication.track.attach();
+      element.id = screenPublication.trackSid;
+      element.className = "removable";
+      document.getElementById("local-participant").appendChild(element);
+    } catch (error) {
+      console.error("Error enabling screen sharing", error);
+    }
+  }
 });
 ```
 
@@ -406,20 +404,19 @@ When the screen sharing dialog sends the selected screen to the main process, th
 4. Attaches the track to the HTML page using `screenPublication.track.attach()`.
 5. Updates screen sharing status and displays the screen element on the page.
 
-
 <h4 markdown>Disabling screen sharing</h4>
 
 When the user clicks the _Toggle screen sharing_ button again, the `toggleScreenShare()` method is called again. This time, the `isScreenShared` variable is set to `false`, and the `stopScreenSharing()` method is called.
 
 ```javascript
 async function toggleScreenShare() {
-	const enabled = !isScreenShared;
+  const enabled = !isScreenShared;
 
-	if (enabled) {
-		openScreenShareModal();
-	} else {
-		await stopScreenSharing();
-	}
+  if (enabled) {
+    openScreenShareModal();
+  } else {
+    await stopScreenSharing();
+  }
 }
 ```
 
@@ -427,18 +424,18 @@ The `stopScreenSharing()` method is responsible for disabling screen sharing. He
 
 ```javascript
 async function stopScreenSharing() {
-	try {
-		await room.localParticipant.unpublishTrack(screenSharePublication.track);
-		isScreenShared = false;
-		const trackSid = screenSharePublication?.trackSid;
+  try {
+    await room.localParticipant.unpublishTrack(screenSharePublication.track);
+    isScreenShared = false;
+    const trackSid = screenSharePublication?.trackSid;
 
-		if (trackSid) {
-			document.getElementById(trackSid)?.remove();
-		}
-		screenSharePublication = undefined;
-	} catch (error) {
-		console.error('Error stopping screen sharing', error);
-	}
+    if (trackSid) {
+      document.getElementById(trackSid)?.remove();
+    }
+    screenSharePublication = undefined;
+  } catch (error) {
+    console.error("Error stopping screen sharing", error);
+  }
 }
 ```
 

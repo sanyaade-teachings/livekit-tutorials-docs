@@ -18,12 +18,12 @@ To run this application you will need **Ruby**:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
-cd openvidu-livekit-tutorials/application-server/ruby
 ```
 
 #### Install dependencies
 
 ```bash
+cd openvidu-livekit-tutorials/application-server/ruby
 bundle install
 ```
 
@@ -37,7 +37,7 @@ ruby app.rb
 
 The application is a simple Ruby app using the popular Sinatra web library. It has a single controller file `app.rb` that exports a unique endpoint:
 
-- `/token` : Generate a token for a given Room name and Participant name
+- `/token` : generate a token for a given Room name and Participant name.
 
 Let's see the code of the `app.rb` file:
 

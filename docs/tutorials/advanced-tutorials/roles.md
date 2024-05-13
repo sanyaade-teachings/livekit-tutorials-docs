@@ -8,7 +8,7 @@ This OpenVidu application is a simple videoconference app that allows you to ass
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-<h3>1. OpenVidu Server Installation</h3>
+### 1. OpenVidu Server Installation
 
 --8<-- "docs/tutorials/shared/run-openvidu-dev.md"
 
@@ -396,28 +396,28 @@ Once the server application has returned the token, the client application will 
 
 ```javascript hl_lines="10-16"
 function joinRoom() {
-	// ...
+  // ...
 
-	getToken(myRoomName, myParticipantName).then((token) => {
-		const livekitUrl = getLivekitUrlFromMetadata(token);
+  getToken(myRoomName, myParticipantName).then((token) => {
+    const livekitUrl = getLivekitUrlFromMetadata(token);
 
-		room
-			.connect(livekitUrl, token)
-			.then(() => {
-				const canPublish = room.localParticipant.permissions.canPublish;
-				if (canPublish) {
-					// Publish the tracks to the room
-				} else {
-					// Initialize the view for a subscriber
-					initMainVideoThumbnail();
-				}
+    room
+      .connect(livekitUrl, token)
+      .then(() => {
+        const canPublish = room.localParticipant.permissions.canPublish;
+        if (canPublish) {
+          // Publish the tracks to the room
+        } else {
+          // Initialize the view for a subscriber
+          initMainVideoThumbnail();
+        }
 
-				// ...
-			})
-			.catch((error) => {
-				console.error('Error connecting to room', error);
-			});
-	});
+        // ...
+      })
+      .catch((error) => {
+        console.error("Error connecting to room", error);
+      });
+  });
 }
 ```
 
