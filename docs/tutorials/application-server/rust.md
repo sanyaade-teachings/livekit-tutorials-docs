@@ -63,7 +63,7 @@ async fn main() {
         .allow_origin(Any)
         .allow_headers([CONTENT_TYPE]);
 
-    let app = Router::new().route("/token", post(get_token)).layer(cors); // (5)!
+    let app = Router::new().route("/token", post(create_token)).layer(cors); // (5)!
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:".to_string() + &server_port)
         .await
@@ -95,7 +95,7 @@ The unique endpoint of the application is `/token`. It receives a JSON object wi
 - `participantName`: the name of the participant that wants to connect to the Room.
 
 ```go title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L36-L70' target='_blank'>main.rs</a>" linenums="36"
-async fn get_token(payload: Option<Json<Value>>) -> (StatusCode, Json<String>) {
+async fn create_token(payload: Option<Json<Value>>) -> (StatusCode, Json<String>) {
     if let Some(payload) = payload {
         let livekit_api_key = env::var("LIVEKIT_API_KEY").expect("LIVEKIT_API_KEY is not set");
         let livekit_api_secret =

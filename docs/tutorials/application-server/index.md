@@ -1,9 +1,16 @@
 # Application server tutorials
 
-Every application server below has only one single purpose: generate LiveKit tokens on demand for any [application client](../application-client/). Two important notes:
+Every application server below has two specific purposes: 
 
-- They all have a single REST endpoint `/token` that takes a room and participant name and returns a token.
-- They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){target=\_blank} for their language, if available.
+- Generate LiveKit tokens on demand for any [application client](../application-client/).
+- Receive LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
+
+To do so they all define two REST endpoints:
+
+- `/token`: takes a room and participant name and returns a token.
+- `/webhook`: for receiving webhook events from LiveKit Server.
+
+They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){target=\_blank} for their language, if available.
 
 <div class="tutorials-container" markdown>
 

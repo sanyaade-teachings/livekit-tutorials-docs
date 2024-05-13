@@ -75,7 +75,7 @@ The unique endpoint of the application is `/token`. It receives a JSON object in
 
 ```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L28-L43' target='_blank'>Controller.java</a>" linenums="28"
 @PostMapping(value = "/token", produces = "application/json")
-public ResponseEntity<String> getToken(@RequestBody Map<String, String> params) {
+public ResponseEntity<String> createToken(@RequestBody Map<String, String> params) {
 	String roomName = params.get("roomName");
 	String participantName = params.get("participantName");
 

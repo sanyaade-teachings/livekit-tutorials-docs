@@ -1,5 +1,7 @@
 # Advanced tutorials
 
+Explore more advanced features of LiveKit: recording, screen-sharing and participant roles.
+
 <div class="tutorials-container" markdown>
 
 [:material-record-rec:{.icon .lg-icon .tab-icon} **Egress**](./recording.md){ .md-button .md-button--primary .tutorial-link }

@@ -38,7 +38,7 @@ nav:
   #     - demos/basic-screenshare.md
   #     - demos/basic-webinar.md
   #     - demos/openvidu-getaroom.md
-  - What is OpenVidu?: what-about-openvidu.md
+  - What is OpenVidu?: about-openvidu.md
 
 validation:
   omitted_files: warn

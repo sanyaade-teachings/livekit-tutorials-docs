@@ -93,7 +93,7 @@ The unique endpoint of the application is `/token`. It receives a JSON object wi
 
 ```python title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/python/app.py#L18-L31' target='_blank'>app.py</a>" linenums="18"
 @app.post("/token")
-def getToken():
+def createToken():
     room_name = request.json.get("roomName")
     participant_name = request.json.get("participantName")
 
