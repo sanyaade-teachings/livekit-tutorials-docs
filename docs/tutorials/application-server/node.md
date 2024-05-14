@@ -129,7 +129,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L33-L48' target='_blank'>index.js</a>" linenums="33"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L33-L49' target='_blank'>index.js</a>" linenums="33"
 const webhookReceiver = new WebhookReceiver( // (1)!
   LIVEKIT_API_KEY,
   LIVEKIT_API_SECRET
@@ -145,6 +145,7 @@ app.post("/webhook", async (req, res) => {
   } catch (error) {
     console.error("Error validating webhook event", error);
   }
+  res.status(200).send();
 });
 ```
 
@@ -156,5 +157,7 @@ app.post("/webhook", async (req, res) => {
 First of all we initialize the `WebhookReceiver` using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. This object will validate and decode the incoming webhook events.
 
 The endpoint receives the incoming webhook with the async method `WebhookReceiver#receive`. It takes the body and the `Authorization` header of the request. If everything is correct, you can do whatever you want with the event (in this case, we just log it).
+
+Remember to return a `200` OK response at the end to let LiveKit Server know that the webhook was received correctly.
 
 <br>

@@ -118,9 +118,9 @@ If required fields are available, a new JWT token is created. For that we use th
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L50-L59' target='_blank'>Controller.java</a>" linenums="50"
+```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L50-L60' target='_blank'>Controller.java</a>" linenums="50"
 @PostMapping(value = "/webhook", consumes = "application/webhook+json")
-public void receiveWebhook(@RequestHeader("Authorization") String authHeader, @RequestBody String body) { // (1)!
+public ResponseEntity<String> receiveWebhook(@RequestHeader("Authorization") String authHeader, @RequestBody String body) { // (1)!
 	WebhookReceiver webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET); // (2)!
 	try {
 		LivekitWebhook.WebhookEvent event = webhookReceiver.receive(body, authHeader); // (3)!
@@ -128,6 +128,7 @@ public void receiveWebhook(@RequestHeader("Authorization") String authHeader, @R
 	} catch (Exception e) {
 		System.err.println("Error validating webhook event: " + e.getMessage());
 	}
+	return ResponseEntity.ok("ok");
 }
 ```
 
