@@ -2,21 +2,27 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with [Vue.js](https://vuejs.org/){:target="\_blank"} and [Livekit JavaScript SDK](https://docs.livekit.io/client-sdk-js/){:target="\_blank"}. It is based on the [Livekit JavaScript tutorial](./javascript.md) but using Vue.js framework instead of plain web technologies.
+This tutorial is a simple video-call application built with **Vue** which intents and purposes the same as [Livekit JavaScript tutorial](./javascript.md) but using **Vue** instead of plain web technologies.
 
 ## Running this tutorial
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-### 1. OpenVidu Server Installation
+### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Run a server application
+### 2. Get the tutorial code
+
+```bash
+git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+```
+
+### 3. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-### 3. Run the client application
+### 4. Run the client application
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
@@ -28,13 +34,23 @@ npm -v
 
 Once you've confirmed that NPM is installed, you can proceed with the tutorial by following these steps:
 
-```bash
-# Assuming you've already cloned repository "openvidu-livekit-tutorials" as described in step 2
+1. Navigate into the application client directory:
 
-cd openvidu-livekit-tutorials/openvidu-vue
-npm install
-npm run serve
-```
+    ```bash
+    cd openvidu-livekit-tutorials/application-client/openvidu-vue
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Run the application:
+
+    ```bash
+    npm run serve
+    ```
 
 Once the server is up and running, you can test the application by visiting [`http://localhost:5080`](http://localhost:5080){:target="\_blank"}. You should see a screen like this:
 
@@ -258,7 +274,7 @@ This code segment is responsible for retrieving a token from the application ser
 
 ---
 
-<h3 markdown>Connecting to the room</h3>
+<h3 markdown>Connecting to the Room</h3>
 
 The final step involves connecting to the room using the obtained access token and publishing your webcam. Let's examine this part of the code:
 

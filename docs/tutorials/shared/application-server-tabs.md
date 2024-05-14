@@ -2,13 +2,12 @@
 
     To run this server application, you need [Node](https://nodejs.org/es/download/){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/node
     ```
     2. Install dependencies
     ```bash
-    cd openvidu-livekit-tutorials/application-server/node
     npm install
     ```
     3. Run the application
@@ -16,17 +15,16 @@
     node index.js
     ```
 
-=== ":simple-goland:{.icon .lg-icon .tab-icon} GO"
+=== ":simple-goland:{.icon .lg-icon .tab-icon} Go"
 
     To run this server application, you need [Go](https://go.dev/doc/install){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/go
     ```
     2. Run the application
     ```bash
-    cd openvidu-livekit-tutorials/application-server/go
     go run main.go
     ```
 
@@ -34,13 +32,12 @@
 
     To run this server application, you need [Ruby](https://www.ruby-lang.org/en/downloads/){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/ruby
     ```
     2. Install dependencies
     ```bash
-    cd openvidu-livekit-tutorials/application-server/ruby
     bundle install
     ```
     3. Run the application
@@ -52,13 +49,12 @@
 
     To run this server application, you need [Java](https://www.java.com/en/download/manual.jsp){:target="\_blank"} and [Maven](https://maven.apache.org){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/java
     ```
     2. Run the application
     ```bash
-    cd openvidu-livekit-tutorials/application-server/java
     mvn spring-boot:run
     ```
 
@@ -66,13 +62,12 @@
 
     To run this server application, you need [Python 3](https://www.python.org/downloads/){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/python
     ```
     2. Create a python3 environment and activate it
     ```bash
-    cd openvidu-livekit-tutorials/application-server/python
     python3 -m venv venv
     . venv/bin/activate
     ```
@@ -89,13 +84,12 @@
 
     To run this server application, you need [Rust](https://www.rust-lang.org/tools/install){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/rust
     ```
     2. Run the application
     ```bash
-    cd openvidu-livekit-tutorials/application-server/rust
     cargo run
     ```
 
@@ -103,13 +97,12 @@
 
     To run this server application, you need [PHP](https://www.php.net/manual/en/install.php){:target="\_blank"} and [Composer](https://getcomposer.org/download/){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/php
     ```
     2. Install dependencies
     ```bash
-    cd openvidu-livekit-tutorials/application-server/php
     composer install
     ```
     3. Run the application
@@ -121,12 +114,15 @@
 
     To run this server application, you need [.NET](https://dotnet.microsoft.com/en-us/download){:target="\_blank"} installed on your device.
 
-    1. Clone the repository
+    1. Navigate into the server directory
     ```bash
-    git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+    cd openvidu-livekit-tutorials/application-server/dotnet
     ```
     2. Run the application
     ```bash
-    cd openvidu-livekit-tutorials/application-server/dotnet
     dotnet run
     ```
+
+    !!! warning
+
+        This .NET server application needs the `LIVEKIT_API_SECRET` env variable to be at least 32 characters long. Make sure to udpate it [here](https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/b97db7278227470fd386337ffde49b2458315c6f/application-server/dotnet/appsettings.json#L11){:target="\_blank"} and in your [LiveKit Server](#1-run-livekit-server).

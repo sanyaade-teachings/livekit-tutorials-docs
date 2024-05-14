@@ -12,24 +12,43 @@ Running this tutorial is straightforward, and here's what you'll need:
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Run a server application
+### 2. Get the tutorial code
+
+```bash
+git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+```
+
+### 3. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-### 3. Run the client application
+### 4. Run the client application
 
-To run the client application tutorial, you'll need a HTTP web server installed on your development computer. If you have Node.js installed, you can easily set up [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
-
-```bash
-npm install --location=global http-server
-```
-
-After installing http-server, serve the tutorial by executing the following command:
+To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
 ```bash
-# Using the same repository openvidu-livekit-tutorials from step 2
-http-server -p 5080 openvidu-tutorials/openvidu-js/web
+npm -v
 ```
+
+You will also need an HTTP web server installed on your development computer. A great option is [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
+
+```bash
+npm install -g http-server
+```
+
+Once you've confirmed that NPM and http-server are installed, you can proceed with the tutorial by following these steps:
+
+1. Navigate into the application client directory:
+
+    ```bash
+    cd openvidu-livekit-tutorials/application-client/openvidu-js
+    ```
+
+2. Serve the application client:
+
+    ```bash
+    http-server -p 5080 ./web
+    ```
 
 Once the server is up and running, you can test the application by visiting [`http://localhost:5080`](http://localhost:5080){:target="\_blank"}. You should see a screen like this:
 
@@ -221,7 +240,7 @@ This code segment is responsible for retrieving a token from the application ser
 
 ---
 
-<h3 markdown>Connecting to the room</h3>
+<h3 markdown>Connecting to the Room</h3>
 
 The final step involves connecting to the room using the obtained access token and publishing your webcam. Let's examine this part of the code:
 

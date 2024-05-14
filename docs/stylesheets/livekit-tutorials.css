@@ -49,6 +49,10 @@
 	background-color: var(--md-default-bg-color);
 }
 
+.tabbed-content .tabbed-block .unstyle-tabbed-code code {
+	background-color: inherit;
+}
+
 .tabbed-content .tabbed-block .tabbed-content {
 	padding: 0;
 	border: none;
