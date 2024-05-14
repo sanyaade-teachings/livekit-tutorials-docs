@@ -2,7 +2,10 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/java){ .md-button target=\_blank }
 
-This is a minimal server application built for Java with [Spring Boot](https://spring.io/){:target="\_blank"} that allows generating LiveKit tokens on demand.
+This is a minimal server application built for Java with [Spring Boot](https://spring.io/){:target="\_blank"} that allows:
+
+- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses [LiveKit Kotlin SDK](https://github.com/livekit/server-sdk-kotlin){:target="\_blank"}.
 
@@ -28,15 +31,20 @@ cd openvidu-livekit-tutorials/application-server/java
 mvn spring-boot:run
 ```
 
+!!! info
+
+    You can run any [Application Client](../../application-client/) to test against this server right away.
+
 ## Understanding the code
 
-The application is a simple Go app with a single controller `Controller.java` that exports a unique endpoint:
+The application is a simple Go app with a single controller `Controller.java` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
+- `/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `Controller.java` file:
 
-```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L14-L22' target='_blank'>Controller.java</a>" linenums="14"
+```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L19-L27' target='_blank'>Controller.java</a>" linenums="19"
 @CrossOrigin(origins = "*") // (1)!
 @RestController // (2)!
 public class Controller {
@@ -58,23 +66,23 @@ public class Controller {
 
 Starting by the top, the `Controller` class has the following annotations:
 
-- `@CrossOrigin(origins = "*")`: Allows the application to be accessed from any domain.
-- `@RestController`: Marks the class as a controller where every method returns a domain object instead of a view.
+- `@CrossOrigin(origins = "*")`: allows the application to be accessed from any domain.
+- `@RestController`: marks the class as a controller where every method returns a domain object instead of a view.
 
 Going deeper, the `Controller` class has the following fields:
 
 - `LIVEKIT_API_KEY`: the API key of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_KEY` using the `@Value("${LIVEKIT_API_KEY}")` annotation.
 - `LIVEKIT_API_SECRET`: the API secret of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_SECRET` using the `@Value("${LIVEKIT_API_SECRET}")` annotation.
 
-#### Create token endpoint
+#### Create token
 
-The unique endpoint of the application is `/token`. It receives a JSON object in the request body with the following fields:
+The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
 
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L28-L43' target='_blank'>Controller.java</a>" linenums="28"
-@PostMapping(value = "/token", produces = "application/json")
+```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L33-L48' target='_blank'>Controller.java</a>" linenums="33"
+@PostMapping(value = "/token", consumes = "application/json", produces = "application/json")
 public ResponseEntity<String> createToken(@RequestBody Map<String, String> params) {
 	String roomName = params.get("roomName");
 	String participantName = params.get("participantName");
@@ -105,3 +113,33 @@ If required fields are available, a new JWT token is created. For that we use th
 2. We set participant's name and identity in the AccessToken.
 3. We set the video grants in the AccessToken. `RoomJoin` allows the user to join a room and `RoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. Finally, the token is sent back to the client.
+
+#### Receive webhook
+
+The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+
+```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L50-L59' target='_blank'>Controller.java</a>" linenums="50"
+@PostMapping(value = "/webhook", consumes = "application/webhook+json")
+public void receiveWebhook(@RequestHeader("Authorization") String authHeader, @RequestBody String body) { // (1)!
+	WebhookReceiver webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET); // (2)!
+	try {
+		LivekitWebhook.WebhookEvent event = webhookReceiver.receive(body, authHeader); // (3)!
+		System.out.println("LiveKit Webhook: " + event.toString());	// (4)!
+	} catch (Exception e) {
+		System.err.println("Error validating webhook event: " + e.getMessage());
+	}
+}
+```
+
+1. We need the 'Authorization' header and the raw body of the HTTP request.
+2. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
+3. Obtain the `WebhookEvent` object using the `WebhookReceiver#receive` method. It takes the raw body as a String and the Authorization header of the request.
+4. Consume the event as you whish.
+
+We declare the 'Authorization' header and the raw body of the HTTP request as parameters of the our method. We need both of them to validate and decode the incoming webhook event.
+
+Then we initialize a `WebhookReceiver` object using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
+
+Finally we obtain a `WebhookEvent` object calling method `WebhookReceiver#receive`. It takes the raw body as a String and the `Authorization` header of the request. If everything is correct, you can do whatever you want with the event (in this case, we just log it).
+
+<br>

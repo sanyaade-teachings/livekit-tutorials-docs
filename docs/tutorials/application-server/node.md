@@ -2,7 +2,10 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/node){ .md-button target=\_blank }
 
-This is a minimal server application built for Node with [Express](https://expressjs.com/){:target="\_blank"} that allows generating LiveKit tokens on demand.
+This is a minimal server application built for Node with [Express](https://expressjs.com/){:target="\_blank"} that allows:
+
+- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses [LiveKit JS SDK](https://docs.livekit.io/server-sdk-js){:target="\_blank"}.
 
@@ -33,19 +36,24 @@ npm install
 node index.js
 ```
 
+!!! info
+
+    You can run any [Application Client](../../application-client/) to test against this server right away.
+
 ## Understanding the code
 
-The application is a simple Express app with a single file `index.js` that exports a unique endpoint:
+The application is a simple Express app with a single file `index.js` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
+- `/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `index.js` file:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L1-L13' target='_blank'>index.js</a>" linenums="1"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L1-L14' target='_blank'>index.js</a>" linenums="1"
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { AccessToken } from "livekit-server-sdk"; // (1)!
+import { AccessToken, WebhookReceiver } from "livekit-server-sdk"; // (1)!
 
 const SERVER_PORT = process.env.SERVER_PORT || 6080; // (2)!
 const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY || "devkey"; // (3)!
@@ -55,6 +63,7 @@ const app = express(); // (5)!
 
 app.use(cors()); // (6)!
 app.use(express.json()); // (7)!
+app.use(express.raw({ type: "application/webhook+json" })); // (8)!
 ```
 
 1. Import `AccessToken` from `livekit-server-sdk`.
@@ -63,7 +72,8 @@ app.use(express.json()); // (7)!
 4. The API secret of LiveKit Server.
 5. Initialize the Express application.
 6. Enable CORS support.
-7. Enable JSON body parsing.
+7. Enable JSON body parsing for the `/token` endpoint.
+8. Enable raw body parsing for the `/webhook` endpoint.
 
 The `index.js` file imports the required dependencies and loads the necessary environment variables:
 
@@ -71,16 +81,18 @@ The `index.js` file imports the required dependencies and loads the necessary en
 - `LIVEKIT_API_KEY`: the API key of LiveKit Server.
 - `LIVEKIT_API_SECRET`: the API secret of LiveKit Server.
 
-Finally the `express` application is initialized and CORS and JSON body parsing are enabled.
+It also initializes the `WebhookReceiver` object that will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
 
-#### Create token endpoint
+Finally the `express` application is initialized. CORS is allowed, JSON body parsing is enabled for the `/token` endpoint and raw body parsing is enabled for the `/webhook` endpoint.
 
-The unique endpoint of the application is `/token`. It receives a JSON object with the following fields:
+#### Create token
+
+The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
 
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```go title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L15-L30' target='_blank'>index.js</a>" linenums="15"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L16-L31' target='_blank'>index.js</a>" linenums="16"
 app.post("/token", async (req, res) => {
   const roomName = req.body.roomName;
   const participantName = req.body.participantName;
@@ -112,3 +124,37 @@ If required fields are available, a new JWT token is created. For that we use th
 2. We set the video grants in the AccessToken. `roomJoin` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We convert the AccessToken to a JWT token.
 4. Finally, the token is sent back to the client.
+
+#### Receive webhook
+
+The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L33-L48' target='_blank'>index.js</a>" linenums="33"
+const webhookReceiver = new WebhookReceiver( // (1)!
+  LIVEKIT_API_KEY,
+  LIVEKIT_API_SECRET
+);
+
+app.post("/webhook", async (req, res) => {
+  try {
+    const event = await webhookReceiver.receive(
+      req.body, // (2)!
+      req.get("Authorization") // (3)!
+    );
+    console.log(event); // (4)!
+  } catch (error) {
+    console.error("Error validating webhook event", error);
+  }
+});
+```
+
+1. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
+2. The body of the HTTP request.
+3. The `Authorization` header of the HTTP request.
+4. Consume the event as you whish.
+
+First of all we initialize the `WebhookReceiver` using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. This object will validate and decode the incoming webhook events.
+
+The endpoint receives the incoming webhook with the async method `WebhookReceiver#receive`. It takes the body and the `Authorization` header of the request. If everything is correct, you can do whatever you want with the event (in this case, we just log it).
+
+<br>
