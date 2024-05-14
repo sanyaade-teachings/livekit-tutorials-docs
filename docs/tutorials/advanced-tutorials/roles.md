@@ -10,7 +10,7 @@ Running this tutorial is straightforward, and here's what you'll need:
 
 ### 1. OpenVidu Server Installation
 
---8<-- "docs/tutorials/shared/run-openvidu-dev.md"
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
 
 <h3>2. Launch the client and server application</h3>
 

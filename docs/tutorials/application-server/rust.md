@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/rust){ .md-button target=\_blank }
 
-This is a minimal server application built for Rust with [Axum](https://github.com/tokio-rs/axum){:target="\_blank"} that allows generating LiveKit tokens on demand.
+This is a minimal server application built for Rust with [Axum](https://github.com/tokio-rs/axum){:target="\_blank"} that allows generating LiveKit tokens on demand for any [application client](../../application-client/).
 
 It internally uses the [LiveKit Rust SDK](https://github.com/livekit/rust-sdks){:target="\_blank"}.
 
@@ -26,6 +26,10 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 cd openvidu-livekit-tutorials/application-server/rust
 cargo run
 ```
+
+!!! info
+
+    You can run any [Application Client](../../application-client/) to test against this server right away.
 
 ## Understanding the code
 

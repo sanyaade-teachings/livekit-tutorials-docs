@@ -10,7 +10,7 @@ Running this tutorial is straightforward, and here's what you'll need:
 
 ### 1. OpenVidu Server Installation
 
---8<-- "docs/tutorials/shared/run-openvidu-dev.md"
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
 
 !!! info "Livekit Egress"
 If you want to use the Livekit distribution instead of OpenVidu, you will need to configure the egress server. You can find more information about this in the [Livekit documentation](https://docs.livekit.io/egress-ingress/egress/self-hosting/){:target="\_blank"}.

@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/dotnet){ .md-button target=\_blank }
 
-This is a minimal server application built for .NET with [ASP.NET Core Minimal APIs](https://docs.microsoft.com/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio){:target="\_blank"} that allows generating LiveKit tokens on demand.
+This is a minimal server application built for .NET with [ASP.NET Core Minimal APIs](https://docs.microsoft.com/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio){:target="\_blank"} that allows generating LiveKit tokens on demand for any [application client](../../application-client/).
 
 Unfortunately there is no .NET SDK for LiveKit available, so the application has to manually build LiveKit compatible JWT tokens using the .NET library `System.IdentityModel.Tokens.Jwt`. It is a fairly easy process.
 
@@ -26,6 +26,10 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 cd openvidu-livekit-tutorials/application-server/dotnet
 dotnet run
 ```
+
+!!! info
+
+    You can run any [Application Client](../../application-client/) to test against this server right away.
 
 ## Understanding the code
 

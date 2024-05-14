@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-server/ruby){ .md-button target=\_blank }
 
-This is a minimal server application built for Ruby with [Sinatra](https://sinatrarb.com/){:target="\_blank"} that allows generating LiveKit tokens on demand.
+This is a minimal server application built for Ruby with [Sinatra](https://sinatrarb.com/){:target="\_blank"} that allows generating LiveKit tokens on demand for any [application client](../../application-client/).
 
 It internally uses [LiveKit Ruby SDK](https://github.com/livekit/server-sdk-ruby){:target="\_blank"}.
 
@@ -32,6 +32,10 @@ bundle install
 ```bash
 ruby app.rb
 ```
+
+!!! info
+
+    You can run any [Application Client](../../application-client/) to test against this server right away.
 
 ## Understanding the code
 

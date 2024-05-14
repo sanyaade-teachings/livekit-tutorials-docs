@@ -10,7 +10,7 @@ Running this tutorial is straightforward, and here's what you'll need:
 
 ### 1. OpenVidu Server Installation
 
---8<-- "docs/tutorials/shared/run-openvidu-dev.md"
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
 
 ### 2. Run a server application
 
@@ -20,7 +20,7 @@ Running this tutorial is straightforward, and here's what you'll need:
 
 To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
 
-Check if you have installed it by running the following commands:
+Check if you have installed it by running the following command:
 
 ```bash
 npm -v
@@ -29,7 +29,7 @@ npm -v
 Once you've confirmed that NPM is installed, you can proceed with the tutorial by following these steps:
 
 ```bash
-# Assuming you've already cloned the 'openvidu-livekit-tutorials' repository as described in Step 2
+# Assuming you've already cloned repository "openvidu-livekit-tutorials" as described in step 2
 
 cd openvidu-livekit-tutorials/openvidu-react
 npm install
