@@ -173,16 +173,10 @@ async def receive_webhook():
 
 First of all, we need a `WebhookReceiver` for validating and decoding incoming webhook events. We initialize it with a `TokenVerifier` built with the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
 
-Inside the `receive_webhook` handler we get the 'Authorization' header from the HTTP request, and then we obtain the webhook event using the `WebhookReceiver#receive` method. It expects the raw body of the request and the 'Authorization' header.
-
-Then we initialize a `WebhookReceiver` object using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
-
-Finally we obtain a `WebhookEvent` object calling method `WebhookReceiver#receive`. It takes the raw body as a String and the `Authorization` header of the request. If everything is correct, you can do whatever you want with the event (in this case, we just log it).
-
 Inside the `receive_webhook` handler we:
 
-1. Get the 'Authorization' header from the HTTP request.
-2. Obtain the webhook event using the `WebhookReceiver#receive` method. It expects the raw body of the request and the 'Authorization' header.
-3. If everything Consume the event as you whish (in this case, we just log it)
+1. Get the `Authorization` header from the HTTP request.
+2. Obtain the webhook event using the `WebhookReceiver#receive` method. It expects the raw body of the request and the 'Authorization' header. In this way, we can validate the event to confirm it is actually coming from our LiveKit Server.
+3. If everything is ok, you can consume the event as you whish (in this case, we just log it).
 
 <br>
