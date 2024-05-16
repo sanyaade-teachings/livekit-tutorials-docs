@@ -143,4 +143,6 @@ Then we initialize a `WebhookReceiver` object using the `LIVEKIT_API_KEY` and `L
 
 Finally we obtain a `WebhookEvent` object calling method `WebhookReceiver#receive`. It takes the raw body as a String and the `Authorization` header of the request. If everything is correct, you can do whatever you want with the event (in this case, we just log it).
 
+Remember to return a `200` OK response at the end to let LiveKit Server know that the webhook was received correctly.
+
 <br>

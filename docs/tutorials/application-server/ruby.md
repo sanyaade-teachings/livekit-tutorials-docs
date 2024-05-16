@@ -155,3 +155,7 @@ end
 We need to verify that the event is coming from our LiveKit Server. For that we need the `Authorization` header from the HTTP request and a `TokenVerifier` instance built with the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
 
 If the verification is successful, we can parse the request JSON body and consume the event (in this case, we just log it).
+
+Remember to return a `200` OK response at the end to let LiveKit Server know that the webhook was received correctly.
+
+<br>

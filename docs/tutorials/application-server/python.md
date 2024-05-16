@@ -176,7 +176,7 @@ First of all, we need a `WebhookReceiver` for validating and decoding incoming w
 Inside the `receive_webhook` handler we:
 
 1. Get the `Authorization` header from the HTTP request.
-2. Obtain the webhook event using the `WebhookReceiver#receive` method. It expects the raw body of the request and the 'Authorization' header. In this way, we can validate the event to confirm it is actually coming from our LiveKit Server.
+2. Obtain the webhook event using the `WebhookReceiver#receive` method. It expects the raw body of the request and the `Authorization` header. In this way, we can validate the event to confirm it is actually coming from our LiveKit Server.
 3. If everything is ok, you can consume the event as you whish (in this case, we just log it).
 
 <br>
