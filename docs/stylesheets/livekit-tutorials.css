@@ -59,6 +59,10 @@
 	border-radius: 0;
 }
 
+.do-not-break-line {
+	white-space: nowrap;
+}
+
 /* intro */
 
 .card {

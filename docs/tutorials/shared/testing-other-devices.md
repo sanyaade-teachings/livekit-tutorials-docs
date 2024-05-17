@@ -1,5 +1,5 @@
-!!! info "Testing with other devices"
+!!! info "Accessing your application client from other devices in your local network"
 
-    To test the application with other devices in your network, you can access your application at [`https://xxx-yyy-zzz-www.openvidu-local.dev:5443`](), where `xxx-yyy-zzz-www` part of the domain is your LAN private IP address with dashes (-) instead of dots (.). For more information, see section [Accessing your deployment from other devices in your LAN](/installation/local/#accessing-your-deployment-from-other-devices-in-your-lan){target="_blank"}.
+    One advantage of [running OpenVidu locally](#run-openvidu-locally) is that you can test your application client with other devices in your local network very easily without worring about SSL certificates.
 
-    To use the application from outside your network, a production deployment is required.
+    Access your application client through [`https://xxx-yyy-zzz-www.openvidu-local.dev:5443`](https://xxx-yyy-zzz-www.openvidu-local.dev:5443){target="_blank"}, where `xxx-yyy-zzz-www` part of the domain is your LAN private IP address with dashes (-) instead of dots (.). For more information, see section [Accessing your app from other devices in your network](/about-openvidu/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.

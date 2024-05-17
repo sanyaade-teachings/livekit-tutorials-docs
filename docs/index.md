@@ -2,7 +2,7 @@
 title: LiveKit tutorials
 ---
 
-This site contains **simple**, **functional** and **comprehensible** guided tutorials for [**LiveKit**](https://livekit.io/){target=\_blank} applications. They all offer basically the same functionality, but built with different platforms in the client side and the server side. Just choose the one that better fits your needs.
+This site contains **simple**, **functional** and **comprehensible** guided tutorials for [**LiveKit**](https://livekit.io/){target=\_blank} applications. They all offer basically the same functionality, but built with different platforms in the client side and the server side, all compatible with each other. Just choose the ones that better fit your needs.
 
 You can use them purely for didactic purposes, but also as a solid starting point to build your own application.
 
@@ -10,7 +10,7 @@ You can use them purely for didactic purposes, but also as a solid starting poin
 
 [LiveKit](https://livekit.io/){target=\_blank} is an open source, cutting edge, end-to-end WebRTC stack with which you can build ultra-low latency real-time audio and video applications. It offers the latest technologies in terms of real-time media, and a fantastic collection of [SDKs](https://docs.livekit.io/reference/){target=\_blank} for both your application's server and client.
 
-With the power of LiveKit you can add video conferencing capabilities to your platform, build the next big live streaming application or even include AI processing to your media flow (such as AI conversational agents or computer-vision recognition). The possibilities are truly endless!
+With the power of LiveKit you can add video conferencing capabilities to your platform, build the next big live streaming application or even add AI processing to your media flow (such as AI conversational agents or computer-vision recognition). The possibilities are truly endless!
 
 ## Architecture of a Livekit application
 
@@ -36,7 +36,13 @@ Every application client below shares the same core functionality:
 - Users automatically subscribe to all media published by other users.
 - Users may mute and unmute their tracks.
 - Users may leave the room at any time.
+<!--- Users may select which camera, microphone or screen they want to publish.-->
 <!--- Users may communicate through a chat.-->
+
+Every application client below is interchangeable with the others, because:
+
+- All of them are compatible with each other, meaning that participants are able to join the same LiveKit room from any of the client applications.
+- All of them are compatible with any [application server](#application-server-tutorials), meaning that they can request a LiveKit token from any of the server applications.
 
 <div class="tutorials-container" markdown>
 
@@ -114,6 +120,6 @@ Explore more advanced features of LiveKit: recording, screen-sharing and partici
 
 This site has been created and is maintained by the [OpenVidu](https://openvidu.io){target=\_blank} team. OpenVidu developers have been working with real-time media for over a decade, developing [Kurento](https://kurento.openvidu.io/){target=\_blank} and later OpenVidu. We have helped thousands of companies to build their real-time applications, and we are now bringing our expertise to LiveKit.
 
-Check out section _[What is OpenVidu?](./about-openvidu.md)_ to learn more about how OpenVidu can help you take your LiveKit applications to the next level.
+Check out section [What is OpenVidu?](./about-openvidu.md) to learn more about how OpenVidu can help you take your LiveKit applications to the next level.
 
 <br>
