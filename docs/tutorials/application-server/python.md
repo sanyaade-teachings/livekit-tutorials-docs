@@ -102,6 +102,8 @@ The `app.py` file imports the required dependencies and loads the necessary envi
 
 Finally the `Flask` application is initialized and CORS support is enabled.
 
+---
+
 #### Create token
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -139,6 +141,8 @@ If required fields are available, a new JWT token is created. For that we use th
 2. We set participant's identity in the AccessToken.
 3. We set the video grants in the AccessToken. `room_join` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. Finally, we convert the AccessToken to a JWT token and send it back to the client.
+
+---
 
 #### Receive webhook
 

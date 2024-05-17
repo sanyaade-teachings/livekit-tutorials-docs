@@ -99,6 +99,8 @@ The `main.rs` file imports the required dependencies and loads the necessary env
 
 Then CORS support is enabled and the endpoints are defined. Finally the `axum` application is initialized on the specified port.
 
+---
+
 #### Create token endpoint
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -159,6 +161,8 @@ If required fields are available, a new JWT token is created. For that we use th
 3. We set the video grants in the AccessToken. `room_joim` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. We convert the AccessToken to a JWT token.
 5. Finally, the token is sent back to the client.
+
+---
 
 #### Receive webhook
 

@@ -85,6 +85,8 @@ It also initializes the `WebhookReceiver` object that will help validating and d
 
 Finally the `express` application is initialized. CORS is allowed, JSON body parsing is enabled for the `/token` endpoint and raw body parsing is enabled for the `/webhook` endpoint.
 
+---
+
 #### Create token
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -124,6 +126,8 @@ If required fields are available, a new JWT token is created. For that we use th
 2. We set the video grants in the AccessToken. `roomJoin` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We convert the AccessToken to a JWT token.
 4. Finally, the token is sent back to the client.
+
+---
 
 #### Receive webhook
 

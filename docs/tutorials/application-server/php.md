@@ -83,6 +83,8 @@ The `index.php` file imports the required dependencies, sets the HTTP headers fo
 - `LIVEKIT_API_KEY`: the API key of LiveKit Server.
 - `LIVEKIT_API_SECRET`: the API secret of LiveKit Server.
 
+---
+
 #### Create token
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -132,6 +134,8 @@ If required fields are available, a new JWT token is created. For that we use th
 2. Set the video grants in the token options. `setRoomJoin` allows the user to join a room and `setRoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We create the `AccessToken` providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`, initialize it with the token options, set the video grants and generate the JWT token.
 4. Finally, the token is sent back to the client.
+
+---
 
 #### Receive webhook
 

@@ -74,6 +74,8 @@ Going deeper, the `Controller` class has the following fields:
 - `LIVEKIT_API_KEY`: the API key of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_KEY` using the `@Value("${LIVEKIT_API_KEY}")` annotation.
 - `LIVEKIT_API_SECRET`: the API secret of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_SECRET` using the `@Value("${LIVEKIT_API_SECRET}")` annotation.
 
+---
+
 #### Create token
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -113,6 +115,8 @@ If required fields are available, a new JWT token is created. For that we use th
 2. We set participant's name and identity in the AccessToken.
 3. We set the video grants in the AccessToken. `RoomJoin` allows the user to join a room and `RoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. Finally, the token is sent back to the client.
+
+---
 
 #### Receive webhook
 
