@@ -11,24 +11,13 @@ It internally uses the [LiveKit Go SDK](https://pkg.go.dev/github.com/livekit/se
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Go**:
-
-- [Go](https://go.dev/doc/install){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Run application
-
-```bash
-cd openvidu-livekit-tutorials/application-server/go
-go run main.go
-```
+--8<-- "docs/tutorials/shared/go.md"
 
 !!! info
 

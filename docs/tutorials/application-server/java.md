@@ -11,25 +11,13 @@ It internally uses [LiveKit Kotlin SDK](https://github.com/livekit/server-sdk-ko
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Java** and **Maven**:
-
-- [Java](https://www.java.com/en/download/manual.jsp){:target="\_blank"}
-- [Maven](https://maven.apache.org){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Run application
-
-```bash
-cd openvidu-livekit-tutorials/application-server/java
-mvn spring-boot:run
-```
+--8<-- "docs/tutorials/shared/java.md"
 
 !!! info
 

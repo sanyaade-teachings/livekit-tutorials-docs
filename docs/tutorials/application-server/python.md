@@ -11,49 +11,13 @@ It internally uses [LiveKit Python SDK](https://github.com/livekit/python-sdks){
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Python 3**:
-
-- [Python 3](https://www.python.org/downloads/){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Create a python environment
-
-Create a new pyhton environment with the aim of isolating the dependencies of this application:
-
-=== ":simple-linux:{.icon .lg-icon .tab-icon} Linux/macOS"
-
-    ```{.bash .unstyle-tabbed-code}
-    cd openvidu-livekit-tutorials/application-server/python
-    python3 -m venv venv
-    . venv/bin/activate
-    ```
-
-=== ":fontawesome-brands-windows:{.icon .lg-icon .tab-icon} Windows"
-
-    ```{.powershell .unstyle-tabbed-code}
-    cd openvidu-livekit-tutorials/application-server/python
-    python3 -m venv venv
-    .\venv\Scripts\activate
-    ```
-
-#### Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-#### Run application
-
-```bash
-python3 app.py
-```
+--8<-- "docs/tutorials/shared/python.md"
 
 !!! info
 

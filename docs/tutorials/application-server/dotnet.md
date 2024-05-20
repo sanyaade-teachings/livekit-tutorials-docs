@@ -11,28 +11,13 @@ Unfortunately there is no .NET SDK for LiveKit available, so the application has
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **.NET**:
-
-- [.NET](https://dotnet.microsoft.com/en-us/download){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Run application
-
-```bash
-cd openvidu-livekit-tutorials/application-server/dotnet
-dotnet run
-```
-
-!!! warning
-
-    This .NET server application needs the `LIVEKIT_API_SECRET` env variable to be at least 32 characters long. Make sure to udpate it [here](https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/b97db7278227470fd386337ffde49b2458315c6f/application-server/dotnet/appsettings.json#L11){:target="\_blank"} and in your LiveKit Server.
+--8<-- "docs/tutorials/shared/dotnet.md"
 
 !!! info
 

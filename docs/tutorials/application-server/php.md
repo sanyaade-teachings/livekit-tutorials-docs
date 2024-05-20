@@ -11,39 +11,21 @@ It internally uses [LiveKit PHP SDK](https://github.com/agence104/livekit-server
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **PHP** and **Composer**:
-
-- [PHP](https://www.php.net/downloads){:target="\_blank"}
-- [Composer](https://getcomposer.org/download/){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Install dependencies
-
-```bash
-cd openvidu-livekit-tutorials/application-server/php
-composer install
-```
-
-#### Run application
-
-```bash
-composer start
-```
-
-!!! warning
-
-    LiveKit PHP SDK requires library [BCMath](https://www.php.net/manual/en/book.bc.php){:target="\_blank"}. This is available out-of-the-box in PHP for Windows, but a manual installation might be necessary in other OS. Run **`sudo apt install php-bcmath`** or **`sudo yum install php-bcmath`**
+--8<-- "docs/tutorials/shared/php.md"
 
 !!! info
 
     You can run any [Application Client](../../application-client/) to test against this server right away.
+
+!!! warning
+
+    LiveKit PHP SDK requires library [BCMath](https://www.php.net/manual/en/book.bc.php){:target="\_blank"}. This is available out-of-the-box in PHP for Windows, but a manual installation might be necessary in other OS. Run **`sudo apt install php-bcmath`** or **`sudo yum install php-bcmath`**
 
 ## Understanding the code
 

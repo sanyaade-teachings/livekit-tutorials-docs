@@ -9,7 +9,7 @@
     === ":fontawesome-brands-windows:{.icon .lg-icon .tab-icon} Windows"
 
         ```powershell
-        cd openvidu-local-deployment
+        cd openvidu-local-deployment/community
         .\configure_lan_private_ip_windows.bat
         ```
 

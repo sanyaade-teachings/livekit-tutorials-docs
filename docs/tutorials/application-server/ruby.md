@@ -11,30 +11,13 @@ It internally uses [LiveKit Ruby SDK](https://github.com/livekit/server-sdk-ruby
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Ruby**:
-
-- [Ruby](https://www.ruby-lang.org/en/downloads/){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Install dependencies
-
-```bash
-cd openvidu-livekit-tutorials/application-server/ruby
-bundle install
-```
-
-#### Run application
-
-```bash
-ruby app.rb
-```
+--8<-- "docs/tutorials/shared/ruby.md"
 
 !!! info
 

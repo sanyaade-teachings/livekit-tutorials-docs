@@ -11,24 +11,13 @@ It internally uses the [LiveKit Rust SDK](https://github.com/livekit/rust-sdks){
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Rust**:
-
-- [Rust](https://www.rust-lang.org/tools/install){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Run application
-
-```bash
-cd openvidu-livekit-tutorials/application-server/rust
-cargo run
-```
+--8<-- "docs/tutorials/shared/rust.md"
 
 !!! info
 

@@ -11,30 +11,13 @@ It internally uses [LiveKit JS SDK](https://docs.livekit.io/server-sdk-js){:targ
 
 ## Running this application
 
-#### Prerequisites
-
-To run this application you will need **Node**:
-
-- [Node](https://nodejs.org/es/download/){:target="\_blank"}
-
-#### Download repository
+Download the tutorial code:
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
-#### Install dependencies
-
-```bash
-cd openvidu-livekit-tutorials/application-server/node
-npm install
-```
-
-#### Run application
-
-```bash
-node index.js
-```
+--8<-- "docs/tutorials/shared/node.md"
 
 !!! info
 
