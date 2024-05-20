@@ -8,15 +8,21 @@ This tutorial shows how to use screen sharing in Livekit applications. It is bas
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-### 1. OpenVidu Server Installation
+### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Run a server application
+### 2. Get the tutorial code
+
+```bash
+git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+```
+
+### 3. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-### 3. Run the client application
+### 4. Run the client application
 
 To run the client application tutorial, you'll need a HTTP web server installed on your development computer. If you have Node.js installed, you can easily set up [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
 

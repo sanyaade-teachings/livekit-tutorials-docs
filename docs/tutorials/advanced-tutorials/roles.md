@@ -8,7 +8,7 @@ This OpenVidu application is a simple videoconference app that allows you to ass
 
 Running this tutorial is straightforward, and here's what you'll need:
 
-### 1. OpenVidu Server Installation
+### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
