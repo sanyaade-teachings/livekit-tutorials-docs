@@ -24,6 +24,7 @@ But we recommend **running OpenVidu locally**, which will get you the following 
 - Egress and Ingress services already integrated with a Redis instance. [See more](#egress-and-ingress-out-of-the-box).
 - S3 compatible storage for Egress recordings. [See more](#s3-compatible-storage).
 - Administration dashboard to monitor your Rooms. [See more](#administration-dashboard).
+- OpenVidu Call: a ready-to-use app. [See more](#openvidu-call).
 - Access your application from any device in your local network. [See more](#accessing-your-app-from-other-devices-in-your-network).
 
 === "Run OpenVidu locally"
@@ -77,6 +78,12 @@ The result is that you can access your application client through `https://xxx-y
 !!! warning
 
     This OpenVidu deployment is only intended for local development and testing. It is not ready for production environments in terms of networking and security. For production deployments, you should follow the [official OpenVidu installation guide](https://openvidu.io/installation/){target="_blank"}.
+
+### OpenVidu Call
+
+When running OpenVidu locally a default application will be available for you to try. We have called this application **OpenVidu Call**, and it gathers the most important features that advanced videonconference apps would require: camera selection, screen sharing, virtual backgrounds, chat, recording... 
+
+You can use OpenVidu Call to help develop your own application, joining participants to shared rooms between your app and OpenVidu Call, and seeing how your app behaves.
 
 ## OpenVidu editions
 
