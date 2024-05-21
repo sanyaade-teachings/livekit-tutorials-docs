@@ -16,14 +16,14 @@
     === ":simple-apple:{.icon .lg-icon .tab-icon} macOS"
 
         ```bash
-        cd openvidu-local-deployment
+        cd openvidu-local-deployment/community
         ./configure_lan_private_ip_macos.sh
         ```
 
     === ":simple-linux:{.icon .lg-icon .tab-icon} Linux"
 
         ```bash
-        cd openvidu-local-deployment
+        cd openvidu-local-deployment/community
         ./configure_lan_private_ip_linux.sh
         ```
 
