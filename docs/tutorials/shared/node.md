@@ -10,5 +10,5 @@ npm install
 ```
 3. Run the application
 ```bash
-node index.js
+npm start
 ```

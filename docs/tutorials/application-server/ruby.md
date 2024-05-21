@@ -25,7 +25,7 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ## Understanding the code
 
-The application is a simple Ruby app using the popular Sinatra web library. It has a single controller file `app.rb` that exports two endpoints:
+The application is a simple Ruby app using the popular Sinatra web library. It has a single file `app.rb` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
 - `/webhook` : receive LiveKit webhook events.
@@ -124,7 +124,7 @@ post '/webhook' do
     token_verifier.verify(auth_header) # (3)!
     body = JSON.parse(request.body.read) # (4)!
     puts "LiveKit Webhook: #{body}" # (5)!
-    return JSON.generate('ok') # (6)!
+    return JSON.generate('ok')
   rescue => e
     puts "Authorization header is not valid: #{e}"
   end
@@ -134,7 +134,7 @@ end
 1. Get the `Authorization` header from the HTTP request.
 2. Create a new `TokenVerifier` instance providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. This will validate the webhook event to confirm it is actually coming from our LiveKit Server.
 3. Verify the `Authorization` header with the `TokenVerifier`.
-4. Now that we are sure the event is valid, we can the request JSON body to get actual the webhook event.
+4. Now that we are sure the event is valid, we can parse the request JSON body to get the actual webhook event.
 5. Consume the event as you whish.
 
 <span></span>

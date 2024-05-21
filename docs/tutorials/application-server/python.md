@@ -25,7 +25,7 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ## Understanding the code
 
-The application is a simple Flask app with a single controller file `app.py` that exports two endpoints:
+The application is a simple Flask app with a single file `app.py` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
 - `/webhook` : receive LiveKit webhook events.

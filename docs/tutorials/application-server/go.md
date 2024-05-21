@@ -77,6 +77,8 @@ func main() {
 4. Create the `/webhook` endpoint
 5. Start the server on the `SERVER_PORT`
 
+---
+
 ### Create token
 
 The endpoint `/token` accepts `POST` requests with a payload of type `application/json`, containing the following fields:
@@ -119,7 +121,7 @@ func createToken(context *gin.Context) {
 ```
 
 1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
-2. We set the video grants and identity of the participant in the AccessToken. `RoomJoin` allows the user to join a room and `RoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+2. We set the video grants and identity of the participant in the AccessToken. `RoomJoin` allows the user to join a room and `Room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We convert the AccessToken to a JWT token.
 4. Finally, the token is sent back to the client.
 
@@ -128,9 +130,11 @@ We first load the request body into a struct with `roomName` and `participantNam
 If required fields are available, a new JWT token is created. For that we use the [LiveKit Go SDK](https://pkg.go.dev/github.com/livekit/server-sdk-go){:target="\_blank"}:
 
 1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
-2. We set the video grants and identity of the participant in the AccessToken. `RoomJoin` allows the user to join a room and `RoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+2. We set the video grants and identity of the participant in the AccessToken. `RoomJoin` allows the user to join a room and `Room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We convert the AccessToken to a JWT token and return it to the client.
 4. Finally, the token is sent back to the client.
+
+---
 
 ### Receive webhook
 

@@ -104,7 +104,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER["REQUEST_METHOD"] === "POST" &
 ```
 
 1. Create an `AccessTokenOptions` object with the participant's identity.
-2. Set the video grants in the token options. `setRoomJoin` allows the user to join a room and `setRoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+2. Create a `VideoGrant` object setting the neccesary video grants options. `setRoomJoin` allows the user to join a room and `setRoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We create the `AccessToken` providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`, initialize it with the token options, set the video grants and generate the JWT token.
 4. Finally, the token is sent back to the client.
 
@@ -113,7 +113,7 @@ The endpoint first obtains the `roomName` and `participantName` parameters from 
 If required fields are available, a new JWT token is created. For that we use the [LiveKit PHP SDK](https://github.com/agence104/livekit-server-sdk-php){:target="\_blank"}:
 
 1. Create an `AccessTokenOptions` object with the participant's identity.
-2. Set the video grants in the token options. `setRoomJoin` allows the user to join a room and `setRoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+2. Create a `VideoGrant` object setting the neccesary video grants options. `setRoomJoin` allows the user to join a room and `setRoomName` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 3. We create the `AccessToken` providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`, initialize it with the token options, set the video grants and generate the JWT token.
 4. Finally, the token is sent back to the client.
 

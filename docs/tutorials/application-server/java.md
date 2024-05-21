@@ -25,7 +25,7 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ## Understanding the code
 
-The application is a simple Go app with a single controller `Controller.java` that exports two endpoints:
+The application is a simple Spring Boot app with a single controller `Controller.java` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
 - `/webhook` : receive LiveKit webhook events.
@@ -59,8 +59,8 @@ Starting by the top, the `Controller` class has the following annotations:
 
 Going deeper, the `Controller` class has the following fields:
 
-- `LIVEKIT_API_KEY`: the API key of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_KEY` using the `@Value("${LIVEKIT_API_KEY}")` annotation.
-- `LIVEKIT_API_SECRET`: the API secret of LiveKit Server. It is injected from the environment variable `LIVEKIT_API_SECRET` using the `@Value("${LIVEKIT_API_SECRET}")` annotation.
+- `LIVEKIT_API_KEY`: the API key of LiveKit Server. It is injected from the property `livekit.api.key` defined in [`application.properties`](https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/resources/application.properties#L6){:target="\_blank"} using the `@Value("${livekit.api.key}")` annotation.
+- `LIVEKIT_API_SECRET`: the API secret of LiveKit Server. It is injected from the the property `livekit.api.secret` defined in [`application.properties`](https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/resources/application.properties#L7){:target="\_blank"} using the `@Value("${livekit.api.secret}")` annotation.
 
 ---
 

@@ -65,7 +65,7 @@ var app = builder.Build(); // (9)!
 app.UseCors(MyAllowSpecificOrigins);
 ```
 
-1. A `WebApplicationBuilder` instance to build the Flask application.
+1. A `WebApplicationBuilder` instance to build the application.
 2. The name of the CORS policy to be used in the application.
 3. A `IConfiguration` instance to load the configuration from the `appsettings.json` file, including the requried environment variables.
 4. The port where the application will be listening.

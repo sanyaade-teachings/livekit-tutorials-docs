@@ -77,7 +77,7 @@ async fn main() {
 2. The API key of LiveKit Server.
 3. The API secret of LiveKit Server.
 4. Enable CORS support.
-5. Define the `/token` endpoint.
+5. Define `/token` and `/weebhook` endpoints.
 6. Start the server listening on the specified port.
 
 The `main.rs` file imports the required dependencies and loads the necessary environment variables:
