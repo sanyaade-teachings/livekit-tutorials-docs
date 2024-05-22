@@ -39,7 +39,7 @@ When running OpenVidu locally you will have all these services properly integrat
 
 ### S3 compatible storage
 
-If your planning to make use of the [Egress](https://docs.livekit.io/realtime/egress/overview/){target="_blank"} service to export media out of your Rooms, you will need an S3 compatible bucket to store the generated files, and configure your LiveKit deployment to use it.
+If you are planning to make use of the [Egress](https://docs.livekit.io/realtime/egress/overview/){target="_blank"} service to export media out of your Rooms, you will need an S3 compatible bucket to store the generated files, and configure your LiveKit deployment to use it.
 
 When running OpenVidu locally you will have an S3 compatible storage available right away ([Minio](https://min.io/){target="_blank"}).
 

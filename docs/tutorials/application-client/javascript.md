@@ -1,18 +1,23 @@
 # openvidu-js
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-tutorials){ .md-button target=\_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-js){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with plain JavaScript, HTML and CSS. It is a good starting point to learn how to use Livekit in your web applications.
+This tutorial is a simple video-call application built with plain JavaScript, HTML and CSS that allows:
+
+-   Joining a video call room by requesting a token from any [application server](../application-server/)
+-   Publishing your camera and microphone.
+-   Subscribing to all other participants' video and audio tracks automatically.
+-   Leaving the video call room at any time.
+
+It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_blank"} to connect to the LiveKit server and interact with the video call room.
 
 ## Running this tutorial
-
-Running this tutorial is straightforward, and here's what you'll need:
 
 ### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Get the tutorial code
+### 2. Donwload the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
@@ -24,19 +29,11 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ### 4. Run the client application
 
-To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
-
-```bash
-npm -v
-```
-
-You will also need an HTTP web server installed on your development computer. A great option is [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. Here's how to install it:
+To run the client application tutorial, you need an HTTP web server installed on your development computer. A great option is [http-server](https://github.com/indexzero/http-server){:target="\_blank"}. You can install it via [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"}:
 
 ```bash
 npm install -g http-server
 ```
-
-Once you've confirmed that NPM and http-server are installed, you can proceed with the tutorial by following these steps:
 
 1. Navigate into the application client directory:
 
@@ -44,7 +41,7 @@ Once you've confirmed that NPM and http-server are installed, you can proceed wi
     cd openvidu-livekit-tutorials/application-client/openvidu-js
     ```
 
-2. Serve the application client:
+2. Serve the application:
 
     ```bash
     http-server -p 5080 ./web
@@ -66,278 +63,272 @@ Once the server is up and running, you can test the application by visiting [`ht
 
 This application is designed to be beginner-friendly and consists of only three essential files:
 
-- `app.js`: This is the main JavaScript file for the sample application. It utilizes the livekit-client library to connect to video rooms. You have the flexibility to modify this file according to your specific requirements.
-- `style.css`: This file contains CSS classes that can be used to style the index.html page. You can customize the styles to match your preferences.
-- `index.html`: This HTML file is responsible for creating the user interface. It contains the form to connect to a video call and the video call itself. You can customize this file to adapt it to your needs. It also includes two script tags linking to the following JavaScript files:
+-   `app.js`: This is the main JavaScript file for the sample application. It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_blank"} to connect to the LiveKit server and interact with the video call room.
+-   `style.css`: This file contains CSS classes that are used to style the `index.html` page.
+-   `index.html`: This HTML file is responsible for creating the user interface. It contains the form to connect to a video call and the video call layout.
 
----
+To use the LiveKit JS SDK in your application, you need to include the library in your HTML file. You can do this by adding the following script tag to the `<head>` section of your HTML file:
 
-<h3 markdown>Using `livekit-client`</h3>
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
-<!-- (1)! -->
-<script src="app.js"></script>
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/index.html#L32' target='_blank'>index.html</a>" linenums="32"
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.1.5/dist/livekit-client.umd.js"></script>
 ```
 
-1. This line imports the livekit-client latest. If you need to use a specific version, add it to the URL. For example, to use version 1.10.0, use `https://cdn.jsdelivr.net/npm/livekit-client@1.10.0/dist/livekit-client.umd.min.js`.
+Then, you can use the `LivekitClient` object in your JavaScript code by referencing it from the `window` object under `LivekitClient`. When accessing symbols from the class, you will need to prefix them with `LivekitClient.`. For example, `Room` becomes `LivekitClient.Room`.
 
-Let's take a closer look at how `app.js` leverages the `livekit-client` to establish a connection to a video room.
+Now let's see the code of the `app.js` file:
 
-<h3 markdown>Defining variables</h3>
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L1-L28' target='_blank'>app.js</a>" linenums="1"
+// For local development, leave these variables empty
+// For production, configure them with correct URLs depending on your deployment
+var APPLICATION_SERVER_URL = ""; // (1)!
+var LIVEKIT_URL = ""; // (2)!
+configureUrls();
 
-The first two variables in the code are `APPLICATION_SERVER_URL` and `LIVEKIT_URL`. These variables are used to configure the URLs for the application server and Livekit server, respectively.
+const LivekitClient = window.LivekitClient; // (3)!
+var room; // (4)!
+
+function configureUrls() {
+    // If APPLICATION_SERVER_URL is not configured, use default value from local development
+    if (!APPLICATION_SERVER_URL) {
+        if (window.location.hostname === "localhost") {
+            APPLICATION_SERVER_URL = "http://localhost:6080/";
+        } else {
+            APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+        }
+    }
+
+    // If LIVEKIT_URL is not configured, use default value from local development
+    if (!LIVEKIT_URL) {
+        if (window.location.hostname === "localhost") {
+            LIVEKIT_URL = "ws://localhost:7880/";
+        } else {
+            LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+        }
+    }
+}
+```
+
+1. The URL of the application server.
+2. The URL of the LiveKit server.
+3. The LivekitClient object, which is the entry point to the LiveKit JS SDK.
+4. The room object, which represents the video call room.
+
+The `app.js` file defines the following variables:
+
+-   `APPLICATION_SERVER_URL`: The URL of the application server. This variable is used to make requests to the server to obtain a token for joining the video call room.
+-   `LIVEKIT_URL`: The URL of the LiveKit server. This variable is used to connect to the LiveKit server and interact with the video call room.
+-   `LivekitClient`: The LiveKit JS SDK object, which is the entry point to the LiveKit JS SDK.
+-   `room`: The room object, which represents the video call room.
 
 --8<-- "docs/tutorials/shared/configure-urls.md"
 
-```javascript
-// For local development, leave these variables empty
-// For production, configure them with correct URLs depending on your deployment
-var APPLICATION_SERVER_URL = "";
-var LIVEKIT_URL = "";
-
-// If APPLICATION_SERVER_URL is not configured, use default value from local development
-if (!APPLICATION_SERVER_URL) {
-  if (window.location.hostname === "localhost") {
-    APPLICATION_SERVER_URL = "http://localhost:6080/";
-  } else {
-    APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
-  }
-}
-
-// If LIVEKIT_URL is not configured, use default value from local development
-if (!LIVEKIT_URL) {
-  if (window.location.hostname === "localhost") {
-    LIVEKIT_URL = "ws://localhost:7880/";
-  } else {
-    LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
-  }
-}
-```
-
-Besides, the following peace of code declare the variables that will be utilized at various points throughout the script:
-
-```javascript
-var LivekitClient = window.LivekitClient;
-var room;
-```
-
-- `LivekitClient` is the LivekitClient object, serving as the entry point to the library.
-
-- `room` will represent the video call that we are going to connect to.
-
-Further, within the `joinSession` method, we initialize two parameters with values retrieved from the HTML inputs:
-
-```javascript
-function joinRoom() {
-  var myRoomName = document.getElementById("roomName").value;
-  var myUserName = document.getElementById("userName").value;
-
-  // ...
-}
-```
-
-<h3 markdown>Configuring the Room events</h3>
-
-In this section, we initialize a new room and configure event handling for various actions within the room. Let's break it down step by step:
-
-```javascript
-function joinRoom() {
-  // ...
-
-  // --- 1) Get a Room object ---
-
-  room = new LivekitClient.Room();
-
-  // --- 2) Specify the actions when events take place in the room ---
-
-  // On every new Track received...
-  room.on(
-    LivekitClient.RoomEvent.TrackSubscribed,
-    (track, publication, participant) => {
-      const element = track.attach();
-      element.id = track.sid;
-      element.className = "removable";
-      document.getElementById("video-container").appendChild(element);
-      if (track.kind === "video") {
-        appendUserData(element, participant.identity);
-      }
-    }
-  );
-
-  // On every new Track destroyed...
-  room.on(
-    LivekitClient.RoomEvent.TrackUnsubscribed,
-    (track, publication, participant) => {
-      track.detach();
-      document.getElementById(track.sid)?.remove();
-      if (track.kind === "video") {
-        removeUserData(participant);
-      }
-    }
-  );
-
-  // Additional event handling can be added here...
-}
-```
-
-This code block performs the following actions:
-
-1. It creates a new `Room` object using `LivekitClient.Room()`. This object represents the video call room.
-
-2. Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
-
-   - **`LivekitClient.RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It handles the attachment of the track to the HTML page, assigning an ID, and appending it to the "video-container" element. If the track is of kind `video`, user data is appended as well.
-
-   - **`LivekitClient.RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of detaching the track from the HTML page and removing it from the DOM. If the track is a `video` track, user data is also removed.
-
-These event handlers are essential for managing the behavior of tracks within the video call. You can further extend the event handling as needed for your application.
-
-!!! info "Take a look at all events"
-
-    You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
-
 ---
 
-<h3 markdown>Getting a Room token</h3>
+### Joining a Room
 
-Before joining the session, you'll need a valid access token, which allows you to access the room. To obtain this token, a request is made to the **server application**.
+After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` function is called:
 
-The `myRoomName` and `myUserName` variables are essential parameters for obtaining a token, as they specify the Livekit room for which you need a token.
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L30-L73' target='_blank'>app.js</a>" linenums="30"
+async function joinRoom() {
+    // Initialize a new Room object
+    room = new LivekitClient.Room(); // (1)!
 
-Here's how this is implemented in the code:
-
-```javascript
-function joinRoom() {
-  // ...
-
-  // --- 3) Connect to the room with a valid access token ---
-
-  // Get a token from the application backend
-  getToken(myRoomName, myUserName).then((token) => {
-    // See next point to see how to connect to the session using 'token'
-  });
-}
-
-function getToken(roomName, participantName) {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "POST",
-      url: APPLICATION_SERVER_URL + "token",
-      data: JSON.stringify({
-        roomName,
-        participantName,
-      }),
-      headers: { "Content-Type": "application/json" },
-      success: (token) => resolve(token),
-      error: (error) => reject(error),
+    // Specify the actions when events take place in the room
+    // On every new Track received...
+    room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, _publication, participant) => {
+        // (2)!
+        addTrack(track, participant.identity);
     });
-  });
+
+    // On every new Track destroyed...
+    room.on(LivekitClient.RoomEvent.TrackUnsubscribed, (track, _publication, participant) => {
+        // (3)!
+        track.detach();
+        document.getElementById(track.sid)?.remove();
+
+        if (track.kind === "video") {
+            removeVideoContainer(participant.identity);
+        }
+    });
+
+    try {
+        // Get the room name and participant name from the form
+        const roomName = document.getElementById("room-name").value; // (4)!
+        const userName = document.getElementById("participant-name").value;
+
+        // Get a token from your application server with the room name and participant name
+        const token = await getToken(roomName, userName); // (5)!
+
+        // Connect to the room with the LiveKit URL and the token
+        await room.connect(LIVEKIT_URL, token); // (6)!
+
+        // Hide the 'Join room' page and show the 'Room' page
+        document.getElementById("room-title").innerText = roomName; // (7)!
+        document.getElementById("join").hidden = true;
+        document.getElementById("room").hidden = false;
+
+        // Publish your camera and microphone
+        await room.localParticipant.enableCameraAndMicrophone(); // (8)!
+        const localVideoTrack = this.room.localParticipant.videoTrackPublications.values().next().value.track;
+        addTrack(localVideoTrack, userName, true);
+    } catch (error) {
+        console.log("There was an error connecting to the room:", error.message);
+    }
 }
 ```
 
-This code segment is responsible for retrieving a token from the application server. The tutorial utilizes the `jQuery.ajax()` method to make the required HTTP requests to obtain the token.
+1. Initialize a new `Room` object.
+2. Event handling for when a new track is received in the room.
+3. Event handling for when a track is destroyed.
+4. Get the room name and participant name from the form.
+5. Get a token from the application server with the room name and participant name.
+6. Connect to the room with the LiveKit URL and the token.
+7. Hide the "Join room" page and show the "Room" page.
+8. Publish your camera and microphone.
 
----
+The `joinRoom()` function performs the following actions:
 
-<h3 markdown>Connecting to the Room</h3>
+1.  It creates a new `Room` object using `LivekitClient.Room()`. This object represents the video call room.
+2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
 
-The final step involves connecting to the room using the obtained access token and publishing your webcam. Let's examine this part of the code:
+    -   **`LivekitClient.RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It handles the attachment of the track to the HTML page, assigning an ID, and appending it to the `layout-container` element. If the track is of kind `video`, a `video-container` is created and participant data is appended as well.
 
-```javascript
-function joinRoom() {
-  // ...
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L75-L88' target='_blank'>app.js</a>" linenums="75"
+    function addTrack(track, participantIdentity, local = false) {
+        const element = track.attach(); // (1)!
+        element.id = track.sid;
 
-  // --- 3) Connect to the room with a valid access token ---
+        /* If the track is a video track, we create a container and append the video element to it 
+        with the participant's identity */
+        if (track.kind === "video") {
+            const videoContainer = createVideoContainer(participantIdentity, local);
+            videoContainer.append(element);
+            appendParticipantData(videoContainer, participantIdentity + (local ? " (You)" : ""));
+        } else {
+            document.getElementById("layout-container").append(element);
+        }
+    }
+    ```
 
-  // Get a token from the application backend
-  getToken(myRoomName, myUserName).then((token) => {
-    // First param is the LiveKit server URL. Second param is the access token
-    room
-      .connect(LIVEKIT_URL, token)
-      .then(() => {
-        // --- 4) Set page layout for active call ---
+    1. Attach the track to an HTML element.
 
-        document.getElementById("room-title").innerText = myRoomName;
-        document.getElementById("join").style.display = "none";
-        document.getElementById("room").style.display = "block";
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L113-L133' target='_blank'>app.js</a>" linenums="113"
+    function createVideoContainer(participantIdentity, local = false) {
+        const videoContainer = document.createElement("div");
+        videoContainer.id = `camera-${participantIdentity}`;
+        videoContainer.className = "video-container";
+        const layoutContainer = document.getElementById("layout-container");
 
-        // --- 5) Publish your local tracks ---
+        if (local) {
+            layoutContainer.prepend(videoContainer);
+        } else {
+            layoutContainer.append(videoContainer);
+        }
 
-        room.localParticipant.setMicrophoneEnabled(true);
-        room.localParticipant.setCameraEnabled(true).then((publication) => {
-          const element = publication.track.attach();
-          document.getElementById("video-container").appendChild(element);
-          initMainVideo(element, myUserName);
-          appendUserData(element, myUserName);
-          element.className = "removable";
+        return videoContainer;
+    }
+
+    function appendParticipantData(videoContainer, participantIdentity) {
+        const dataElement = document.createElement("div");
+        dataElement.className = "participant-data";
+        dataElement.innerHTML = `<p>${participantIdentity}</p>`;
+        videoContainer.prepend(dataElement);
+    }
+    ```
+
+    -   **`LivekitClient.RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of detaching the track from the HTML page and removing it from the DOM. If the track is a `video` track, `video-container` with the participant's identity is removed as well.
+
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L135-L138' target='_blank'>app.js</a>" linenums="135"
+    function removeVideoContainer(participantIdentity) {
+        const videoContainer = document.getElementById(`camera-${participantIdentity}`);
+        videoContainer?.remove();
+    }
+    ```
+
+    These event handlers are essential for managing the behavior of tracks within the video call.
+
+    !!! info "Take a look at all events"
+
+        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+
+3.  It retrieves the room name and participant name from the form.
+4.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` function:
+
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L147-L178' target='_blank'>app.js</a>" linenums="147"
+    /**
+     * --------------------------------------------
+     * GETTING A TOKEN FROM YOUR APPLICATION SERVER
+     * --------------------------------------------
+     * The method below request the creation of a token to
+     * your application server. This prevents the need to expose
+     * your LiveKit API key and secret to the client side.
+     *
+     * In this sample code, there is no user control at all. Anybody could
+     * access your application server endpoints. In a real production
+     * environment, your application server must identify the user to allow
+     * access to the endpoints.
+     */
+    async function getToken(roomName, participantName) {
+        const response = await fetch(APPLICATION_SERVER_URL + "token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                roomName,
+                participantName
+            })
         });
-      })
-      .catch((error) => {
-        console.log(
-          "There was an error connecting to the room:",
-          error.code,
-          error.message
-        );
-      });
-  });
-}
-```
 
-Here's a breakdown of this code:
+        if (!response.ok) {
+            throw new Error("Failed to get token");
+        }
 
-1. After obtaining the access token, the `room.connect()` method is called with the LiveKit server URL and the access token as parameters. This connects to the room. Upon successful connection, the following steps are executed:
+        const token = await response.json();
+        return token;
+    }
+    ```
 
-   - The page layout is adjusted to reflect the active call. The room title is set, and the "join" button is hidden, while the "room" elements are displayed.
+    This function sends a POST request using `fetch()` to the application server's `/token` endpoint. The request body contains the room name and participant name. The server responds with a token that is used to connect to the room.
 
-   - Local tracks, such as the microphone and camera, are enabled using room.localParticipant.setMicrophoneEnabled(true) and room.localParticipant.setCameraEnabled(true).
-
-   - The local video track is attached to an HTML element, appended to the "video-container," and user data is added to it.
-
-The final code segment successfully connects to the room and sets up the local tracks, allowing you to participate in the video call.
+5.  It connects to the room using the LiveKit URL and the token.
+6.  It updates the UI to hide the "Join room" page and show the "Room" layout.
+7.  It publishes the camera and microphone tracks to the room using `room.localParticipant.enableCameraAndMicrophone()`, which asks the user for permission to access their camera and microphone at the same time. The local video track is then added to the layout.
 
 ---
 
-<h3 markdown> Leaving the room </h3>
+### Leaving the room
 
-Whenever we want a user to leave the room, we just need to call `room.disconnect` method. We also make sure to call the method before the page is unloaded using event `window.onbeforeunload`.
+When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` function:
 
-```javascript
-function leaveRoom() {
-  // --- 6) Leave the room by calling 'disconnect' method over the Room object ---
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-js/web/app.js#L90-L104' target='_blank'>app.js</a>" linenums="90"
+async function leaveRoom() {
+    // Leave the room by calling 'disconnect' method over the Room object
+    await room.disconnect(); // (1)!
 
-  room.disconnect();
+    // Remove all HTML elements inside the layout container
+    removeAllLayoutElements(); // (2)!
 
-  // Removing all HTML elements with user's nicknames.
-  // HTML videos are automatically removed when leaving a Room
-  removeAllUserData();
-
-  // Back to 'Join room' page
-  document.getElementById("join").style.display = "block";
-  document.getElementById("room").style.display = "none";
+    // Back to 'Join room' page
+    document.getElementById("join").hidden = false; // (3)!
+    document.getElementById("room").hidden = true;
 }
 
-window.onbeforeunload = function () {
-  if (room) room.disconnect();
+// (4)!
+window.onbeforeunload = () => {
+    room?.disconnect();
 };
 ```
 
-## Deploying openvidu-js (TODO)
+1. Disconnect the user from the room.
+2. Remove all HTML elements inside the layout container.
+3. Show the "Join room" page and hide the "Room" layout.
+4. Call the `disconnect()` method on the `room` object when the user closes the tab or navigates to another page.
 
-> This tutorial image is **officially released for OpenVidu** under the name `openvidu/openvidu-js-demo:X.Y.Z` so you do not need to build it by yourself. However, if you want to deploy a custom version of openvidu-js, you will need to build a new one. You can keep reading for more information.
+The `leaveRoom()` function performs the following actions:
 
-<h3> 1. Build the docker image</h3>
+-   It disconnects the user from the room by calling the `disconnect()` method on the `room` object.
+-   It removes all HTML elements inside the layout container by calling the `removeAllLayoutElements()` function.
+-   It shows the "Join room" page and hides the "Room" layout.
 
-Under the root project folder, you can see the `openvidu-js/docker/` directory. Here it is included all the required files yo make it possible the deployment with OpenVidu.
-
-First of all, you will need to create the **openvidu-js** docker image. Under `openvidu-js/docker/` directory you will find the `create_image.sh` script. This script will create the docker image with the [openvidu-basic-node](../application-server/node.md) as application server and the static files.
-
-```bash
-./create_image.sh openvidu/openvidu-js-demo:X.Y.Z
-```
-
-This script will create an image named `openvidu/openvidu-js-demo:X.Y.Z`. This name will be used in the next step.
-
-<h3> 2. Deploy the docker image </h3>
-
-Time to deploy the docker image. You can follow the [Deploy OpenVidu based application with Docker](#) guide for doing this.
+The `window.onbeforeunload` event is used to ensure that the user is disconnected from the room before the page is unloaded. This event is triggered when the user closes the tab or navigates to another page.
