@@ -32,9 +32,10 @@ The application is a simple Ruby app using the popular Sinatra web library. It h
 
 Let's see the code of the `app.rb` file:
 
-```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L1-L16' target='_blank'>app.rb</a>" linenums="1"
+```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L1-L17' target='_blank'>app.rb</a>" linenums="1"
 require 'sinatra'
 require 'sinatra/cors'
+require 'sinatra/json'
 require 'livekit' # (1)!
 require './env.rb'
 
@@ -77,7 +78,7 @@ The endpoint `/token` accepts `POST` requests with a payload of type `applicatio
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L18-L33' target='_blank'>app.rb</a>" linenums="18"
+```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L19-L34' target='_blank'>app.rb</a>" linenums="19"
 post '/token' do
   body = JSON.parse(request.body.read)
   room_name = body['roomName']
@@ -85,14 +86,14 @@ post '/token' do
 
   if room_name.nil? || participant_name.nil?
     status 400
-    return JSON.generate('roomName and participantName are required')
+    return json({errorMessage: 'roomName and participantName are required'})
   end
 
   token = LiveKit::AccessToken.new(api_key: LIVEKIT_API_KEY, api_secret: LIVEKIT_API_SECRET) # (1)!
   token.identity = participant_name # (2)!
   token.add_grant(roomJoin: true, room: room_name) # (3)!
 
-  return JSON.generate(token.to_jwt) # (4)!
+  return json({token: token.to_jwt}) # (4)!
 end
 ```
 
@@ -116,7 +117,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L35-L46' target='_blank'>app.rb</a>" linenums="35"
+```ruby title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/ruby/app.rb#L36-L47' target='_blank'>app.rb</a>" linenums="36"
 post '/webhook' do
   auth_header = request.env['HTTP_AUTHORIZATION'] # (1)!
   token_verifier = LiveKit::TokenVerifier.new(api_key: LIVEKIT_API_KEY, api_secret: LIVEKIT_API_SECRET) # (2)!
@@ -124,7 +125,7 @@ post '/webhook' do
     token_verifier.verify(auth_header) # (3)!
     body = JSON.parse(request.body.read) # (4)!
     puts "LiveKit Webhook: #{body}" # (5)!
-    return JSON.generate('ok')
+    return
   rescue => e
     puts "Authorization header is not valid: #{e}"
   end

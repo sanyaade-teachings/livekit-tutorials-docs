@@ -99,7 +99,7 @@ func createToken(context *gin.Context) {
 	}
 
 	if body.RoomName == "" || body.ParticipantName == "" {
-		context.JSON(http.StatusBadRequest, "roomName and participantName are required")
+		context.JSON(http.StatusBadRequest, gin.H{"errorMessage": "roomName and participantName are required"})
 		return
 	}
 
@@ -116,7 +116,7 @@ func createToken(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, token) // (4)!
+	context.JSON(http.StatusOK, gin.H{"token": token}) // (4)!
 }
 ```
 

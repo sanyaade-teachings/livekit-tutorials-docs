@@ -102,11 +102,11 @@ app.MapPost("/token", async (HttpRequest request) =>
     if (bodyParams.TryGetValue("roomName", out var roomName) && bodyParams.TryGetValue("participantName", out var participantName))
     {
         var token = CreateLiveKitJWT(roomName.ToString(), participantName.ToString()); // (2)!
-        return Results.Json(token); // (3)!
+        return Results.Json(new { token }); // (3)!
     }
     else
     {
-        return Results.BadRequest("\"roomName\" and \"participantName\" are required"); // (4)!
+        return Results.BadRequest(new { errorMessage = "roomName and participantName are required" }); // (4)!
     }
 });
 ```
@@ -120,7 +120,7 @@ The endpoint obtains a Dictionary from the body request, and check if fields `ro
 
 If required fields are available, a new JWT token is created. Unfortunately there is no .NET SDK for LiveKit, so we need to create the JWT token manually. The `CreateLiveKitJWT` method is responsible for creating the LiveKit compatible JWT token:
 
-```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L81-L101' target='_blank'>Program.cs</a>" linenums="81"
+```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L80-L100' target='_blank'>Program.cs</a>" linenums="80"
 string CreateLiveKitJWT(string roomName, string participantName)
 {
     JwtHeader headers = new(new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(LIVEKIT_API_SECRET)), "HS256")); // (1)!
@@ -162,7 +162,7 @@ Finally, the returned token is sent back to the client.
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L56-L79' target='_blank'>Program.cs</a>" linenums="56"
+```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L56-L78' target='_blank'>Program.cs</a>" linenums="56"
 app.MapPost("/webhook", async (HttpRequest request) =>
 {
     var body = new StreamReader(request.Body);
@@ -176,7 +176,6 @@ app.MapPost("/webhook", async (HttpRequest request) =>
     try
     {
         VerifyWebhookEvent(authHeader.First(), postData); // (3)!
-
     }
     catch (Exception e)
     {
@@ -199,7 +198,7 @@ The endpoint receives the incoming webhook event and validates it to ensure it i
 
 Unfortunately there is no .NET SDK for LiveKit, so we need to manually validate the webhook event. The `VerifyWebhookEvent` method does that:
 
-```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L103-L126' target='_blank'>Program.cs</a>" linenums="103"
+```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L102-L125' target='_blank'>Program.cs</a>" linenums="102"
 void VerifyWebhookEvent(string authHeader, string body)
 {
     var utf8Encoding = new UTF8Encoding();

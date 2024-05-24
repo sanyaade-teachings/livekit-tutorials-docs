@@ -83,7 +83,7 @@ app.post("/token", async (req, res) => {
   const participantName = req.body.participantName;
 
   if (!roomName || !participantName) {
-    res.status(400).json("roomName and participantName are required");
+    res.status(400).json({ errorMessage: "roomName and participantName are required" });
     return;
   }
 
@@ -92,7 +92,7 @@ app.post("/token", async (req, res) => {
   });
   at.addGrant({ roomJoin: true, room: roomName }); // (2)!
   const token = await at.toJwt(); // (3)!
-  res.json(token); // (4)!
+  res.json({ token }); // (4)!
 });
 ```
 

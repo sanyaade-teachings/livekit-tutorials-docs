@@ -34,7 +34,7 @@ Let's see the code of the `app.py` file:
 
 ```python title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/python/app.py#L1-L15' target='_blank'>app.py</a>" linenums="1"
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from livekit.api import AccessToken, VideoGrants, TokenVerifier, WebhookReceiver # (1)!
@@ -82,14 +82,14 @@ def create_token():
     participant_name = request.json.get("participantName")
 
     if not room_name or not participant_name:
-        return jsonify("roomName and participantName are required"), 400
+        return {"errorMessage": "roomName and participantName are required"}, 400
 
     token = (
         AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET) # (1)!
         .with_identity(participant_name) # (2)!
         .with_grants(api.VideoGrants(room_join=True, room=room_name)) # (3)!
     )
-    return jsonify(token.to_jwt()) # (4)!
+    return {"token": token.to_jwt()} # (4)!
 ```
 
 1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
@@ -118,19 +118,19 @@ webhook_receiver = WebhookReceiver(token_verifier) # (2)!
 
 
 @app.post("/webhook")
-async def receive_webhook():
+def receive_webhook():
     auth_token = request.headers.get("Authorization") # (3)!
 
     if not auth_token:
-        return jsonify("Authorization header is required"), 401
+        return "Authorization header is required", 401
 
     try:
         event = webhook_receiver.receive(request.data.decode("utf-8"), auth_token) # (4)!
         print("LiveKit Webhook:", event) # (5)!
-        return jsonify(), 200
+        return "ok"
     except:
         print("Authorization header is not valid")
-        return jsonify("Authorization header is not valid"), 401
+        return "Authorization header is not valid", 401
 ```
 
 1. Initialize a `TokenVerifier` using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.

@@ -36,7 +36,7 @@ The application is a simple PHP app with a single file `index.php` that exports 
 
 Let's see the code of the `index.php` file:
 
-```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L1-L16' target='_blank'>index.php</a>" linenums="1"
+```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L1-L17' target='_blank'>index.php</a>" linenums="1"
 <?php
 require __DIR__ . "/vendor/autoload.php";
 
@@ -50,13 +50,14 @@ Dotenv::createImmutable(__DIR__)->safeLoad();
 
 header("Access-Control-Allow-Origin: *"); // (2)!
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-type: application/json");
 
 $LIVEKIT_API_KEY = $_ENV["LIVEKIT_API_KEY"] ?? "devkey"; // (3)!
 $LIVEKIT_API_SECRET = $_ENV["LIVEKIT_API_SECRET"] ?? "secret"; // (4)!
 ```
 
 1. Import all necessary dependencies from the PHP LiveKit library.
-2. Configure HTTP headers for the web server: enable CORS support and allow the `Content-Type` and `Authorization` headers.
+2. Configure HTTP headers for the web server: enable CORS support, allow the `Content-Type` and `Authorization` headers and set the response content type to `application/json`.
 3. The API key of LiveKit Server.
 4. The API secret of LiveKit Server.
 
@@ -74,9 +75,9 @@ The endpoint `/token` accepts `POST` requests with a payload of type `applicatio
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L18-L42' target='_blank'>index.php</a>" linenums="17"
+```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L19-L43' target='_blank'>index.php</a>" linenums="18"
 <?php
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER["REQUEST_METHOD"] === "POST" && $_SERVER["PATH_INFO"] === "/token") {
+if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST" && $_SERVER["PATH_INFO"] === "/token") {
     $data = json_decode(file_get_contents("php://input"), true);
 
     $roomName = $data["roomName"] ?? null;
@@ -84,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER["REQUEST_METHOD"] === "POST" &
 
     if (!$roomName || !$participantName) {
         http_response_code(400);
-        echo json_encode("roomName and participantName are required");
+        echo json_encode(["errorMessage" => "roomName and participantName are required"]);
         exit();
     }
 
@@ -98,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER["REQUEST_METHOD"] === "POST" &
         ->setGrant($videoGrant)
         ->toJwt();
 
-    echo json_encode($token); // (4)!
+    echo json_encode(["token" => $token]); // (4)!
     exit();
 }
 ```
@@ -123,17 +124,17 @@ If required fields are available, a new JWT token is created. For that we use th
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L44-L61' target='_blank'>index.php</a>" linenums="43"
+```php title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/php/index.php#L45-L62' target='_blank'>index.php</a>" linenums="44"
 <?php
 $webhookReceiver = (new WebhookReceiver($LIVEKIT_API_KEY, $LIVEKIT_API_SECRET)); // (1)!
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER["REQUEST_METHOD"] === "POST" && $_SERVER["PATH_INFO"] === "/webhook") {
+if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST" && $_SERVER["PATH_INFO"] === "/webhook") {
     $headers = getallheaders();
-    $authHeader = $headers['Authorization']; // (2)!
+    $authHeader = $headers["Authorization"]; // (2)!
     $body = file_get_contents("php://input"); // (3)!
     try {
         $event = $webhookReceiver->receive($body, $authHeader); // (4)!
-        error_log('LiveKit Webhook:');
+        error_log("LiveKit Webhook:");
         error_log(print_r($event->getEvent(), true)); // (5)!
         exit();
     } catch (Exception $e) {

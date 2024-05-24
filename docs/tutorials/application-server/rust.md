@@ -32,7 +32,7 @@ The application is a simple Rust app with a single file `main.rs` that exports t
 
 Let's see the code of the `main.rs` file:
 
-```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L1-L38' target='_blank'>main.rs</a>" linenums="1"
+```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L1-L36' target='_blank'>main.rs</a>" linenums="1"
 use axum::http::HeaderMap;
 use axum::{
     extract::Json, http::header::CONTENT_TYPE, http::Method, http::StatusCode, routing::post,
@@ -43,25 +43,23 @@ use livekit_api::access_token::AccessToken; // (1)!
 use livekit_api::access_token::TokenVerifier;
 use livekit_api::access_token::VideoGrants;
 use livekit_api::webhooks::WebhookReceiver;
-use serde_json::Value;
+use serde_json::{json, Value};
 use std::env;
+use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok(); // Load environment variables from .env
+    dotenv().ok(); // (2)!
 
-    // Check that required environment variables are set
-    let server_port = env::var("SERVER_PORT").unwrap_or("6080".to_string());
-    env::var("LIVEKIT_API_KEY").expect("LIVEKIT_API_KEY is not set"); // (2)!
-    env::var("LIVEKIT_API_SECRET").expect("LIVEKIT_API_SECRET is not set"); // (3)!
+    let server_port = env::var("SERVER_PORT").unwrap_or("6081".to_string());
 
-    let cors = CorsLayer::new() // (4)!
+    let cors = CorsLayer::new() // (3)!
         .allow_methods([Method::POST])
         .allow_origin(Any)
         .allow_headers([CONTENT_TYPE]);
 
-    let app = Router::new() // (5)!
+    let app = Router::new() // (4)!
         .route("/token", post(create_token))
         .route("/webhook", post(receive_webhook))
         .layer(cors);
@@ -69,16 +67,15 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:".to_string() + &server_port)
         .await
         .unwrap();
-    axum::serve(listener, app).await.unwrap(); // (6)!
+    axum::serve(listener, app).await.unwrap(); // (5)!
 }
 ```
 
 1. Import all necessary dependencies from the Rust LiveKit library.
-2. The API key of LiveKit Server.
-3. The API secret of LiveKit Server.
-4. Enable CORS support.
-5. Define `/token` and `/weebhook` endpoints.
-6. Start the server listening on the specified port.
+2. Load environment variables from `.env` file.
+3. Enable CORS support.
+4. Define `/token` and `/weebhook` endpoints.
+5. Start the server listening on the specified port.
 
 The `main.rs` file imports the required dependencies and loads the necessary environment variables:
 
@@ -97,19 +94,32 @@ The endpoint `/token` accepts `POST` requests with a payload of type `applicatio
 - `roomName`: the name of the Room where the user wants to connect.
 - `participantName`: the name of the participant that wants to connect to the Room.
 
-```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L40-L74' target='_blank'>main.rs</a>" linenums="40"
-async fn create_token(payload: Option<Json<Value>>) -> (StatusCode, Json<String>) {
+```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L38-L88' target='_blank'>main.rs</a>" linenums="38"
+async fn create_token(payload: Option<Json<Value>>) -> (StatusCode, Json<Value>) {
     if let Some(payload) = payload {
-        let livekit_api_key = env::var("LIVEKIT_API_KEY").expect("LIVEKIT_API_KEY is not set");
-        let livekit_api_secret =
-            env::var("LIVEKIT_API_SECRET").expect("LIVEKIT_API_SECRET is not set");
+        let livekit_api_key = env::var("LIVEKIT_API_KEY").unwrap_or("devkey".to_string());
+        let livekit_api_secret = env::var("LIVEKIT_API_SECRET").unwrap_or("secret".to_string());
 
-        let room_name = payload.get("roomName").expect("roomName is required");
-        let participant_name = payload
-            .get("participantName")
-            .expect("participantName is required");
+        let room_name = match payload.get("roomName") {
+            Some(value) => value,
+            None => {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(json!({ "errorMessage": "roomName is required" })),
+                );
+            }
+        };
+        let participant_name = match payload.get("participantName") {
+            Some(value) => value,
+            None => {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(json!({ "errorMessage": "participantName is required" })),
+                );
+            }
+        };
 
-        let token = AccessToken::with_api_key(&livekit_api_key, &livekit_api_secret) // (1)!
+        let token = match AccessToken::with_api_key(&livekit_api_key, &livekit_api_secret) // (1)!
             .with_identity(&participant_name.to_string()) // (2)!
             .with_name(&participant_name.to_string())
             .with_grants(VideoGrants { // (3)!
@@ -118,18 +128,21 @@ async fn create_token(payload: Option<Json<Value>>) -> (StatusCode, Json<String>
                 ..Default::default()
             })
             .to_jwt() // (4)!
-            .unwrap();
+        {
+            Ok(token) => token,
+            Err(_) => {
+                return (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(json!({ "errorMessage": "Error creating token" })),
+                );
+            }
+        };
 
-        println!(
-            "Sending token for room {} to participant {}",
-            room_name, participant_name
-        );
-
-        return (StatusCode::OK, Json(token)); // (5)!
+        return (StatusCode::OK, Json(json!({ "token": token }))); // (5)!
     } else {
         return (
             StatusCode::BAD_REQUEST,
-            Json("roomName and participantName are required".to_string()),
+            Json(json!({ "errorMessage": "roomName and participantName are required" })),
         );
     }
 }
@@ -157,27 +170,42 @@ If required fields are available, a new JWT token is created. For that we use th
 
 The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
-```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L76-L97' target='_blank'>main.rs</a>" linenums="76"
-async fn receive_webhook(headers: HeaderMap, body: String) -> StatusCode {
-    let livekit_api_key = env::var("LIVEKIT_API_KEY").expect("LIVEKIT_API_KEY is not set");
-    let livekit_api_secret = env::var("LIVEKIT_API_SECRET").expect("LIVEKIT_API_SECRET is not set");
+```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L90-L126' target='_blank'>main.rs</a>" linenums="90"
+async fn receive_webhook(headers: HeaderMap, body: String) -> (StatusCode, String) {
+    let livekit_api_key = env::var("LIVEKIT_API_KEY").unwrap_or("devkey".to_string());
+    let livekit_api_secret = env::var("LIVEKIT_API_SECRET").unwrap_or("secret".to_string());
     let token_verifier = TokenVerifier::with_api_key(&livekit_api_key, &livekit_api_secret); // (1)!
     let webhook_receiver = WebhookReceiver::new(token_verifier); // (2)!
 
-    let auth_header: &str = headers // (3)!
-        .get("Authorization")
-        .expect("Authorization header is required")
-        .to_str()
-        .unwrap();
+    let auth_header = match headers.get("Authorization") { // (3)!
+        Some(header_value) => match header_value.to_str() {
+            Ok(header_str) => header_str,
+            Err(_) => {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    "Invalid Authorization header format".to_string(),
+                );
+            }
+        },
+        None => {
+            return (
+                StatusCode::BAD_REQUEST,
+                "Authorization header is required".to_string(),
+            );
+        }
+    };
 
-    let res = webhook_receiver.receive(&body, auth_header); // (4)!
-
-    if let Ok(event) = res {
-        println!("LiveKit WebHook: {:?}", event); // (5)!
-        return StatusCode::OK;
-    } else {
-        println!("Error validating webhook event: {:?}", res);
-        return StatusCode::UNAUTHORIZED;
+    match webhook_receiver.receive(&body, auth_header) { // (4)!
+        Ok(event) => {
+            println!("LiveKit WebHook: {:?}", event); // (5)!
+            return (StatusCode::OK, "ok".to_string());
+        }
+        Err(_) => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                "Error validating webhook event".to_string(),
+            );
+        }
     }
 }
 ```

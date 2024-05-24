@@ -72,13 +72,13 @@ The endpoint `/token` accepts `POST` requests with a payload of type `applicatio
 - `participantName`: the name of the participant that wants to connect to the Room.
 
 ```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L33-L48' target='_blank'>Controller.java</a>" linenums="33"
-@PostMapping(value = "/token", consumes = "application/json", produces = "application/json")
-public ResponseEntity<String> createToken(@RequestBody Map<String, String> params) {
+@PostMapping(value = "/token")
+public ResponseEntity<Map<String, String>> createToken(@RequestBody Map<String, String> params) {
 	String roomName = params.get("roomName");
 	String participantName = params.get("participantName");
 
 	if (roomName == null || participantName == null) {
-		return ResponseEntity.badRequest().body("\"roomName and participantName are required\"");
+		return ResponseEntity.badRequest().body(Map.of("errorMessage", "roomName and participantName are required"));
 	}
 
 	AccessToken token = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET); // (1)!
@@ -86,7 +86,7 @@ public ResponseEntity<String> createToken(@RequestBody Map<String, String> param
 	token.setIdentity(participantName);
 	token.addGrants(new RoomJoin(true), new RoomName(roomName)); // (3)!
 
-	return ResponseEntity.ok("\"" + token.toJwt() + "\""); // (4)!
+	return ResponseEntity.ok(Map.of("token", token.toJwt())); // (4)!
 }
 ```
 
@@ -115,7 +115,7 @@ The endpoint `/webhook` accepts `POST` requests with a payload of type `applicat
 public ResponseEntity<String> receiveWebhook(@RequestHeader("Authorization") String authHeader, @RequestBody String body) { // (1)!
 	WebhookReceiver webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET); // (2)!
 	try {
-		LivekitWebhook.WebhookEvent event = webhookReceiver.receive(body, authHeader); // (3)!
+		WebhookEvent event = webhookReceiver.receive(body, authHeader); // (3)!
 		System.out.println("LiveKit Webhook: " + event.toString());	// (4)!
 	} catch (Exception e) {
 		System.err.println("Error validating webhook event: " + e.getMessage());

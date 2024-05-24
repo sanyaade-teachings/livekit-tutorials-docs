@@ -146,7 +146,7 @@ The `app.component.ts` file defines the following variables:
 
 After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` method is called:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L53-L73' target='_blank'>app.component.ts</a>" linenums="53"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L53-L74' target='_blank'>app.component.ts</a>" linenums="53"
 async joinRoom() {
 	// Initialize a new Room object
 	this.room = new Room(); // (1)!
@@ -165,7 +165,8 @@ async joinRoom() {
 		// Publish your camera and microphone
 		await this.room.localParticipant.enableCameraAndMicrophone(); // (5)!
 	} catch (error: any) {
-		console.log('There was an error connecting to the room:', error?.message);
+		console.log('There was an error connecting to the room:', error?.error?.errorMessage || error?.message || error);
+        await this.leaveRoom();
 	}
 }
 ```
@@ -187,7 +188,7 @@ The `joinRoom()` method performs the following actions:
 2.  It retrieves the room name and participant name from the form.
 3.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` method:
 
-    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L87-L104' target='_blank'>app.component.ts</a>" linenums="87"
+    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L88-L106' target='_blank'>app.component.ts</a>" linenums="88"
     /**
      * --------------------------------------------
      * GETTING A TOKEN FROM YOUR APPLICATION SERVER
@@ -202,9 +203,10 @@ The `joinRoom()` method performs the following actions:
      * access to the endpoints.
      */
     async getToken(roomName: string, participantName: string): Promise<string> {
-        return lastValueFrom(
-            this.httpClient.post<string>(APPLICATION_SERVER_URL + 'token', { roomName, participantName })
+        const response = await lastValueFrom(
+            this.httpClient.post<{ token: string }>(APPLICATION_SERVER_URL + 'token', { roomName, participantName })
         );
+        return response.token;
     }
     ```
 
@@ -219,7 +221,7 @@ The `joinRoom()` method performs the following actions:
 
 In order to display participants' video and audio tracks, the `app.component.html` file integrates the _VideoComponent_ and _AudioComponent_ components.
 
-```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L27-L49' target='_blank'>app.component.ts</a>" linenums="27"
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L24-L46' target='_blank'>app.component.ts</a>" linenums="24"
 <div id="layout-container">
     @if (room.localParticipant) {
 		@for (trackPublication of room.localParticipant.videoTrackPublications.values(); track trackPublication.trackSid) {
@@ -247,7 +249,7 @@ In order to display participants' video and audio tracks, the `app.component.htm
 
 This code snippet does the following:
 
--   When the the user joins the room, the property `room.localParticipant` is set with the local participant object. Using Angular `@for` block, it iterates over the `videoTrackPublications` of the `room.localParticipant` and displays the video tracks using the _VideoComponent_ component. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
+-   When the user joins the room, the property `room.localParticipant` is set with the local participant object. Using Angular `@for` block, it iterates over the `videoTrackPublications` of the `room.localParticipant` and displays the video tracks using the _VideoComponent_ component. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
 
     !!! info
 
@@ -369,7 +371,7 @@ The `AudioComponent` class is similar to the `VideoComponent` class, but it is u
 
 When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` method:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L75-L85' target='_blank'>app.component.ts</a>" linenums="75"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L76-L86' target='_blank'>app.component.ts</a>" linenums="76"
 async leaveRoom() {
 	// Leave the room by calling 'disconnect' method over the Room object
 	await this.room?.disconnect(); // (1)!
