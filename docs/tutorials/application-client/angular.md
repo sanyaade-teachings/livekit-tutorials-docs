@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-angular){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with Angular that allows:
+This tutorial is a simple video-call application built with **Angular** that allows:
 
 -   Joining a video call room by requesting a token from any [application server](../application-server/)
 -   Publishing your camera and microphone.
@@ -65,9 +65,9 @@ Once the server is up and running, you can test the application by visiting [`ht
 
 This Angular project has been created using the Angular CLI tool. You may come across various configuration files and other items that are not essential for this tutorial. Our focus will be on the key files located within the `src/app/` directory:
 
--   `app.component.ts`: This file defines the _AppComponent_, which serves as the main component of the application. It is responsible for handling tasks such as joining a video call and managing the video calls themselves.
--   `app.component.html`: This HTML file is associated with the _AppComponent_, and it dictates the structure and layout of the main application component.
--   `app.component.css`: The CSS file linked to _AppComponent_, which controls the styling and appearance of the application's main component.
+-   `app.component.ts`: This file defines the `AppComponent`, which serves as the main component of the application. It is responsible for handling tasks such as joining a video call and managing the video calls themselves.
+-   `app.component.html`: This HTML file is associated with the `AppComponent`, and it dictates the structure and layout of the main application component.
+-   `app.component.css`: The CSS file linked to `AppComponent`, which controls the styling and appearance of the application's main component.
 -   `VideoComponent`: Component responsible for displaying video tracks along with participant's data. It is defined in the `video.component.ts` file within the `video` directory, along with its associated HTML and CSS files.
 -   `AudioComponent`: Component responsible for displaying audio tracks. It is defined in the `audio.component.ts` file within the `audio` directory, along with its associated HTML and CSS files.
 
@@ -127,7 +127,7 @@ export class AppComponent implements OnDestroy {
 
 1. The URL of the application server.
 2. The URL of the LiveKit server.
-3. Angular component decorator that defines the _AppComponent_ class and associates the HTML and CSS files with it.
+3. Angular component decorator that defines the `AppComponent` class and associates the HTML and CSS files with it.
 4. The `roomForm` object, which is a form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
 5. The room object, which represents the video call room.
 
@@ -219,7 +219,7 @@ The `joinRoom()` method performs the following actions:
 
 ### Displaying Video and Audio Tracks
 
-In order to display participants' video and audio tracks, the `app.component.html` file integrates the _VideoComponent_ and _AudioComponent_ components.
+In order to display participants' video and audio tracks, the `app.component.html` file integrates the `VideoComponent` and `AudioComponent`.
 
 ```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L24-L46' target='_blank'>app.component.ts</a>" linenums="24"
 <div id="layout-container">
@@ -249,13 +249,13 @@ In order to display participants' video and audio tracks, the `app.component.htm
 
 This code snippet does the following:
 
--   When the user joins the room, the property `room.localParticipant` is set with the local participant object. Using Angular `@for` block, it iterates over the `videoTrackPublications` of the `room.localParticipant` and displays the video tracks using the _VideoComponent_ component. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
+-   When the user joins the room, the property `room.localParticipant` is set with the local participant object. Using Angular `@for` block, it iterates over the `videoTrackPublications` of the `room.localParticipant` and displays the video tracks using the `VideoComponent`. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
 
     !!! info
 
         The audio track is not displayed for the local participant because there is no need to hear one's own audio.
 
--   It then iterates using Angular `@for` block over the `room.remoteParticipants` and displays the video and audio tracks of each remote participant using `participant.trackPublications`. The video tracks are displayed using the _VideoComponent_ component, while the audio tracks are displayed using the _AudioComponent_ component. The `hidden` attribute is added to the _AudioComponent_ component to hide the audio tracks from the layout.
+-   It then iterates using Angular `@for` block over the `room.remoteParticipants` and displays the video and audio tracks of each remote participant using `participant.trackPublications`. The video tracks are displayed using the `VideoComponent`, while the audio tracks are displayed using the `AudioComponent`. The `hidden` attribute is added to the `AudioComponent` to hide the audio tracks from the layout.
 
 Let's see now the code of the `video.component.ts` file:
 
@@ -300,7 +300,7 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
 }
 ```
 
-1. Angular component decorator that defines the _VideoComponent_ class and associates the HTML and CSS files with it.
+1. Angular component decorator that defines the `VideoComponent` class and associates the HTML and CSS files with it.
 2. The reference to the video element in the HTML template.
 3. The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
 4. The participant identity associated with the video track.
@@ -308,7 +308,7 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
 6. Attach the video track to the video element when the track is set.
 7. Detach the video track when the component is destroyed.
 
-The `VideoComponent` class does the following:
+The `VideoComponent` does the following:
 
 -   It uses the `@ViewChild` decorator to get a reference to the video element in the HTML template.
 -   It defines a property `_track` to store the video track object. This property can be a `LocalVideoTrack` or a `RemoteVideoTrack`. It is set by calling the `track` setter method from the parent component as it is an `@Input` property. When the `_track` property is set, the video track is attached to the video element by calling the `attach()` method. The `attach()` method is called in the `ngAfterViewInit()` lifecycle hook as well to ensure that the video track is attached to the video element when the component is initialized.

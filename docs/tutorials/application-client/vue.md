@@ -1,18 +1,23 @@
 # openvidu-vue
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=\_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-vue){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with **Vue** which intents and purposes the same as [Livekit JavaScript tutorial](./javascript.md) but using **Vue** instead of plain web technologies.
+This tutorial is a simple video-call application built with **Vue** that allows:
+
+-   Joining a video call room by requesting a token from any [application server](../application-server/)
+-   Publishing your camera and microphone.
+-   Subscribing to all other participants' video and audio tracks automatically.
+-   Leaving the video call room at any time.
+
+It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_blank"} to connect to the LiveKit server and interact with the video call room.
 
 ## Running this tutorial
-
-Running this tutorial is straightforward, and here's what you'll need:
 
 ### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Get the tutorial code
+### 2. Donwload the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
@@ -24,15 +29,7 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ### 4. Run the client application
 
-To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
-
-Check if you have installed it by running the following command:
-
-```bash
-npm -v
-```
-
-Once you've confirmed that NPM is installed, you can proceed with the tutorial by following these steps:
+To run the client application tutorial, you need [Node](https://nodejs.org/en/download){:target="\_blank"} installed on your development computer.
 
 1. Navigate into the application client directory:
 
@@ -49,7 +46,7 @@ Once you've confirmed that NPM is installed, you can proceed with the tutorial b
 3. Run the application:
 
     ```bash
-    npm run serve
+    npm start
     ```
 
 Once the server is up and running, you can test the application by visiting [`http://localhost:5080`](http://localhost:5080){:target="\_blank"}. You should see a screen like this:
@@ -66,405 +63,342 @@ Once the server is up and running, you can test the application by visiting [`ht
 
 ## Understanding the code
 
-This Vue project has been generated using the Vue CLI tool. You may come across various configuration files and other items that aren't essential for our tutorial. Our focus will be on the key files located within the `src/` and `src/components` directory:
+This Vue project has been generated using the Vue CLI tool. You may come across various configuration files and other items that are not essential for this tutorial. Our focus will be on the key files located within the `src/` directory:
 
-- `App.vue`: This file defines the main application component and its HTML template. It's responsible for handling tasks such as joining a video call and managing the video calls themselves.
+-   `App.vue`: This file defines the main application component along with its HTML template and styles. It is responsible for handling tasks such as joining a video call and managing the video calls themselves.
 
-- `OvVideo.vue`: This file introduces the `OvVideo` component. This component is responsible for encapsulating the `<video>` element that displays the video track within the application.
-- `OvAudio.vue`: This file introduces the `OvAudio` component. This component is responsible for encapsulating the `<audio>` element that displays the audio track within the application.
+-   `VideoComponent.vue`: This file defines the `VideoComponent`. This component is responsible for displaying video tracks along with participant's data.
+-   `AudioComponent.vue`: This file defines the `AudioComponent`. This component is responsible for displaying audio tracks.
 
----
+To use the LiveKit JS SDK in a Vue application, you need to install the `livekit-client` package. This package provides the necessary classes and methods to interact with the LiveKit server. You can install it using the following command:
 
-<h3 markdown>Using `livekit-client`</h3>
-
-To understand how the `livekit-client` NPM package is used in `App.vue`, let's break it down step by step. The code in this section provides an overview of how this package is utilized.
-
-In the beginning, we import several essential objects from the `livekit-client` package that will be used throughout the code. These objects include:
-
-```javascript
-import OvVideo from "./components/OvVideo.vue";
-import OvAudio from "./components/OvAudio.vue";
-import { Room, RoomEvent } from "livekit-client";
+```bash
+npm install livekit-client
 ```
 
-These imported objects are crucial for establishing and managing video calls. They represent different components and events associated with the video call system. We'll use them in subsequent parts of our code to create and manage video calls.
+Now let's see the code of the `App.vue` file:
 
-<h3 markdown>Defining variables</h3>
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/App.vue#L14-L50' target='_blank'>App.vue</a>" linenums="14"
+type TrackInfo = {
+    // (1)!
+    trackPublication: RemoteTrackPublication;
+    participantIdentity: string;
+};
 
-After importing the required objects, we define a few variables that will be used later in the code:
-
-```javascript
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "";
-let LIVEKIT_URL = "";
+let APPLICATION_SERVER_URL = ""; // (2)!
+let LIVEKIT_URL = ""; // (3)!
+configureUrls();
 
-// If APPLICATION_SERVER_URL is not configured, use default value from local development
-if (!APPLICATION_SERVER_URL) {
-  if (window.location.hostname === "localhost") {
-    APPLICATION_SERVER_URL = "http://localhost:6080/";
-  } else {
-    APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
-  }
+function configureUrls() {
+    // If APPLICATION_SERVER_URL is not configured, use default value from local development
+    if (!APPLICATION_SERVER_URL) {
+        if (window.location.hostname === "localhost") {
+            APPLICATION_SERVER_URL = "http://localhost:6080/";
+        } else {
+            APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+        }
+    }
+
+    // If LIVEKIT_URL is not configured, use default value from local development
+    if (!LIVEKIT_URL) {
+        if (window.location.hostname === "localhost") {
+            LIVEKIT_URL = "ws://localhost:7880/";
+        } else {
+            LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+        }
+    }
 }
 
-// If LIVEKIT_URL is not configured, use default value from local development
-if (!LIVEKIT_URL) {
-  if (window.location.hostname === "localhost") {
-    LIVEKIT_URL = "ws://localhost:7880/";
-  } else {
-    LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
-  }
-}
+const room = ref<Room>(); // (4)!
+const localTrack = ref<LocalVideoTrack>(); // (5)!
+const remoteTracksMap: Ref<Map<string, TrackInfo>> = ref(new Map()); // (6)!
 
-export default {
-  name: "App",
-
-  components: {
-    OvVideo,
-    OvAudio,
-  },
-
-  data() {
-    return {
-      // OpenVidu objects
-      room: undefined,
-      mainPublication: undefined,
-      localPublication: undefined,
-      remotePublications: [],
-
-      // Join form
-      myRoomName: "RoomA",
-      myParticipantName: "Participant" + Math.floor(Math.random() * 100),
-    };
-  },
-
-  // ...
-};
+let participantName = ref("Participant" + Math.floor(Math.random() * 100)); // (7)!
+let roomName = ref("Test Room"); // (8)!
 ```
 
-Here's a breakdown of these variables:
+1. `TrackInfo` type, which groups a track publication with the participant's identity.
+2. The URL of the application server.
+3. The URL of the LiveKit server.
+4. The room object, which represents the video call room.
+5. The local video track, which represents the user's camera.
+6. Map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
+7. The participant's name.
+8. The room name.
 
-- `APPLICATION_SERVER_URL`: This variable stores the URL of the application server. It is used to make HTTP requests to the server.
-- `LIVEKIT_URL`: This variable stores the URL of the LiveKit server with which a connection will be established.
-- `room`: This variable will be used to manage the current video call room.
-- `localPublication`: This variable represents the track publication published by the local participant.
-- `remotePublications`: This is an array of RemoteTrackPublication objects. It is used to store and manage the tracks publications objects published by remote participants in the video call.
-- `myRoomName` and `myParticipantName`: These variables are used to store the names of the room and the local participant. They are obtained from user input.
-- `mainPublication`: It represents the main video displayed on the page. It can be either the local video publication or one of the remote publications, and it is updated when a user interacts with the application.
+The `App.vue` file defines the following variables:
+
+-   `APPLICATION_SERVER_URL`: The URL of the application server. This variable is used to make requests to the server to obtain a token for joining the video call room.
+-   `LIVEKIT_URL`: The URL of the LiveKit server. This variable is used to connect to the LiveKit server and interact with the video call room.
+-   `room`: The room object, which represents the video call room.
+-   `localTrack`: The local video track, which represents the user's camera.
+-   `remoteTracksMap`: A map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
+-   `participantName`: The participant's name.
+-   `roomName`: The room name.
 
 --8<-- "docs/tutorials/shared/configure-urls.md"
 
-<h3 markdown>Configuring the Room events</h3>
+---
 
-In this section, we initialize a new room and configure event handling for various actions within the room.
+### Joining a Room
 
-The `joinRoom()` method is responsible for initializing the room and configuring event handling. It is called when the user clicks the "Join" button on the page. Here's how it's implemented:
+After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` function is called:
 
-```javascript
-export default {
-  // ...
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/App.vue#L52-L90' target='_blank'>App.vue</a>" linenums="52"
+async function joinRoom() {
+    // Initialize a new Room object
+    room.value = new Room(); // (1)!
 
-  methods: {
-    joinRoom() {
-      // --- 1) Init a room ---
-      this.room = new Room();
-
-      // --- 2) Specify the actions when events take place in the room ---
-
-      // On every new Track received...
-      this.room.on(
+    // Specify the actions when events take place in the room
+    // On every new Track received...
+    room.value.on(
         RoomEvent.TrackSubscribed,
-        (track, publication, participant) => {
-          console.log("Track subscribed", track, publication, participant);
-          // Store the new publication in remotePublications array
-          this.remotePublications.push(publication);
+        (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => {
+            // (2)!
+            remoteTracksMap.value.set(publication.trackSid, {
+                trackPublication: publication,
+                participantIdentity: participant.identity
+            });
         }
-      );
+    );
 
-      // On every track destroyed...
-      this.room.on(
-        RoomEvent.TrackUnsubscribed,
-        (track, publication, participant) => {
-          console.log("Track unsubscribed", track, publication, participant);
-          // Remove the publication from 'remotePublications' array
-          this.deleteRemoteTrackPublication(publication);
+    // On every Track destroyed...
+    room.value.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+        // (3)!
+        remoteTracksMap.value.delete(publication.trackSid);
+    });
+
+    try {
+        // Get a token from your application server with the room name and participant name
+        const token = await getToken(roomName.value, participantName.value); // (4)!
+
+        // Connect to the room with the LiveKit URL and the token
+        await room.value.connect(LIVEKIT_URL, token); // (5)!
+
+        // Publish your camera and microphone
+        await room.value.localParticipant.enableCameraAndMicrophone(); // (6)!
+        localTrack.value = room.value.localParticipant.videoTrackPublications.values().next().value.videoTrack;
+    } catch (error: any) {
+        console.log("There was an error connecting to the room:", error.message);
+        await leaveRoom();
+    }
+
+    // Add listener for beforeunload event to leave the room when the user closes the tab
+    window.addEventListener("beforeunload", leaveRoom); // (7)!
+}
+```
+
+1. Initialize a new `Room` object.
+2. Event handling for when a new track is received in the room.
+3. Event handling for when a track is destroyed.
+4. Get a token from the application server with the room name and participant name from the form.
+5. Connect to the room with the LiveKit URL and the token.
+6. Publish your camera and microphone.
+7. Add a listener for the `beforeunload` event to leave the room when the user closes the tab.
+
+The `joinRoom()` function performs the following actions:
+
+1.  It creates a new `Room` object. This object represents the video call room.
+
+    !!! info
+
+        When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
+
+2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
+
+    -   **`RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It manages the storage of the new track in the `remoteTracksMap`, which links track SIDs with `TrackInfo` objects containing the track publication and the participant's identity.
+
+    -   **`RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of removing the track from the `remoteTracksMap`.
+
+    These event handlers are essential for managing the behavior of tracks within the video call. You can further extend the event handling as needed for your application.
+
+    !!! info "Take a look at all events"
+
+        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+
+3.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` function:
+
+    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/App.vue#L109-L141' target='_blank'>App.vue</a>" linenums="109"
+    /**
+     * --------------------------------------------
+     * GETTING A TOKEN FROM YOUR APPLICATION SERVER
+     * --------------------------------------------
+     * The method below request the creation of a token to
+     * your application server. This prevents the need to expose
+     * your LiveKit API key and secret to the client side.
+     *
+     * In this sample code, there is no user control at all. Anybody could
+     * access your application server endpoints. In a real production
+     * environment, your application server must identify the user to allow
+     * access to the endpoints.
+     */
+    async function getToken(roomName: string, participantName: string) {
+        const response = await fetch(APPLICATION_SERVER_URL + "token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                roomName,
+                participantName
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(`Failed to get token: ${error.errorMessage}`);
         }
-      );
 
-      // Additional event handling can be added here...
-    },
-  },
-};
-```
+        const data = await response.json();
+        return data.token;
+    }
+    ```
 
-This code block performs the following actions:
+    This function sends a POST request using `fetch()` to the application server's `/token` endpoint. The request body contains the room name and participant name. The server responds with a token that is used to connect to the room.
 
-1. `Initializing the Room`: A new room is initialized using the `new Room()` method. This creates a new room object that can be used to manage the video call.
-
-2. `Configuring Room events`: Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
-
-   - **`RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It manages the storage of the new track publication in the `remotePublications` array. These stored publications are used to display remote tracks on the HTML view, often with the help of Vue's `v-for` directive as shown below:
-
-   ```html
-   <div v-for="publication in remotePublications" :key="publication.trackSid">
-     <OvVideo :track="publication.videoTrack" />
-     <OvAudio :track="publication.audioTrack" />
-   </div>
-   ```
-
-   Here, using the `v-for` directive, we iterate over the `remotePublications` array and display the video and audio tracks associated with each publication using the _OvVideo_ and _OvAudio_ components respectively.
-
-- **`RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of removing the track publication from the `remotePublications` array.
-
-These event handlers are essential for managing the behavior of tracks within the video call. You can further extend the event handling as needed for your application.
-
-!!! info "Take a look at all events"
-
-    You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+4.  It connects to the room using the LiveKit URL and the token.
+5.  It publishes the camera and microphone tracks to the room using `room.localParticipant.enableCameraAndMicrophone()`, which asks the user for permission to access their camera and microphone at the same time. The local video track is then stored in the `localTrack` variable.
+6.  It adds a listener for the `beforeunload` event to leave the room when the user closes the tab.
 
 ---
 
-<h3 markdown>Getting a Room token</h3>
+### Displaying Video and Audio Tracks
 
-Before joining the session, you'll need a valid access token, which allows you to access the room. To obtain this token, a request is made to the **server application**.
+In order to display participants' video and audio tracks, the main component integrates the `VideoComponent` and `AudioComponent`.
 
-The `myRoomName` and `myParticipantName` variables are essential parameters for obtaining a token, as they specify the Livekit room for which you need a token.
-
-Here's how this is implemented in the code:
-
-```javascript
-export default {
-  // ...
-
-  methods: {
-    joinRoom() {
-      // ...
-
-      // --- 3) Connect to the room with a valid access token ---
-
-      // Get a token from the application backend
-      this.getToken(this.myRoomName, this.myParticipantName).then((token) => {
-        // See next point to see how to connect to the session using 'token'
-      });
-    },
-
-    async getToken(roomName, participantName) {
-      try {
-        const response = await axios.post(
-          APPLICATION_SERVER_URL + "token",
-          { roomName, participantName },
-          {
-            headers: { "Content-Type": "application/json" },
-            responseType: "text",
-          }
-        );
-        return response.data;
-      } catch (error) {
-        // Handle errors here
-        console.error("Error getting token:", error);
-        throw error;
-      }
-    },
-  },
-};
-```
-
-This code segment is responsible for retrieving a token from the application server. The tutorial utilizes [axios](https://axios-http.com/){:target="\_blank"} to make the required HTTP requests to obtain the token.
-
----
-
-<h3 markdown>Connecting to the Room</h3>
-
-The final step involves connecting to the room using the obtained access token and publishing your webcam. Let's examine this part of the code:
-
-```javascript
-export default {
-  // ...
-
-  methods: {
-    joinRoom() {
-      // ...
-
-      // --- 3) Connect to the room with a valid access token ---
-
-      // Get a token from the application backend
-      this.getToken(this.myRoomName, this.myParticipantName).then(
-        async (token) => {
-          // First param is the LiveKit server URL. Second param is the access token
-          try {
-            await this.room.connect(LIVEKIT_URL, token);
-            // --- 4) Publish your local tracks ---
-            await this.room.localParticipant.setMicrophoneEnabled(true);
-            const videoPublication =
-              await this.room.localParticipant.setCameraEnabled(true);
-
-            // Set the main video in the page to display our webcam and store our localPublication
-            this.localPublication = videoPublication;
-            this.mainPublication = videoPublication;
-          } catch (error) {
-            console.log(
-              "There was an error connecting to the room:",
-              error.code,
-              error.message
-            );
-          }
-        }
-      );
-    },
-  },
-};
-```
-
-Here's a breakdown of this code:
-
-1. After obtaining the access token, the `room.connect()` method is called with the LiveKit server URL and the access token as parameters. This connects to the room. Upon successful connection, the following steps are executed:
-
-   - The local microphone is enabled using `room.localParticipant.setMicrophoneEnabled(true)`.
-   - The local camera is enabled using `room.localParticipant.setCameraEnabled(true)`.
-   - The local video publication is stored in the `localPublication` variable. This publication is used to display the local video on the page using the _OvVideo_.
-   - The local video publication is set as the `mainPublication` variable, which is used to display the main video on the page.
-
-The final code segment successfully connects to the room and sets up the local tracks, allowing you to participate in the video call.
-
----
-
-<h3 markdown>Leaving the room</h3>
-
-The `leaveRoom()` method is responsible for disconnecting from the room and clearing associated properties.
-It is called when the user clicks the "Leave" button on the page. Here's how it's implemented:
-
-```javascript
-export default {
-  // ...
-
-  methods: {
-    leaveRoom() {
-      // --- 5) Leave the session by calling 'disconnect' method over the Room object ---
-
-      if (this.room) {
-        this.room.disconnect();
-      }
-
-      // Empty all properties...
-      this.room = undefined;
-      this.mainPublication = undefined;
-      this.localPublication = undefined;
-      this.remotePublications = [];
-
-      // Remove beforeunload listener
-      window.removeEventListener("beforeunload", this.leaveRoom);
-    },
-  },
-};
-```
-
-We also configure the `beforeunload` event to call the `leaveRoom()` method when the user closes the browser window or tab. This ensures that the user leaves the room when they close the browser window or tab.
-
-```javascript
-export default {
-  // ...
-
-  methods: {
-    joinRoom() {
-      // ...
-
-      window.addEventListener("beforeunload", this.leaveRoom);
-    },
-  },
-};
-```
-
----
-
-<h3 markdown> Displaying Track Publications </h3>
-
-To showcase track publications within the HTML view, we utilize the _OvVideo_ and _OvAudio_ components, which are defined in the `OvVideo.vue` and `OvAudio.vue` files respectively.
-
-These components are responsible for presenting video and audio tracks, and you can integrate them into your `App.vue` file as shown below:
-
-```html
-<!-- Local video -->
-<div
-  v-if="localPublication && localPublication.videoTrack"
-  id="video-container"
-  class="col-md-6"
->
-  <p class="participant-name">{{ myParticipantName }}</p>
-  <OvVideo
-    :track="localPublication.videoTrack"
-    @click="updateMainPublication(localPublication)"
-  />
-</div>
-
-<!-- Remote videos -->
-<div v-for="publication in remotePublications" :key="publication.trackSid">
-  <p v-if="publication.videoTrack" class="participant-name">
-    {{ getParticipantName(publication.trackSid) }}
-  </p>
-
-  <OvVideo
-    v-if="publication.videoTrack"
-    :track="publication.videoTrack"
-    @click="updateMainPublication(publication)"
-  />
-  <OvAudio v-if="publication.audioTrack" :track="publication.audioTrack" />
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/App.vue#L168-L183' target='_blank'>App.vue</a>" linenums="168"
+<div id="layout-container">
+    <VideoComponent v-if="localTrack" :track="localTrack" :participantIdentity="participantName" :local="true" />
+    <template v-for="remoteTrack of remoteTracksMap.values()" :key="remoteTrack.trackPublication.trackSid">
+        <VideoComponent
+            v-if="remoteTrack.trackPublication.kind === 'video'"
+            :track="remoteTrack.trackPublication.videoTrack!"
+            :participantIdentity="remoteTrack.participantIdentity"
+        />
+        <AudioComponent v-else :track="remoteTrack.trackPublication.audioTrack!" hidden />
+    </template>
 </div>
 ```
 
-Here's what's happening:
+This code snippet does the following:
 
-<h4>Local Video</h4>
+-   We use the `v-if` directive to conditionally display the local video track using the `VideoComponent`. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
 
-- We use the `v-if` directive to conditionally display the local video, ensuring it's only visible when a user has joined the room.
-- Audio isn't added to the local publication since there's no need to hear one's own audio.
-- The `updateMainStreamManager()` method is called when the user clicks on the local video. This method updates the `mainPublication` variable, which is used to display the main video on the page.
+    !!! info
 
-<h4>Remote Videos</h4>
+        The audio track is not displayed for the local participant because there is no need to hear one's own audio.
 
-- We use the `v-for` directive to iterate over the `remotePublications` array and display the video and audio tracks associated with each publication using the _OvVideo_ and _OvAudio_ respectively. The code also hides the audio tracks using the `hidden` class because we don't want to display them.
-- The `updateMainStreamManager()` method is called when the user clicks on a remote video. This method updates the `mainPublication` variable, which is used to display the main video on the page.
+-   Then, we use the `v-for` directive to iterate over the `remoteTracksMap`. For each remote track, we create a `VideoComponent` or an `AudioComponent` depending on the track's kind (video or audio). The `participantIdentity` property is set to the participant's identity, and the `track` property is set to the video or audio track. The `hidden` attribute is added to the `AudioComponent` to hide the audio tracks from the layout.
 
-Both the audio and video components receive a track, which is then attached to the corresponding HTML elements (`<audio>` and `<video>`). For example, here's the implementation of the _OvVideo_:
+Let's see now the code of the `VideoComponent.vue` file:
 
-```javascript
-<template>
-	<video autoplay/>
-</template>
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/components/VideoComponent.vue#L5-L26' target='_blank'>VideoComponent.vue</a>" linenums="5"
+const props = withDefaults(
+    defineProps<{
+        track: LocalVideoTrack | RemoteVideoTrack; // (1)!
+        participantIdentity: string; // (2)!
+        local?: boolean; // (3)!
+    }>(),
+    {
+        local: false
+    }
+);
 
-<script>
-export default {
-	name: 'OvVideo',
+const videoElement = ref<HTMLMediaElement | null>(null); // (4)!
 
-	props: {
-		track: Object,
-	},
+onMounted(() => {
+    if (videoElement.value) {
+        props.track.attach(videoElement.value); // (5)!
+    }
+});
 
-	mounted () {
-		this.track.attach(this.$el);
-	},
-};
-</script>
+onUnmounted(() => {
+    props.track.detach(); // (6)!
+});
 ```
 
-The `track` property is used to attach the track to the `<video>` element. This is done using the `attach()` method, which is available on both `LocalVideoTrack` and `RemoteVideoTrack` objects.
+1. The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
+2. The participant identity associated with the video track.
+3. A boolean flag that indicates whether the video track belongs to the local participant.
+4. The reference to the video element in the HTML template.
+5. Attach the video track to the video element when the component is mounted.
+6. Detach the video track when the component is unmounted.
+
+The `VideoComponent` does the following:
+
+-   It defines the properties `track`, `participantIdentity`, and `local` using the `defineProps()` function:
+
+    -   `track`: The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
+    -   `participantIdentity`: The participant identity associated with the video track.
+    -   `local`: A boolean flag that indicates whether the video track belongs to the local participant. This flag is set to `false` by default.
+
+-   It creates a reference to the video element in the HTML template.
+-   It attaches the video track to the video element when the component is mounted.
+-   It detaches the video track when the component is unmounted.
+
+Finally, let's see the code of the `AudioComponent.vue` file:
+
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/components/VideoComponent.vue#L5-L18' target='_blank'>AudioComponent.vue</a>" linenums="5"
+const props = defineProps<{
+    track: LocalAudioTrack | RemoteAudioTrack; // (1)!
+}>();
+const audioElement = ref<HTMLMediaElement | null>(null); // (2)!
+
+onMounted(() => {
+    if (audioElement.value) {
+        props.track.attach(audioElement.value); // (3)!
+    }
+});
+
+onUnmounted(() => {
+    props.track.detach(); // (4)!
+});
+```
+
+1. The audio track object, which can be a `LocalAudioTrack` or a `RemoteAudioTrack`, although in this case, it will always be a `RemoteAudioTrack`.
+2. The reference to the audio element in the HTML template.
+3. Attach the audio track to the audio element when the component is mounted.
+4. Detach the audio track when the component is unmounted.
+
+The `AudioComponent` is similar to the `VideoComponent` but is used to display audio tracks. It defines the `track` property using the `defineProps()` function and creates a reference to the audio element in the HTML template. The audio track is attached to the audio element when the component is mounted and detached when the component is unmounted.
 
 ---
 
-## Deploying openvidu-vue (TODO)
+### Leaving the room
 
-<h3> 1) Build the docker image</h3>
+When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` function:
 
-Under the root project folder, you can see the `openvidu-vue/docker/` directory. Here it is included all the required files yo make it possible the deployment with OpenVidu.
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/App.vue#L92-L107' target='_blank'>App.vue</a>" linenums="92"
+async function leaveRoom() {
+    // Leave the room by calling 'disconnect' method over the Room object
+    await room.value?.disconnect(); // (1)!
 
-First of all, you will need to create the **openvidu-vue** docker image. Under `openvidu-vue/docker/` directory you will find the `create_image.sh` script. This script will create the docker image with the [openvidu-basic-node](../application-server/node.md) as application server and the static files.
+    // Empty all variables
+    room.value = undefined; // (2)!
+    localTrack.value = undefined;
+    remoteTracksMap.value.clear();
 
-```bash
-./create_image.sh openvidu/openvidu-vue-demo:X.Y.Z
+    window.removeEventListener("beforeunload", leaveRoom); // (3)!
+}
+
+onUnmounted(() => {
+    // (4)!
+    // On component unmount, leave the room
+    leaveRoom();
+});
 ```
 
-This script will create an image named `openvidu/openvidu-vue-demo:X.Y.Z`. This name will be used in the next step.
+1. Disconnect the user from the room.
+2. Reset all variables to their initial state.
+3. Remove the `beforeunload` event listener.
+4. Call the `leaveRoom()` function when the component is unmounted.
 
-<h3> 2) Deploy the docker image</h3>
+The `leaveRoom()` function performs the following actions:
 
-Time to deploy the docker image. You can follow the [Deploy OpenVidu based application with Docker](/deployment/deploying-openvidu-apps/#with-docker) guide for doing this.
+-   It disconnects the user from the room by calling the `disconnect()` method on the `Room` object.
+-   It resets all variables to their initial state.
+-   It removes the `beforeunload` event listener.
+
+The `leaveRoom()` function is also called when the component is unmounted using the `onUnmounted()` lifecycle hook. This ensures that the user leaves the room when the component is no longer needed.

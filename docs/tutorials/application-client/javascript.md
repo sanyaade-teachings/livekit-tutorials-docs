@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-js){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with plain JavaScript, HTML and CSS that allows:
+This tutorial is a simple video-call application built with plain **JavaScript**, **HTML** and **CSS** that allows:
 
 -   Joining a video call room by requesting a token from any [application server](../application-server/)
 -   Publishing your camera and microphone.
