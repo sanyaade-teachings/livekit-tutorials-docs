@@ -39,6 +39,7 @@ nav:
   #     - demos/basic-webinar.md
   #     - demos/openvidu-getaroom.md
   - What is OpenVidu?: about-openvidu.md
+  - OpenVidu vs LiveKit: openvidu-vs-livekit.md
 
 validation:
   omitted_files: warn

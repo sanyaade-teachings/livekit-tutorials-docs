@@ -15,7 +15,7 @@ With the power of LiveKit you can add video conferencing capabilities to your pl
 ## Architecture of a Livekit application
 
 <figure markdown="span">
-  ![Image title](./assets/images/livekit-architecture.svg){ width="600" style="border-radius: 8px" }
+  ![Image title](./assets/images/livekit-architecture.svg){ .do-not-include-in-gallery width="600" style="border-radius: 8px" }
   <figcaption>Architecture of a LiveKit application</figcaption>
 </figure>
 
@@ -36,8 +36,8 @@ Every application client below shares the same core functionality:
 - Users automatically subscribe to all media published by other users.
 - Users may mute and unmute their tracks.
 - Users may leave the room at any time.
-<!--- Users may select which camera, microphone or screen they want to publish.-->
-<!--- Users may communicate through a chat.-->
+  <!--- Users may select which camera, microphone or screen they want to publish.-->
+  <!--- Users may communicate through a chat.-->
 
 Every application client below is interchangeable with the others, because:
 
@@ -70,7 +70,7 @@ Every application client below is interchangeable with the others, because:
 
 ### Application server tutorials
 
-Every application server below has two specific purposes: 
+Every application server below has two specific purposes:
 
 - Generate LiveKit tokens on demand for any [application client](#application-client-tutorials).
 - Receive LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
@@ -116,9 +116,33 @@ Explore more advanced features of LiveKit: recording, screen-sharing and partici
 
 </div>
 
-## About the authors of this page
+## About the authors of this site
 
-This site has been created and is maintained by the [OpenVidu](https://openvidu.io){target=\_blank} team. OpenVidu developers have been working with real-time media for over a decade, developing [Kurento](https://kurento.openvidu.io/){target=\_blank} and later OpenVidu. We have helped thousands of companies to build their real-time applications, and we are now bringing our expertise to LiveKit.
+This site has been created and is maintained by the [OpenVidu](https://openvidu.io){target=\_blank} team. OpenVidu developers have been working with real-time media for over a decade. We first developed [Kurento](https://kurento.openvidu.io/){target=\_blank} as a powerful media server with low-level capabilities, and then built OpenVidu as a higher-level platform to simplify the development of real-time applications.
+
+<div class="grid" markdown>
+
+![Image title](./assets/images/kurento-white.png#only-dark){ .do-not-include-in-gallery style="padding: 2rem" }
+![Image title](./assets/images/kurento-black.png#only-light){ .do-not-include-in-gallery style="padding: 2rem" }
+
+![Image title](./assets/images/openvidu_white_bg_transp_cropped.png#only-dark){ .do-not-include-in-gallery style="padding: 2rem" }
+![Image title](./assets/images/openvidu_grey_bg_transp_cropped.png#only-light){ .do-not-include-in-gallery style="padding: 2rem" }
+
+</div>
+
+As the years went by, we continued to improve OpenVidu, making it more efficient, more versatile and more feature-rich. We finally made the decision to embrace [mediasoup](https://mediasoup.org/){target=\_blank} as the internal engine of the platform. mediasoup is an open source SFU designed down to the last detail to deliver the highest possible performance. We love this project: we are very close to it and have collaborated on it on several occasions.
+
+<figure markdown="span">
+  ![Image title](./assets/images/mediasoup.png){ .do-not-include-in-gallery width="500" style="border-radius: 8px; margin: 12px 0;" }
+</figure>
+
+We have helped thousands of developers, companies and organizations to build their real-time applications. Over the years we have seen a myriad of successful use cases built on top of OpenVidu: e-learning, telemedicine, video conferencing, live streaming, proctoring, real-time surveillance, remote assistance... The list goes on and on.
+
+We are now bringing our expertise to [LiveKit](https://livekit.io/){target=\_blank}, and integrating its amazing WebRTC stack directly into OpenVidu.
+
+<figure markdown="span">
+  ![Image title](./assets/images/livekit.png){ .do-not-include-in-gallery width="500" style="border-radius: 8px; margin: 12px 0;" }
+</figure>
 
 Check out section [What is OpenVidu?](./about-openvidu.md) to learn more about how OpenVidu can help you take your LiveKit applications to the next level.
 
