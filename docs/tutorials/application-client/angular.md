@@ -79,13 +79,18 @@ npm install livekit-client
 
 Now let's see the code of the `app.component.ts` file:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L9-L51' target='_blank'>app.component.ts</a>" linenums="9"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L16-L65' target='_blank'>app.component.ts</a>" linenums="16"
+type TrackInfo = { // (1)!
+    trackPublication: RemoteTrackPublication;
+    participantIdentity: string;
+};
+
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-var APPLICATION_SERVER_URL = ''; // (1)!
-var LIVEKIT_URL = ''; // (2)!
+var APPLICATION_SERVER_URL = ''; // (2)!
+var LIVEKIT_URL = ''; // (3)!
 
-@Component({ // (3)!
+@Component({ // (4)!
     selector: 'app-root',
     standalone: true,
     imports: [ReactiveFormsModule, AudioComponent, VideoComponent],
@@ -93,12 +98,14 @@ var LIVEKIT_URL = ''; // (2)!
     styleUrl: './app.component.css',
 })
 export class AppComponent implements OnDestroy {
-    roomForm = new FormGroup({ // (4)!
+    roomForm = new FormGroup({ // (5)!
         roomName: new FormControl('Test Room', Validators.required),
         participantName: new FormControl('Participant' + Math.floor(Math.random() * 100), Validators.required),
     });
 
-    room?: Room; // (5)!
+    room?: Room; // (6)!
+    localTrack?: LocalVideoTrack; // (7)!
+    remoteTracksMap: Map<string, TrackInfo> = new Map(); // (8)!
 
     constructor(private httpClient: HttpClient) {
         this.configureUrls();
@@ -125,11 +132,14 @@ export class AppComponent implements OnDestroy {
     }
 ```
 
-1. The URL of the application server.
-2. The URL of the LiveKit server.
-3. Angular component decorator that defines the `AppComponent` class and associates the HTML and CSS files with it.
-4. The `roomForm` object, which is a form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
-5. The room object, which represents the video call room.
+1. `TrackInfo` type, which groups a track publication with the participant's identity.
+2. The URL of the application server.
+3. The URL of the LiveKit server.
+4. Angular component decorator that defines the `AppComponent` class and associates the HTML and CSS files with it.
+5. The `roomForm` object, which is a form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
+6. The room object, which represents the video call room.
+7. The local video track, which represents the user's camera.
+8. Map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
 
 The `app.component.ts` file defines the following variables:
 
@@ -137,6 +147,8 @@ The `app.component.ts` file defines the following variables:
 -   `LIVEKIT_URL`: The URL of the LiveKit server. This variable is used to connect to the LiveKit server and interact with the video call room.
 -   `roomForm`: A form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
 -   `room`: The room object, which represents the video call room.
+-   `localTrack`: The local video track, which represents the user's camera.
+-   `remoteTracksMap`: A map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
 
 --8<-- "docs/tutorials/shared/configure-urls.md"
 
@@ -146,49 +158,84 @@ The `app.component.ts` file defines the following variables:
 
 After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` method is called:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L53-L74' target='_blank'>app.component.ts</a>" linenums="53"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L67-L109' target='_blank'>app.component.ts</a>" linenums="67"
 async joinRoom() {
-	// Initialize a new Room object
-	this.room = new Room(); // (1)!
+    // Initialize a new Room object
+    this.room = new Room(); // (1)!
 
-	try {
-		// Get the room name and participant name from the form
-		const roomName = this.roomForm.value.roomName!; // (2)!
-		const participantName = this.roomForm.value.participantName!;
+    // Specify the actions when events take place in the room
+    // On every new Track received...
+    this.room.on(
+        RoomEvent.TrackSubscribed,
+        (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => { // (2)!
+            this.remoteTracksMap.set(publication.trackSid, {
+                trackPublication: publication,
+                participantIdentity: participant.identity,
+            });
+        }
+    );
 
-		// Get a token from your application server with the room name and participant name
-		const token = await this.getToken(roomName, participantName); // (3)!
+    // On every new Track destroyed...
+    this.room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => { // (3)!
+        this.remoteTracksMap.delete(publication.trackSid);
+    });
 
-		// Connect to the room with the LiveKit URL and the token
-		await this.room.connect(LIVEKIT_URL, token); // (4)!
+    try {
+        // Get the room name and participant name from the form
+        const roomName = this.roomForm.value.roomName!; // (4)!
+        const participantName = this.roomForm.value.participantName!;
 
-		// Publish your camera and microphone
-		await this.room.localParticipant.enableCameraAndMicrophone(); // (5)!
-	} catch (error: any) {
-		console.log('There was an error connecting to the room:', error?.error?.errorMessage || error?.message || error);
+        // Get a token from your application server with the room name and participant name
+        const token = await this.getToken(roomName, participantName); // (5)!
+
+        // Connect to the room with the LiveKit URL and the token
+        await this.room.connect(LIVEKIT_URL, token); // (6)!
+
+        // Publish your camera and microphone
+        await this.room.localParticipant.enableCameraAndMicrophone(); // (7)!
+        this.localTrack = this.room.localParticipant.videoTrackPublications.values().next().value.videoTrack;
+    } catch (error: any) {
+        console.log(
+            'There was an error connecting to the room:',
+            error?.error?.errorMessage || error?.message || error
+        );
         await this.leaveRoom();
-	}
+    }
 }
 ```
 
 1. Initialize a new `Room` object.
-2. Get the room name and participant name from the form.
-3. Get a token from the application server with the room name and participant name.
-4. Connect to the room with the LiveKit URL and the token.
-5. Publish your camera and microphone.
+2. Event handling for when a new track is received in the room.
+3. Event handling for when a track is destroyed.
+4. Get the room name and participant name from the form.
+5. Get a token from the application server with the room name and participant name.
+6. Connect to the room with the LiveKit URL and the token.
+7. Publish your camera and microphone.
 
 The `joinRoom()` method performs the following actions:
 
 1.  It creates a new `Room` object. This object represents the video call room.
 
-	!!! info
+    !!! info
 
-		When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
+        When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
 
-2.  It retrieves the room name and participant name from the form.
-3.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` method:
+2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
 
-    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L88-L106' target='_blank'>app.component.ts</a>" linenums="88"
+    -   **`RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It manages the storage of the new track in the `remoteTracksMap`, which links track SIDs with `TrackInfo` objects containing the track publication and the participant's identity.
+
+    -   **`RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of removing the track from the `remoteTracksMap`.
+
+    These event handlers are essential for managing the behavior of tracks within the video call. You can further extend the event handling as needed for your application.
+
+    !!! info "Take a look at all events"
+
+        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+
+3.  It retrieves the room name and participant name from the form.
+4.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` method:
+
+    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L125-L143' target='_blank'>app.component.ts</a>" linenums="125"
     /**
      * --------------------------------------------
      * GETTING A TOKEN FROM YOUR APPLICATION SERVER
@@ -212,8 +259,8 @@ The `joinRoom()` method performs the following actions:
 
     This function sends a POST request using [HttpClient](https://angular.io/api/common/http/HttpClient){:target="\_blank"} to the application server's `/token` endpoint. The request body contains the room name and participant name. The server responds with a token that is used to connect to the room.
 
-4.  It connects to the room using the LiveKit URL and the token.
-5.  It publishes the camera and microphone tracks to the room using `room.localParticipant.enableCameraAndMicrophone()`, which asks the user for permission to access their camera and microphone at the same time.
+5.  It connects to the room using the LiveKit URL and the token.
+6.  It publishes the camera and microphone tracks to the room using `room.localParticipant.enableCameraAndMicrophone()`, which asks the user for permission to access their camera and microphone at the same time. The local video track is then stored in the `localTrack` variable.
 
 ---
 
@@ -221,41 +268,37 @@ The `joinRoom()` method performs the following actions:
 
 In order to display participants' video and audio tracks, the `app.component.html` file integrates the `VideoComponent` and `AudioComponent`.
 
-```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L24-L46' target='_blank'>app.component.ts</a>" linenums="24"
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L24-L42' target='_blank'>app.component.ts</a>" linenums="24"
 <div id="layout-container">
-    @if (room.localParticipant) {
-		@for (trackPublication of room.localParticipant.videoTrackPublications.values(); track trackPublication.trackSid) {
-		<video-component
-			[track]="trackPublication.videoTrack!"
-			[participantIdentity]="room.localParticipant.identity"
-			[local]="true"
-		></video-component>
-		}
-	}
-	@for (participant of room.remoteParticipants.values(); track participant.identity) {
-		@for (trackPublication of participant.trackPublications.values(); track trackPublication.trackSid) {
-			@if (trackPublication.kind === 'video') {
-			<video-component
-				[track]="trackPublication.videoTrack!"
-				[participantIdentity]="participant.identity"
-			></video-component>
-			} @else {
-			<audio-component [track]="trackPublication.audioTrack!" hidden></audio-component>
-			}
-		}
-	}
+    @if (localTrack) {
+    <video-component
+        [track]="localTrack"
+        [participantIdentity]="roomForm.value.participantName!"
+        [local]="true"
+    ></video-component>
+    }
+    @for (remoteTrack of remoteTracksMap.values(); track remoteTrack.trackPublication.trackSid) {
+        @if (remoteTrack.trackPublication.kind === 'video') {
+        <video-component
+            [track]="remoteTrack.trackPublication.videoTrack!"
+            [participantIdentity]="remoteTrack.participantIdentity"
+        ></video-component>
+        } @else {
+        <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+        }
+    }
 </div>
 ```
 
 This code snippet does the following:
 
--   When the user joins the room, the property `room.localParticipant` is set with the local participant object. Using Angular `@for` block, it iterates over the `videoTrackPublications` of the `room.localParticipant` and displays the video tracks using the `VideoComponent`. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
+-   We use the Angular `@if` block to conditionally display the local video track using the `VideoComponent`. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
 
     !!! info
 
         The audio track is not displayed for the local participant because there is no need to hear one's own audio.
 
--   It then iterates using Angular `@for` block over the `room.remoteParticipants` and displays the video and audio tracks of each remote participant using `participant.trackPublications`. The video tracks are displayed using the `VideoComponent`, while the audio tracks are displayed using the `AudioComponent`. The `hidden` attribute is added to the `AudioComponent` to hide the audio tracks from the layout.
+-   Then, we use the Angular `@for` block to iterate over the `remoteTracksMap`. For each remote track, we create a `VideoComponent` or an `AudioComponent` depending on the track's kind (video or audio). The `participantIdentity` property is set to the participant's identity, and the `track` property is set to the video or audio track. The `hidden` attribute is added to the `AudioComponent` to hide the audio tracks from the layout.
 
 Let's see now the code of the `video.component.ts` file:
 
@@ -371,26 +414,31 @@ The `AudioComponent` class is similar to the `VideoComponent` class, but it is u
 
 When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` method:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L76-L86' target='_blank'>app.component.ts</a>" linenums="76"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L111-L125' target='_blank'>app.component.ts</a>" linenums="111"
 async leaveRoom() {
-	// Leave the room by calling 'disconnect' method over the Room object
-	await this.room?.disconnect(); // (1)!
-	delete this.room;
+    // Leave the room by calling 'disconnect' method over the Room object
+    await this.room?.disconnect(); // (1)!
+
+    // Reset all variables
+    delete this.room; // (2)!
+    delete this.localTrack;
+    this.remoteTracksMap.clear();
 }
 
-@HostListener('window:beforeunload') // (2)!
+@HostListener('window:beforeunload') // (3)!
 async ngOnDestroy() {
-	// On window closed or component destroyed, leave the room
-	await this.leaveRoom();
+    // On window closed or component destroyed, leave the room
+    await this.leaveRoom();
 }
 ```
 
 1. Disconnect the user from the room.
-2. Call the `leaveRoom()` method when the user closes the browser window or navigates to another page.
+2. Reset all variables.
+3. Call the `leaveRoom()` method when the user closes the browser window or navigates to another page.
 
 The `leaveRoom()` method performs the following actions:
 
 -   It disconnects the user from the room by calling the `disconnect()` method on the `room` object.
--   It removes the `room` object from the component.
+-   It resets all variables.
 
 The `window.onbeforeunload` event and the `ngOnDestroy()` lifecycle hook are used to ensure that the user leaves the room when the browser window is closed or the component is destroyed.
