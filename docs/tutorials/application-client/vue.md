@@ -340,7 +340,7 @@ The `VideoComponent` does the following:
 
 Finally, let's see the code of the `AudioComponent.vue` file:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/components/VideoComponent.vue#L5-L18' target='_blank'>AudioComponent.vue</a>" linenums="5"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-vue/src/components/AudioComponent.vue#L5-L18' target='_blank'>AudioComponent.vue</a>" linenums="5"
 const props = defineProps<{
     track: LocalAudioTrack | RemoteAudioTrack; // (1)!
 }>();
