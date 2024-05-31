@@ -103,9 +103,9 @@ export class AppComponent implements OnDestroy {
         participantName: new FormControl('Participant' + Math.floor(Math.random() * 100), Validators.required),
     });
 
-    room?: Room; // (6)!
-    localTrack?: LocalVideoTrack; // (7)!
-    remoteTracksMap: Map<string, TrackInfo> = new Map(); // (8)!
+    room = signal<Room | undefined>(undefined); // (6)!
+    localTrack = signal<LocalVideoTrack | undefined>(undefined); // (7)!
+    remoteTracksMap = signal<Map<string, TrackInfo>>(new Map()); // (8)!
 
     constructor(private httpClient: HttpClient) {
         this.configureUrls();
@@ -158,26 +158,33 @@ The `app.component.ts` file defines the following variables:
 
 After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` method is called:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L67-L109' target='_blank'>app.component.ts</a>" linenums="67"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L67-L116' target='_blank'>app.component.ts</a>" linenums="67"
 async joinRoom() {
     // Initialize a new Room object
-    this.room = new Room(); // (1)!
+    const room = new Room();
+    this.room.set(room); // (1)!
 
     // Specify the actions when events take place in the room
     // On every new Track received...
     this.room.on(
         RoomEvent.TrackSubscribed,
         (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => { // (2)!
-            this.remoteTracksMap.set(publication.trackSid, {
-                trackPublication: publication,
-                participantIdentity: participant.identity,
+            this.remoteTracksMap.update((map) => {
+                map.set(publication.trackSid, {
+                    trackPublication: publication,
+                    participantIdentity: participant.identity,
+                });
+                return map;
             });
         }
     );
 
     // On every new Track destroyed...
-    this.room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => { // (3)!
-        this.remoteTracksMap.delete(publication.trackSid);
+    room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => { // (3)!
+        this.remoteTracksMap.update((map) => {
+            map.delete(publication.trackSid);
+            return map;
+        });
     });
 
     try {
@@ -189,11 +196,11 @@ async joinRoom() {
         const token = await this.getToken(roomName, participantName); // (5)!
 
         // Connect to the room with the LiveKit URL and the token
-        await this.room.connect(LIVEKIT_URL, token); // (6)!
+        await room.connect(LIVEKIT_URL, token); // (6)!
 
         // Publish your camera and microphone
-        await this.room.localParticipant.enableCameraAndMicrophone(); // (7)!
-        this.localTrack = this.room.localParticipant.videoTrackPublications.values().next().value.videoTrack;
+        await room.localParticipant.enableCameraAndMicrophone(); // (7)!
+        this.localTrack.set(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
     } catch (error: any) {
         console.log(
             'There was an error connecting to the room:',
@@ -235,7 +242,7 @@ The `joinRoom()` method performs the following actions:
 3.  It retrieves the room name and participant name from the form.
 4.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` method:
 
-    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L125-L143' target='_blank'>app.component.ts</a>" linenums="125"
+    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L134-L152' target='_blank'>app.component.ts</a>" linenums="134"
     /**
      * --------------------------------------------
      * GETTING A TOKEN FROM YOUR APPLICATION SERVER
@@ -270,14 +277,14 @@ In order to display participants' video and audio tracks, the `app.component.htm
 
 ```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.html#L24-L42' target='_blank'>app.component.ts</a>" linenums="24"
 <div id="layout-container">
-    @if (localTrack) {
+    @if (localTrack()) {
     <video-component
-        [track]="localTrack"
+        [track]="localTrack()!"
         [participantIdentity]="roomForm.value.participantName!"
         [local]="true"
     ></video-component>
     }
-    @for (remoteTrack of remoteTracksMap.values(); track remoteTrack.trackPublication.trackSid) {
+    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
         @if (remoteTrack.trackPublication.kind === 'video') {
         <video-component
             [track]="remoteTrack.trackPublication.videoTrack!"
@@ -302,43 +309,30 @@ This code snippet does the following:
 
 Let's see now the code of the `video.component.ts` file:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/video/video.component.ts#L4-L40' target='_blank'>video.component.ts</a>" linenums="3"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/video/video.component.ts#L4-L27' target='_blank'>video.component.ts</a>" linenums="3"
 // (1)!
 @Component({
-    selector: "video-component",
+    selector: 'video-component',
     standalone: true,
     imports: [],
-    templateUrl: "./video.component.html",
-    styleUrl: "./video.component.css"
+    templateUrl: './video.component.html',
+    styleUrl: './video.component.css',
 })
 export class VideoComponent implements AfterViewInit, OnDestroy {
-    @ViewChild("videoElement") videoElement?: ElementRef<HTMLVideoElement>; // (2)!
+    videoElement = viewChild<ElementRef<HTMLVideoElement>>('videoElement'); // (2)!
 
-    private _track?: LocalVideoTrack | RemoteVideoTrack; // (3)!
-    @Input() participantIdentity?: string; // (4)!
-    @Input() local = false; // (5)!
-
-    @Input()
-    set track(track: LocalVideoTrack | RemoteVideoTrack) {
-        this._track = track;
-
-        if (this.videoElement) {
-            this._track.attach(this.videoElement.nativeElement); // (6)!
-        }
-    }
-
-    get track(): LocalVideoTrack | RemoteVideoTrack | undefined {
-        return this._track;
-    }
+    track = input.required<LocalVideoTrack | RemoteVideoTrack>(); // (3)!
+    participantIdentity = input.required<string>(); // (4)!
+    local = input(false); // (5)!
 
     ngAfterViewInit() {
-        if (this._track && this.videoElement) {
-            this._track.attach(this.videoElement.nativeElement);
+        if (this.videoElement()) {
+            this.track().attach(this.videoElement()!.nativeElement); // (6)!
         }
     }
 
     ngOnDestroy() {
-        this._track?.detach(); // (7)!
+        this.track().detach(); // (7)!
     }
 }
 ```
@@ -353,60 +347,51 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
 
 The `VideoComponent` does the following:
 
--   It uses the `@ViewChild` decorator to get a reference to the video element in the HTML template.
--   It defines a property `_track` to store the video track object. This property can be a `LocalVideoTrack` or a `RemoteVideoTrack`. It is set by calling the `track` setter method from the parent component as it is an `@Input` property. When the `_track` property is set, the video track is attached to the video element by calling the `attach()` method. The `attach()` method is called in the `ngAfterViewInit()` lifecycle hook as well to ensure that the video track is attached to the video element when the component is initialized.
--   The `participantIdentity` property stores the participant identity associated with the video track. This property is set by the parent component as it is an `@Input` property.
--   The `local` property is a boolean flag that indicates whether the video track belongs to the local participant. This property is set by the parent component as it is an `@Input` property. By default, it is set to `false`.
--   The `ngOnDestroy()` method is used to detach the video track when the component is destroyed.
+-   It defines the properties `track`, `participantIdentity`, and `local` as inputs of the component:
+
+    -   `track`: The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
+    -   `participantIdentity`: The participant identity associated with the video track.
+    -   `local`: A boolean flag that indicates whether the video track belongs to the local participant. This flag is set to `false` by default.
+
+-   It creates a reference to the video element in the HTML template.
+-   It attaches the video track to the video element when the view is initialized.
+-   It detaches the video track when the component is destroyed.
 
 Finally, let's see the code of the `audio.component.ts` file:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/audio/audio.component.ts#L4-L38' target='_blank'>audio.component.ts</a>" linenums="3"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/audio/audio.component.ts#L4-L25' target='_blank'>audio.component.ts</a>" linenums="3"
 // (1)!
 @Component({
-    selector: "audio-component",
+    selector: 'audio-component',
     standalone: true,
     imports: [],
-    templateUrl: "./audio.component.html",
-    styleUrl: "./audio.component.css"
+    templateUrl: './audio.component.html',
+    styleUrl: './audio.component.css',
 })
 export class AudioComponent implements AfterViewInit, OnDestroy {
-    @ViewChild("audioElement") audioElement?: ElementRef<HTMLAudioElement>; // (2)!
+    audioElement = viewChild<ElementRef<HTMLAudioElement>>('audioElement'); // (2)!
 
-    private _track?: RemoteAudioTrack | LocalAudioTrack; // (3)!
-
-    @Input()
-    set track(track: RemoteAudioTrack | LocalAudioTrack) {
-        this._track = track;
-
-        if (this.audioElement) {
-            this._track.attach(this.audioElement.nativeElement); // (4)!
-        }
-    }
-
-    get track(): RemoteAudioTrack | LocalAudioTrack | undefined {
-        return this._track;
-    }
+    track = input.required<LocalAudioTrack | RemoteAudioTrack>(); // (3)!
 
     ngAfterViewInit() {
-        if (this._track && this.audioElement) {
-            this._track.attach(this.audioElement.nativeElement);
+        if (this.audioElement()) {
+            this.track().attach(this.audioElement()!.nativeElement); // (4)!
         }
     }
 
     ngOnDestroy() {
-        this._track?.detach(); // (5)!
+        this.track().detach(); // (5)!
     }
 }
 ```
 
-1. Angular component decorator that defines the _AudioComponent_ class and associates the HTML and CSS files with it.
+1. Angular component decorator that defines the `AudioComponent` class and associates the HTML and CSS files with it.
 2. The reference to the audio element in the HTML template.
 3. The audio track object, which can be a `RemoteAudioTrack` or a `LocalAudioTrack`, although in this case, it will always be a `RemoteAudioTrack`.
-4. Attach the audio track to the audio element when the track is set.
+4. Attach the audio track to the audio element when view is initialized.
 5. Detach the audio track when the component is destroyed.
 
-The `AudioComponent` class is similar to the `VideoComponent` class, but it is used to display audio tracks. It attaches the audio track to the audio element when the track is set and detaches the audio track when the component is destroyed.
+The `AudioComponent` class is similar to the `VideoComponent` class, but it is used to display audio tracks. It attaches the audio track to the audio element when view is initialized and detaches the audio track when the component is destroyed.
 
 ---
 
@@ -414,15 +399,15 @@ The `AudioComponent` class is similar to the `VideoComponent` class, but it is u
 
 When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` method:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L111-L125' target='_blank'>app.component.ts</a>" linenums="111"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L118-L132' target='_blank'>app.component.ts</a>" linenums="111"
 async leaveRoom() {
     // Leave the room by calling 'disconnect' method over the Room object
-    await this.room?.disconnect(); // (1)!
+    await this.room()?.disconnect(); // (1)!
 
     // Reset all variables
-    delete this.room; // (2)!
-    delete this.localTrack;
-    this.remoteTracksMap.clear();
+    this.room.set(undefined); // (2)!
+    this.localTrack.set(undefined);
+    this.remoteTracksMap.set(new Map());
 }
 
 @HostListener('window:beforeunload') // (3)!
