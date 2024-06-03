@@ -17,7 +17,7 @@ It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_b
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Donwload the tutorial code
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
@@ -198,7 +198,7 @@ The `joinRoom()` function performs the following actions:
         const element = track.attach(); // (1)!
         element.id = track.sid;
 
-        /* If the track is a video track, we create a container and append the video element to it 
+        /* If the track is a video track, we create a container and append the video element to it
         with the participant's identity */
         if (track.kind === "video") {
             const videoContainer = createVideoContainer(participantIdentity, local);

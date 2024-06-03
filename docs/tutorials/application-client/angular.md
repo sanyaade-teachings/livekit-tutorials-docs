@@ -17,7 +17,7 @@ It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_b
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Donwload the tutorial code
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
