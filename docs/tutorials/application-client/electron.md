@@ -2,7 +2,7 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-js){ .md-button target=\_blank }
 
-This tutorial is a simple video-call application built with Electron that allows:
+This tutorial is a simple video-call application built with **Electron** that allows:
 
 -   Joining a video call room by requesting a token from any [application server](../application-server/)
 -   Publishing your camera and microphone.
@@ -53,9 +53,9 @@ The application will seamlessly initiate as a native desktop program, adapting i
 
 <div class="grid-container">
 
-<div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/insecure-join.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/insecure-join.png" loading="lazy"/></a></p></div>
+<div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/join-electron.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/join-electron.png" loading="lazy"/></a></p></div>
 
-<div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/insecure-session.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/insecure-session.png" loading="lazy"/></a></p></div>
+<div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/room-electron.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/room-electron.png" loading="lazy"/></a></p></div>
 
 </div>
 

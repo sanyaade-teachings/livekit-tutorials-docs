@@ -61,13 +61,9 @@ To run the client application tutorial, you need [Node](https://nodejs.org/en/do
 
             To show the app with a mobile device appearance, open the dev tools in your browser and find the button to adapt the viewport to a mobile device aspect ratio. You may also choose predefined types of devices to see the behavior of your app in different resolutions.
 
-        <div class="grid-container">
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/join-ionic-web.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/join-ionic-web.png" loading="lazy"/></a></p></div>
 
-        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome1.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome1.png" loading="lazy"/></a></p></div>
-
-        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome2.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome2.png" loading="lazy"/></a></p></div>
-
-        </div>
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/room-ionic-web.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/room-ionic-web.png" loading="lazy"/></a></p></div>
 
         --8<-- "docs/tutorials/shared/testing-other-devices.md"
 
@@ -117,9 +113,9 @@ To run the client application tutorial, you need [Node](https://nodejs.org/en/do
 
         <div class="grid-container">
 
-        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic1.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic1.png" loading="lazy"/></a></p></div>
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/join-ionic-device.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/join-ionic-device.png" loading="lazy"/></a></p></div>
 
-        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic3.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic3.png" loading="lazy"/></a></p></div>
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/application-clients/room-ionic-device.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/application-clients/room-ionic-device.png" loading="lazy"/></a></p></div>
 
         </div>
 
@@ -376,7 +372,7 @@ The `joinRoom()` method performs the following actions:
 
 In order to display participants' video and audio tracks, the `app.component.html` file integrates the `VideoComponent` and `AudioComponent`.
 
-```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.html#L73-L91' target='_blank'>app.component.ts</a>" linenums="73"
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.html#L73-L91' target='_blank'>app.component.html</a>" linenums="73"
 <div id="layout-container">
     @if (localTrack()) {
     <video-component
