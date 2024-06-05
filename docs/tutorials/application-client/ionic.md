@@ -1,359 +1,554 @@
 # openvidu-ionic
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials){ .md-button target=\_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-ionic){ .md-button target=\_blank }
 
-This tutorial is a simple Ionic application build with [Capacitor](https://capacitorjs.com/){:target="\_blank"} and [Angular](https://angular.io/){:target="\_blank"}. It is based on the [openvidu-angular](../application-client/angular.md) tutorial, so we recommend you to read it before this one.
+This tutorial is a simple video-call application built with **Ionic**, using **Angular** and **Capacitor**, that allows:
+
+-   Joining a video call room by requesting a token from any [application server](../application-server/)
+-   Publishing your camera and microphone.
+-   Subscribing to all other participants' video and audio tracks automatically.
+-   Leaving the video call room at any time.
+
+It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_blank"} to connect to the LiveKit server and interact with the video call room.
 
 ## Running this tutorial
 
-Running this tutorial is straightforward, and here's what you'll need:
-
-### 1. OpenVidu Server Installation
+### 1. Run LiveKit Server
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Run a server application
+### 2. Donwload the tutorial code
+
+```bash
+git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
+```
+
+### 3. Run a server application
 
 --8<-- "docs/tutorials/shared/application-server-tabs.md"
 
-### 3. Run the client application
+### 4. Run the client application
 
-To run the client application tutorial, you'll need [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm){:target="\_blank"} installed on your development computer.
+To run the client application tutorial, you need [Node](https://nodejs.org/en/download){:target="\_blank"} installed on your development computer.
 
-Check if you have installed it by running the following command:
-
-```bash
-npm -v
-```
-
-Once you've confirmed that NPM is installed, you can proceed with the tutorial by following these steps:
-
-```bash
-# Assuming you've already cloned repository "openvidu-livekit-tutorials" as described in step 2
-
-cd openvidu-livekit-tutorials/openvidu-ionic
-npm install
-```
-
-You have two options for running the client application: **browser-based** or **mobile device-based**. Choose the option that best fits your needs:
-
-=== ":fontawesome-solid-desktop:{.icon .lg-icon .tab-icon} Browser"
-
-    To run the application in a browser, you'll need to start the Ionic server. To do so, run the following command:
+1.  Navigate into the application client directory:
 
     ```bash
-    npm start
+    cd openvidu-livekit-tutorials/application-client/openvidu-angular
     ```
 
-    After the server is up and running, you can test the application by visiting [`http://localhost:8100`](http://localhost:8100){:target="\_blank"}. You should see a screen like this:
+2.  Install the required dependencies:
 
+    ```bash
+    npm install
+    ```
 
-    To show the app with a mobile device appearance, open the dev tools in your browser. Find the button to adapt the viewport to a mobile device aspect ratio. You may also choose predefined types of devices to see the behavior of your app in different resolutions.
+3.  Serve the application:
 
+    You have two options for running the client application: **browser-based** or **mobile device-based**:
 
-    <div class="grid-container">
+    === ":fontawesome-solid-desktop:{.icon .lg-icon .tab-icon} Browser"
 
-    <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome1.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome1.png" loading="lazy"/></a></p></div>
+        To run the application in a browser, you will need to start the Ionic server. To do so, run the following command:
 
-    <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome2.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome2.png" loading="lazy"/></a></p></div>
+        ```bash
+        npm start
+        ```
 
-    </div>
+        Once the server is up and running, you can test the application by visiting [`http://localhost:5080`](http://localhost:5080){:target="\_blank"}. You should see a screen like this:
 
-=== ":fontawesome-solid-mobile-screen-button:{.icon .lg-icon .tab-icon} Mobile"
+        !!! info "Mobile appearance"
 
-    Running the tutorial on a mobile device presents additional challenges compared to running it in a browser, mainly due to the application being launched on a different device, such as an Android smartphone or iPhone, rather than our computer. To overcome these challenges, the following steps need to be taken:
+            To show the app with a mobile device appearance, open the dev tools in your browser and find the button to adapt the viewport to a mobile device aspect ratio. You may also choose predefined types of devices to see the behavior of your app in different resolutions.
 
-    1. **Localhost limitations:**
+        <div class="grid-container">
 
-    	The usage of `localhost` in our Ionic app is restricted, preventing seamless communication between the application client and the server.
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome1.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome1.png" loading="lazy"/></a></p></div>
 
-    2. **Serve over local network:**
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic-chrome2.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic-chrome2.png" loading="lazy"/></a></p></div>
 
-    	The application must be served over our local network to enable communication between the device and the server.
+        </div>
 
-    3. **Secure connection requirement for WebRTC API:**
+        --8<-- "docs/tutorials/shared/testing-other-devices.md"
 
-    	The WebRTC API demands a secure connection for functionality outside of localhost, necessitating the serving of the application over HTTPS.
+    === ":fontawesome-solid-mobile-screen-button:{.icon .lg-icon .tab-icon} Mobile"
 
+        Running the tutorial on a mobile device presents additional challenges compared to running it in a browser, mainly due to the application being launched on a different device, such as an Android smartphone or iPhone, rather than our computer. To overcome these challenges, the following steps need to be taken:
 
-    To simplify this process, the tutorial provides a script designed to automatically handle all of the above for you. It sets up a unique HTTPS entry point using [Caddy](https://caddyserver.com/){:target="\_blank"}  to facilitate communication with the server.
+        1. **Localhost limitations:**
 
-    Now, let's explore how to run the application on a mobile device.
+            The usage of `localhost` in our Ionic app is restricted, preventing seamless communication between the application client and the server.
 
+        2. **Serve over local network:**
 
-    !!! warning "Requirements"
-    	1. Before running the application on a mobile device, make sure that the device is connected to the same network as your PC and the mobile is connected to the PC via USB.
+            The application must be served over our local network to enable communication between the device and the server.
 
-    	2. [Docker](https://docs.docker.com/engine/){target="_blank"} is required to launch the proxy server.
+        3. **Secure connection requirement for WebRTC API:**
 
-    === ":fontawesome-brands-android:{.icon .lg-icon .tab-icon} Android"
+            The WebRTC API demands a secure connection for functionality outside of localhost, necessitating the serving of the application over HTTPS.
 
-    	```bash
-    	npm run android
-    	```
+        If you ran [OpenVidu locally](#run-openvidu-locally), you don't need to worry about this, OpenVidu will handle all of the above requirements for you. For more information, see section [Accessing your app from other devices in your network](/openvidu-vs-livekit/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
 
-    === ":fontawesome-brands-apple:{.icon .lg-icon .tab-icon} iOS"
+        Now, let's explore how to run the application on a mobile device:
 
-    	You will need [Ruby](https://www.ruby-lang.org/en/documentation/installation/){target="_blank"} and [Cocoapods](https://guides.cocoapods.org/using/getting-started.html){target="_blank"} installed in your computer.
+        !!! warning "Requirements"
 
-    	The app must be signed with a development team. To do so, open the project in **Xcode** and select a development team in the **Signing & Capabilities** editor.
+            Before running the application on a mobile device, make sure that the device is connected to the same network as your PC and the mobile is connected to the PC via USB.
 
-    	```bash
-    	npm run ios
-    	```
+        === ":fontawesome-brands-android:{.icon .lg-icon .tab-icon} Android"
 
+            ```bash
+            npm run android
+            ```
 
-    This command will get your local IP address, assign it to the `externalIp` variable in the `src/environments/environment.ts` file, and launch the proxy server.
+        === ":fontawesome-brands-apple:{.icon .lg-icon .tab-icon} iOS"
 
-    After that, the script will ask you for the device you want to run the application on. You should select the real device you have connected to your computer.
+            You will need [Ruby](https://www.ruby-lang.org/en/documentation/installation/){target="_blank"} and [Cocoapods](https://guides.cocoapods.org/using/getting-started.html){target="_blank"} installed in your computer.
 
-    Once the mobile device has been selected, the script will launch the application on the device.
+            The app must be signed with a development team. To do so, open the project in **Xcode** and select a development team in the **Signing & Capabilities** editor.
 
-    When you run this command, you should see a message like this pop up at some point:
+            ```bash
+            npm run ios
+            ```
 
-    <div class="grid-container">
+        The script will ask you for the device you want to run the application on. You should select the real device you have connected to your computer.
 
-    <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic1.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic1.png" loading="lazy"/></a></p></div>
+        Once the mobile device has been selected, the script will launch the application on the device and you will see a screen like this:
 
-    <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic3.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic3.png" loading="lazy"/></a></p></div>
+        <div class="grid-container">
 
-    </div>
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic1.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic1.png" loading="lazy"/></a></p></div>
+
+        <div class="grid-50"><p><a class="glightbox" href="../../../../assets/images/ionic3.png" data-type="image" data-width="50%" data-height="auto" data-desc-position="bottom"><img src="../../../../assets/images/ionic3.png" loading="lazy"/></a></p></div>
+
+        </div>
 
 ## Understanding the code
 
-As this tutorial is based on the [openvidu-angular](../application-client/angular.md) tutorial but using **Ionic**, we will only explain the new code added to the client application. If you want to understand the rest of the code, please read the [openvidu-angular](../application-client/angular.md) tutorial.
+This Ionic project has been created using the Ionic CLI tool. You may come across various configuration files and other items that are not essential for this tutorial. Our focus will be on the key files located within the `src/app/` directory:
 
-### Preparing for development
+-   `app.component.ts`: This file defines the `AppComponent`, which serves as the main component of the application. It is responsible for handling tasks such as joining a video call and managing the video calls themselves.
+-   `app.component.html`: This HTML file is associated with the `AppComponent`, and it dictates the structure and layout of the main application component.
+-   `app.component.scss`: The CSS file linked to `AppComponent`, which controls the styling and appearance of the application's main component.
+-   `VideoComponent`: Component responsible for displaying video tracks along with participant's data. It is defined in the `video.component.ts` file within the `video` directory, along with its associated HTML and CSS files.
+-   `AudioComponent`: Component responsible for displaying audio tracks. It is defined in the `audio.component.ts` file within the `audio` directory, along with its associated HTML and CSS files.
 
-The first thing we need to comment on is the `home.page.ts` file. This file contains the logic of the application, and it is where we will add the code to connect to the OpenVidu Server and start the video call.
+To use the LiveKit JS SDK in an Ionic application, you need to install the `livekit-client` package. This package provides the necessary classes and methods to interact with the LiveKit server. You can install it using the following command:
 
-As mobile device and backend communication may be hard to set up, this class includes the necessary code to run the application in a mobile device.
+```bash
+npm install livekit-client
+```
 
-```typescript
-export class HomePage {
-  APPLICATION_SERVER_URL = "http://localhost:5000/";
-  WS_LIVEKIT_URL = "ws://localhost:7880/";
-  private IS_DEVICE_DEV_MODE = false;
+Now let's see the code of the `app.component.ts` file:
 
-  // ...
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.ts#L36-L120' target='_blank'>app.component.ts</a>" linenums="36"
+type TrackInfo = { // (1)!
+    trackPublication: RemoteTrackPublication;
+    participantIdentity: string;
+};
 
-  ngOnInit() {
+// For local development launching app in web browser, leave these variables empty
+// For production or when launching app in device, configure them with correct URLs
+var APPLICATION_SERVER_URL = ''; // (2)!
+var LIVEKIT_URL = ''; // (3)!
+
+@Component({ // (4)!
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrl: 'app.component.scss',
+    standalone: true,
+    imports: [
+        IonApp,
+        VideoComponent,
+        AudioComponent,
+        ReactiveFormsModule,
+        IonHeader,
+        IonToolbar,
+        IonTitle,
+        IonButtons,
+        IonButton,
+        IonFab,
+        IonFabButton,
+        IonIcon,
+        IonContent,
+        IonList,
+        IonItem,
+        IonInput,
+        IonFooter,
+    ],
+})
+export class AppComponent implements OnDestroy {
+    roomForm = new FormGroup({ // (5)!
+        roomName: new FormControl('Test Room', Validators.required),
+        participantName: new FormControl('Participant' + Math.floor(Math.random() * 100), Validators.required),
+    });
+
+    room = signal<Room | undefined>(undefined); // (6)!
+    localTrack = signal<LocalVideoTrack | undefined>(undefined); // (7)!
+    remoteTracksMap = signal<Map<string, TrackInfo>>(new Map()); // (8)!
+
+    constructor(private httpClient: HttpClient) {
+        this.configureUrls();
+        addIcons({
+            logoGithub,
+            book,
+            settings,
+        });
+    }
+
+    configureUrls() {
+        const deviceMode = this.platform.is('hybrid');
+
+        // If APPLICATION_SERVER_URL is not configured and app is not launched in device mode,
+        // use default value from local development
+        if (!APPLICATION_SERVER_URL) {
+            if (deviceMode) {
+                APPLICATION_SERVER_URL = 'https://{YOUR-LAN-IP}.openvidu-local.dev:6443/';
+            } else {
+                if (window.location.hostname === 'localhost') {
+                    APPLICATION_SERVER_URL = 'http://localhost:6080/';
+                } else {
+                    APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/';
+                }
+            }
+        }
+
+        // If LIVEKIT_URL is not configured and app is not launched in device mode,
+        // use default value from local development
+        if (!LIVEKIT_URL) {
+            if (deviceMode) {
+                LIVEKIT_URL = 'wss://{YOUR-LAN-IP}.openvidu-local.dev:7443/';
+            } else {
+                if (window.location.hostname === 'localhost') {
+                    LIVEKIT_URL = 'ws://localhost:7880/';
+                } else {
+                    LIVEKIT_URL = 'wss://' + window.location.hostname + ':7443/';
+                }
+            }
+        }
+    }
+```
+
+1. `TrackInfo` type, which groups a track publication with the participant's identity.
+2. The URL of the application server.
+3. The URL of the LiveKit server.
+4. Angular component decorator that defines the `AppComponent` class and associates the HTML and CSS files with it.
+5. The `roomForm` object, which is a form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
+6. The room object, which represents the video call room.
+7. The local video track, which represents the user's camera.
+8. Map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
+
+The `app.component.ts` file defines the following variables:
+
+-   `APPLICATION_SERVER_URL`: The URL of the application server. This variable is used to make requests to the server to obtain a token for joining the video call room.
+-   `LIVEKIT_URL`: The URL of the LiveKit server. This variable is used to connect to the LiveKit server and interact with the video call room.
+-   `roomForm`: A form group that contains the `roomName` and `participantName` fields. These fields are used to join a video call room.
+-   `room`: The room object, which represents the video call room.
+-   `localTrack`: The local video track, which represents the user's camera.
+-   `remoteTracksMap`: A map that links track SIDs with `TrackInfo` objects. This map is used to store remote tracks and their associated participant identities.
+
+!!! warning "Configure the URLs"
+
+    For local development launching the app in a web browser, leave `APPLICATION_SERVER_URL` and `LIVEKIT_URL` variables empty. The function `configureUrls()` will automatically configure them with default values. However, for production or when launching the app in a mobile device, you should configure these variables with the correct URLs depending on your deployment.
+
+    You can also configure these variables once the application has been launched by clicking on the settings button in the bottom right corner of the screen.
+
+---
+
+### Joining a Room
+
+After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `joinRoom()` method is called:
+
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.ts#L166-L215' target='_blank'>app.component.ts</a>" linenums="166"
+async joinRoom() {
+    // Initialize a new Room object
+    const room = new Room();
+    this.room.set(room); // (1)!
+
+    // Specify the actions when events take place in the room
+    // On every new Track received...
+    this.room.on(
+        RoomEvent.TrackSubscribed,
+        (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => { // (2)!
+            this.remoteTracksMap.update((map) => {
+                map.set(publication.trackSid, {
+                    trackPublication: publication,
+                    participantIdentity: participant.identity,
+                });
+                return map;
+            });
+        }
+    );
+
+    // On every new Track destroyed...
+    room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => { // (3)!
+        this.remoteTracksMap.update((map) => {
+            map.delete(publication.trackSid);
+            return map;
+        });
+    });
+
+    try {
+        // Get the room name and participant name from the form
+        const roomName = this.roomForm.value.roomName!; // (4)!
+        const participantName = this.roomForm.value.participantName!;
+
+        // Get a token from your application server with the room name and participant name
+        const token = await this.getToken(roomName, participantName); // (5)!
+
+        // Connect to the room with the LiveKit URL and the token
+        await room.connect(LIVEKIT_URL, token); // (6)!
+
+        // Publish your camera and microphone
+        await room.localParticipant.enableCameraAndMicrophone(); // (7)!
+        this.localTrack.set(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
+    } catch (error: any) {
+        console.log(
+            'There was an error connecting to the room:',
+            error?.error?.errorMessage || error?.message || error
+        );
+        await this.leaveRoom();
+    }
+}
+```
+
+1. Initialize a new `Room` object.
+2. Event handling for when a new track is received in the room.
+3. Event handling for when a track is destroyed.
+4. Get the room name and participant name from the form.
+5. Get a token from the application server with the room name and participant name.
+6. Connect to the room with the LiveKit URL and the token.
+7. Publish your camera and microphone.
+
+The `joinRoom()` method performs the following actions:
+
+1.  It creates a new `Room` object. This object represents the video call room.
+
+    !!! info
+
+        When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
+
+2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
+
+    -   **`RoomEvent.TrackSubscribed`**: This event is triggered when a new track is received in the room. It manages the storage of the new track in the `remoteTracksMap`, which links track SIDs with `TrackInfo` objects containing the track publication and the participant's identity.
+
+    -   **`RoomEvent.TrackUnsubscribed`**: This event occurs when a track is destroyed, and it takes care of removing the track from the `remoteTracksMap`.
+
+    These event handlers are essential for managing the behavior of tracks within the video call. You can further extend the event handling as needed for your application.
+
+    !!! info "Take a look at all events"
+
+        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+
+3.  It retrieves the room name and participant name from the form.
+4.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` method:
+
+    ```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.ts#L232-L250' target='_blank'>app.component.ts</a>" linenums="232"
     /**
-     * WARNING!! To make the mobile development easier, this code allows
-     * using your local IP address for communicating with the backend.
-     * For production uses, the server should be accessible from the Internet
-     * and the code below should be removed.
+     * --------------------------------------------
+     * GETTING A TOKEN FROM YOUR APPLICATION SERVER
+     * --------------------------------------------
+     * The method below request the creation of a token to
+     * your application server. This prevents the need to expose
+     * your LiveKit API key and secret to the client side.
+     *
+     * In this sample code, there is no user control at all. Anybody could
+     * access your application server endpoints. In a real production
+     * environment, your application server must identify the user to allow
+     * access to the endpoints.
      */
-    if (this.platform.is("hybrid") && environment.externalIp) {
-      this.IS_DEVICE_DEV_MODE = true;
-      this.prepareForDeviceDevelopment();
+    async getToken(roomName: string, participantName: string): Promise<string> {
+        const response = await lastValueFrom(
+            this.httpClient.post<{ token: string }>(APPLICATION_SERVER_URL + 'token', { roomName, participantName })
+        );
+        return response.token;
     }
-  }
+    ```
 
-  // ...
+    This function sends a POST request using [HttpClient](https://angular.io/api/common/http/HttpClient){:target="\_blank"} to the application server's `/token` endpoint. The request body contains the room name and participant name. The server responds with a token that is used to connect to the room.
 
-  private prepareForDeviceDevelopment() {
-    // Pointing to our proxy server through https/wss and our local IP address
-    this.APPLICATION_SERVER_URL = `https://${environment.externalIp}:5001/`;
-    this.WS_LIVEKIT_URL = `wss://${environment.externalIp}:5001/`;
-  }
+5.  It connects to the room using the LiveKit URL and the token.
+6.  It publishes the camera and microphone tracks to the room using `room.localParticipant.enableCameraAndMicrophone()`, which asks the user for permission to access their camera and microphone at the same time. The local video track is then stored in the `localTrack` variable.
+
+---
+
+### Displaying Video and Audio Tracks
+
+In order to display participants' video and audio tracks, the `app.component.html` file integrates the `VideoComponent` and `AudioComponent`.
+
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.html#L73-L91' target='_blank'>app.component.ts</a>" linenums="73"
+<div id="layout-container">
+    @if (localTrack()) {
+    <video-component
+        [track]="localTrack()!"
+        [participantIdentity]="roomForm.value.participantName!"
+        [local]="true"
+    ></video-component>
+    }
+    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
+        @if (remoteTrack.trackPublication.kind === 'video') {
+        <video-component
+            [track]="remoteTrack.trackPublication.videoTrack!"
+            [participantIdentity]="remoteTrack.participantIdentity"
+        ></video-component>
+        } @else {
+        <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+        }
+    }
+</div>
+```
+
+This code snippet does the following:
+
+-   We use the Angular `@if` block to conditionally display the local video track using the `VideoComponent`. The `local` property is set to `true` to indicate that the video track belongs to the local participant.
+
+    !!! info
+
+        The audio track is not displayed for the local participant because there is no need to hear one's own audio.
+
+-   Then, we use the Angular `@for` block to iterate over the `remoteTracksMap`. For each remote track, we create a `VideoComponent` or an `AudioComponent` depending on the track's kind (video or audio). The `participantIdentity` property is set to the participant's identity, and the `track` property is set to the video or audio track. The `hidden` attribute is added to the `AudioComponent` to hide the audio tracks from the layout.
+
+Let's see now the code of the `video.component.ts` file:
+
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/video/video.component.ts#L4-L27' target='_blank'>video.component.ts</a>" linenums="3"
+// (1)!
+@Component({
+    selector: "video-component",
+    standalone: true,
+    imports: [],
+    templateUrl: "./video.component.html",
+    styleUrl: "./video.component.css"
+})
+export class VideoComponent implements AfterViewInit, OnDestroy {
+    videoElement = viewChild<ElementRef<HTMLVideoElement>>("videoElement"); // (2)!
+
+    track = input.required<LocalVideoTrack | RemoteVideoTrack>(); // (3)!
+    participantIdentity = input.required<string>(); // (4)!
+    local = input(false); // (5)!
+
+    ngAfterViewInit() {
+        if (this.videoElement()) {
+            this.track().attach(this.videoElement()!.nativeElement); // (6)!
+        }
+    }
+
+    ngOnDestroy() {
+        this.track().detach(); // (7)!
+    }
 }
 ```
 
-This code allows us to use our local IP address for communicating with the backend through the poxy server. This is useful for development purposes and it is only used when the application is running on a mobile device.
+1. Angular component decorator that defines the `VideoComponent` class and associates the HTML and CSS files with it.
+2. The reference to the video element in the HTML template.
+3. The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
+4. The participant identity associated with the video track.
+5. A boolean flag that indicates whether the video track belongs to the local participant.
+6. Attach the video track to the video element when the track is set.
+7. Detach the video track when the component is destroyed.
 
-Once the development environment is set up, we are ready to ask for the token and connect to the OpenVidu Server. To do so, we will add the following code to the `home.page.ts` file:
+The `VideoComponent` does the following:
 
-```typescript
-export class HomePage {
-  // ...
-  async joinRoom() {
-    // ...
+-   It defines the properties `track`, `participantIdentity`, and `local` as inputs of the component:
 
-    try {
-      const token = await this.getToken(
-        this.myRoomName,
-        this.myParticipantName
-      );
+    -   `track`: The video track object, which can be a `LocalVideoTrack` or a `RemoteVideoTrack`.
+    -   `participantIdentity`: The participant identity associated with the video track.
+    -   `local`: A boolean flag that indicates whether the video track belongs to the local participant. This flag is set to `false` by default.
 
-      if (!this.IS_DEVICE_DEV_MODE) {
-        // Get the Livekit WebSocket URL from the token metadata if not in device dev mode
-        this.WS_LIVEKIT_URL = this.getLivekitUrlFromMetadata(token);
-      }
+-   It creates a reference to the video element in the HTML template.
+-   It attaches the video track to the video element when the view is initialized.
+-   It detaches the video track when the component is destroyed.
 
-      await this.room.connect(livekitUrl, token);
+Finally, let's see the code of the `audio.component.ts` file:
 
-      // ...
-    } catch (error) {
-      console.log(
-        "There was an error connecting to the room:",
-        error.code,
-        error.message
-      );
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/audio/audio.component.ts#L4-L25' target='_blank'>audio.component.ts</a>" linenums="3"
+// (1)!
+@Component({
+    selector: "audio-component",
+    standalone: true,
+    imports: [],
+    templateUrl: "./audio.component.html",
+    styleUrl: "./audio.component.css"
+})
+export class AudioComponent implements AfterViewInit, OnDestroy {
+    audioElement = viewChild<ElementRef<HTMLAudioElement>>("audioElement"); // (2)!
+
+    track = input.required<LocalAudioTrack | RemoteAudioTrack>(); // (3)!
+
+    ngAfterViewInit() {
+        if (this.audioElement()) {
+            this.track().attach(this.audioElement()!.nativeElement); // (4)!
+        }
     }
-  }
+
+    ngOnDestroy() {
+        this.track().detach(); // (5)!
+    }
 }
 ```
 
-This code will ask for the token and connect to the Livekit Server. If the application is not running on a mobile device, the `getLivekitUrlFromMetadata()` method will be called to get the Livekit WebSocket URL from the token metadata.
+1. Angular component decorator that defines the `AudioComponent` class and associates the HTML and CSS files with it.
+2. The reference to the audio element in the HTML template.
+3. The audio track object, which can be a `RemoteAudioTrack` or a `LocalAudioTrack`, although in this case, it will always be a `RemoteAudioTrack`.
+4. Attach the audio track to the audio element when view is initialized.
+5. Detach the audio track when the component is destroyed.
 
-### Managing media devices
+The `AudioComponent` class is similar to the `VideoComponent` class, but it is used to display audio tracks. It attaches the audio track to the audio element when view is initialized and detaches the audio track when the component is destroyed.
 
-The tutorial provides the functionality to manage the media devices (camera and microphone) from the application. To do so, we will add the following code to the `home.page.ts` file:
+---
 
-#### Managing the camera
+### Leaving the room
 
-```typescript
-export class HomePage {
-  private cameras: MediaDeviceInfo[] = [];
-  private cameraSelected!: MediaDeviceInfo;
+When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` method:
 
-  // ...
-  async toggleCamera() {
-    if (this.room) {
-      const enabled = !this.room.localParticipant.isCameraEnabled;
-      await this.room.localParticipant.setCameraEnabled(enabled);
-      this.refreshVideos();
-      this.cameraIcon = enabled ? "videocam" : "eye-off";
-    }
-  }
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/src/app/app.component.ts#L217-L230' target='_blank'>app.component.ts</a>" linenums="217"
+async leaveRoom() {
+    // Leave the room by calling 'disconnect' method over the Room object
+    await this.room()?.disconnect(); // (1)!
 
-  async swapCamera() {
-    try {
-      const newCamera = this.cameras.find(
-        (cam) => cam.deviceId !== this.cameraSelected.deviceId
-      );
+    // Reset all variables
+    this.room.set(undefined); // (2)!
+    this.localTrack.set(undefined);
+    this.remoteTracksMap.set(new Map());
+}
 
-      if (newCamera && this.room) {
-        await this.room.switchActiveDevice("videoinput", newCamera.deviceId);
-        this.cameraSelected = newCamera;
-
-        this.refreshVideos();
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  // ...
+async ngOnDestroy() { // (3)!
+    // On window closed or component destroyed, leave the room
+    await this.leaveRoom();
 }
 ```
 
-#### Managing the microphone
+1. Disconnect the user from the room.
+2. Reset all variables.
+3. Call the `leaveRoom()` method when the component is destroyed.
 
-```typescript
-export class HomePage {
-  // ...
+The `leaveRoom()` method performs the following actions:
 
-  async toggleMicrophone() {
-    if (this.room) {
-      const enabled = !this.room.localParticipant.isMicrophoneEnabled;
-      await this.room.localParticipant.setMicrophoneEnabled(enabled);
-      this.microphoneIcon = enabled ? "mic" : "mic-off";
-    }
-  }
-  // ...
-}
-```
+-   It disconnects the user from the room by calling the `disconnect()` method on the `room` object.
+-   It resets all variables.
 
-## Specific mobile requirements
+The `ngOnDestroy()` lifecycle hook is used to ensure that the user leaves the room when the component is destroyed.
 
-The following configuration is required to run the application on an Android and iOS device. Although the **openvidu-ionic tutorial already includes this configuration**, we recommend you to read the following sections to understand all the requirements.
+---
 
-Both platforms install the [@jcesarmobile/ssl-skip](https://github.com/jcesarmobile/ssl-skip#readme) plugin. This plugin allows the application to skip the SSL certificate verification. This is necessary because the proxy server uses a self-signed certificate. This **MUST BE REMOVED** in production environments.
+### Specific mobile requirements
+
+In order to be able to test the application on an Android or iOS device, the application must ask for the necessary permissions to access the device's camera and microphone. These permissions are requested when the user joins the video call room.
 
 === ":fontawesome-brands-android:{.icon .lg-icon .tab-icon} Android"
 
-    <h3>Requesting media permissions</h3>
+    The application must include the following permissions in the `AndroidManifest.xml` file located in the `android/app/src/main/AndroidManifest.xml` directory:
 
-    The application must include media permissions for accessing the device's camera and microphone. These permissions are located in the `android/app/src/main/AndroidManifest.xml` file:
-
-    ```xml
+    ```xml title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/android/app/src/main/AndroidManifest.xml#L41-L43' target='_blank'>AndroidManifest.xml</a>" linenums="41"
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.INTERNET" />
     ```
-
-    With the aim of request these permissions, the application must install the [@awesome-cordova-plugins/android-permissions](https://github.com/danielsogl/awesome-cordova-plugins#readme){:target="\_blank"} plugin. This plugin is already installed in the `package.json` file.
-
-    Using this plugin, the application can request the permissions after connecting to the Room. To do so, we will add the following code to the `home.page.ts` file:
-
-    ```typescript
-    export class HomePage {
-
-    	// ...
-
-    	ANDROID_PERMISSIONS = [
-    		this.androidPermissions.PERMISSION.CAMERA,
-    		this.androidPermissions.PERMISSION.RECORD_AUDIO,
-    		this.androidPermissions.PERMISSION.MODIFY_AUDIO_SETTINGS,
-    	];
-
-    	// ...
-
-    	private async checkAndroidPermissions(): Promise<void> {
-    		await this.platform.ready();
-    		try {
-    		await this.androidPermissions.requestPermissions(
-    			this.ANDROID_PERMISSIONS
-    		);
-    		const promisesArray: Promise<any>[] = [];
-    		this.ANDROID_PERMISSIONS.forEach((permission) => {
-    			console.log('Checking ', permission);
-    			promisesArray.push(this.androidPermissions.checkPermission(permission));
-    		});
-    		const responses = await Promise.all(promisesArray);
-    		let allHasPermissions = true;
-    		responses.forEach((response, i) => {
-    			allHasPermissions = response.hasPermission;
-    			if (!allHasPermissions) {
-    			throw new Error('Permissions denied: ' + this.ANDROID_PERMISSIONS[i]);
-    			}
-    		});
-    		} catch (error) {
-    		console.error('Error requesting or checking permissions: ', error);
-    		throw error;
-    		}
-    	}
-
-    	// ...
-    }
-    ```
-
-    <h3>Rendering videos</h3>
-
-    We noticed that the application was not working properly on Android devices (at least on our test devices). The video elements were not being displayed correctly in certain situations.
-
-    We added a workaround to fix this issue. The workaround is located in the `home.page.ts` file and it is called `refreshVideos()` and consists of the following code:
-
-    ```typescript
-    private refreshVideos() {
-    	if (this.platform.is('hybrid') && this.platform.is('android')) {
-    		// Workaround for Android devices
-    		setTimeout(() => {
-    			const refreshedElement = document.getElementById(
-    			'refreshed-workaround'
-    			);
-    			if (refreshedElement) {
-    			refreshedElement.remove();
-    			} else {
-    			const p = document.createElement('p');
-    			p.id = 'refreshed-workaround';
-    			document.getElementById('room')?.appendChild(p);
-    			}
-    		}, 250);
-    	}
-    }
-    ```
-
-    It is called every time the camera track is regenerated and basically update the DOM adding or romoving a HTML element (a paragraph element in this case). This forces the browser to refresh the video elements and display them correctly.
 
 === ":fontawesome-brands-apple:{.icon .lg-icon .tab-icon} iOS"
 
-    The application must include the following configuration files with the aim of allowing the media access to the device's camera and microphone. These config are located in the `src/ios/App/App/Info.plist` file:
+    The application must include the following permissions in the `Info.plist` file located in the `ios/App/App/Info.plist` directory:
 
-    ```xml
+    ```xml title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-ionic/ios/App/App/Info.plist#L48-L51' target='_blank'>Info.plist</a>" linenums="48"
     <key>NSCameraUsageDescription</key>
     <string>This Application uses your camera to make video calls.</string>
     <key>NSMicrophoneUsageDescription</key>
