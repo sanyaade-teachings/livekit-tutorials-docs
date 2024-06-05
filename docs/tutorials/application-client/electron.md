@@ -279,7 +279,7 @@ The `joinRoom()` function performs the following actions:
 
 ---
 
-### Leaving the room
+### Leaving the Room
 
 When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` function:
 

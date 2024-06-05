@@ -395,11 +395,11 @@ The `AudioComponent` class is similar to the `VideoComponent` class, but it is u
 
 ---
 
-### Leaving the room
+### Leaving the Room
 
 When the user wants to leave the room, they can click the `Leave Room` button. This action calls the `leaveRoom()` method:
 
-```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L118-L132' target='_blank'>app.component.ts</a>" linenums="111"
+```typescript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-angular/src/app/app.component.ts#L118-L132' target='_blank'>app.component.ts</a>" linenums="118"
 async leaveRoom() {
     // Leave the room by calling 'disconnect' method over the Room object
     await this.room()?.disconnect(); // (1)!
