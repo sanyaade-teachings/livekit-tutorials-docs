@@ -1,38 +1,31 @@
-[OpenVidu](https://openvidu.io){target=\_blank} is a supercharged, LiveKit-based, real-time solution. With it you can add real-time audio and video capabilities to your application: build any kind of videoconference experience, serve ultra-low latency livestreams to thousands of users, manage real-time videos from your drones or camera feeds and record them... The possibilities are truly endless!
+[OpenVidu](https://openvidu.io){target=\_blank} is a powerful platform to develop WebRTC real-time applications. With it you can add real-time audio and video capabilities to your application: build any kind of videoconference experience, serve ultra-low latency livestreams to thousands of users, manage real-time videos from your drones or camera feeds and record them... The possibilities are truly endless!
+
+It is based on [LiveKit](https://livekit.io/){target=\_blank} and [mediasoup](https://mediasoup.org/){target=\_blank}, bringing the best of both worlds to provide a performant, fault-tolerant, scalable and observable solution.
 
 <div class="grid-container features-grid">
 
 <div class="feature-info grid-33 tablet-grid-50 mobile-grid-100 wow animated animatedFadeInUp fadeInUp">
 <div class="feature-title feature-title-livekit">
-<svg class="home-icon livekit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123 28"
-role="img">
+<svg class="home-icon livekit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123 28" role="img">
 <title id="title" lang="en">LiveKit Logo</title>
 <path d="M4.6991 0H0V27.5637H17.0471V23.538H4.6991V0Z" fill="white"></path>
 <path d="M24.8038 12.5483H20.2506V27.5626H24.8038V12.5483Z" fill="white"></path>
-<path
-d="M38.2078 27.0186L32.4163 8.01416H27.863L33.9463 27.563H42.4693L48.5525 8.01416H43.9625L38.2078 27.0186Z"
-fill="white"></path>
-<path
-d="M59.8483 7.58105C53.9466 7.58105 50.1951 11.7886 50.1951 17.7724C50.1951 23.7206 53.8374 28.0002 59.8483 28.0002C64.4372 28.0002 67.7521 25.9691 68.9904 21.7981H64.3604C63.6689 23.684 62.3928 24.8104 59.8796 24.8104C57.1114 24.8104 55.1816 22.8879 54.8175 19.1171H69.3145C69.3838 18.6364 69.4199 18.1515 69.4226 17.6659C69.4237 11.5702 65.6354 7.58105 59.8483 7.58105ZM54.8531 15.9585C55.3275 12.4416 57.1848 10.773 59.8483 10.773C62.6522 10.773 64.5463 12.8397 64.7656 15.9585H54.8531Z"
-fill="white"></path>
-<path
-d="M96.0482 0H90.1476L78.7105 12.6216V0H74.0114V27.5637H78.7105V13.6372L91.3134 27.5637H97.3232L84.1378 13.0562L96.0482 0Z"
-fill="white"></path>
+<path d="M38.2078 27.0186L32.4163 8.01416H27.863L33.9463 27.563H42.4693L48.5525 8.01416H43.9625L38.2078 27.0186Z" fill="white"></path>
+<path d="M59.8483 7.58105C53.9466 7.58105 50.1951 11.7886 50.1951 17.7724C50.1951 23.7206 53.8374 28.0002 59.8483 28.0002C64.4372 28.0002 67.7521 25.9691 68.9904 21.7981H64.3604C63.6689 23.684 62.3928 24.8104 59.8796 24.8104C57.1114 24.8104 55.1816 22.8879 54.8175 19.1171H69.3145C69.3838 18.6364 69.4199 18.1515 69.4226 17.6659C69.4237 11.5702 65.6354 7.58105 59.8483 7.58105ZM54.8531 15.9585C55.3275 12.4416 57.1848 10.773 59.8483 10.773C62.6522 10.773 64.5463 12.8397 64.7656 15.9585H54.8531Z" fill="white"></path>
+<path d="M96.0482 0H90.1476L78.7105 12.6216V0H74.0114V27.5637H78.7105V13.6372L91.3134 27.5637H97.3232L84.1378 13.0562L96.0482 0Z" fill="white"></path>
 <path d="M103.914 8.01416H99.3606V23.0284H103.914V8.01416Z" fill="white"></path>
 <path d="M20.2511 8.01416H15.6979V12.5477H20.2511V8.01416Z" fill="white"></path>
 <path d="M108.468 23.0298H103.915V27.5633H108.468V23.0298Z" fill="white"></path>
 <path d="M122.073 23.0298H117.52V27.5633H122.073V23.0298Z" fill="white"></path>
-<path
-d="M122.073 12.5484V8.0149H117.52V0H112.966V8.0149H108.413V12.5484H112.966V23.0302H117.52V12.5484H122.073Z"
-fill="white">
-</path>
+<path d="M122.073 12.5484V8.0149H117.52V0H112.966V8.0149H108.413V12.5484H112.966V23.0302H117.52V12.5484H122.073Z" fill="white"></path>
 </svg>
-<h4 class="livekit-title"> based</h4>
+<h4 class="livekit-title">and</h4>
+<img class="do-not-include-in-gallery mediasoup-icon" src="/assets/images/mediasoup-icon.png"/>
+<h4 class="livekit-title">based</h4>
 </div>
-<p class="feature-description">
-OpenVidu is built upon <strong><a href="https://livekit.io/" target="_blank">LiveKit</a></strong>,
-an open source, cutting edge, end-to-end WebRTC stack. OpenVidu takes the best of LiveKit and offers
-improved production-oriented capabilities.</p>
+<p class="feature-description"> OpenVidu is built upon <strong>
+<a href="https://livekit.io/" target="_blank">LiveKit</a></strong> and <strong><a href="https://mediasoup.org/" target="_blank">mediasoup</a></strong>
+</strong>, the best open source, cutting edge, end-to-end WebRTC stacks. OpenVidu takes the best of LiveKit and the best of mediasoup and mix them together in the ultimate real-time solution.</p>
 </div>
 
 <div class="feature-info grid-33 tablet-grid-50 mobile-grid-100 wow animated animatedFadeInUp fadeInUp">

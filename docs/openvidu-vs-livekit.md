@@ -66,6 +66,6 @@ The result is that you can access your application client through `https://xxx-y
 
 !!! warning
 
-    This OpenVidu deployment is only intended for local development and testing. It is not ready for production environments in terms of networking and security. For production deployments, you should follow the [official OpenVidu installation guide](https://openvidu.io/installation/){target="_blank"}.
+    This OpenVidu deployment is only intended for local development and testing. It is not ready for production environments in terms of networking and security. For production deployments, you should follow the [official OpenVidu installation guide](https://openvidu.io/docs/installation/){target="_blank"}.
 
 <br>
