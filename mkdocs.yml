@@ -26,11 +26,11 @@ nav:
       - Rust: tutorials/application-server/rust.md
       - PHP: tutorials/application-server/php.md
       - .NET: tutorials/application-server/dotnet.md
-  - Advanced Features:
-      - tutorials/advanced-tutorials/index.md
-      - Egress: tutorials/advanced-tutorials/recording.md
-      - ScreenShare: tutorials/advanced-tutorials/screenshare.md
-      - Roles: tutorials/advanced-tutorials/roles.md
+  # - Advanced Features:
+  #     - tutorials/advanced-tutorials/index.md
+  #     - Egress: tutorials/advanced-tutorials/recording.md
+  #     - ScreenShare: tutorials/advanced-tutorials/screenshare.md
+  #     - Roles: tutorials/advanced-tutorials/roles.md
   # - Demos:
   #     - demos/openvidu-call.md
   #     - demos/openvidu-classroom.md

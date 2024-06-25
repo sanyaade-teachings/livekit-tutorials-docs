@@ -58,13 +58,13 @@ Every application client below is interchangeable with the others, because:
 
 [:simple-ionic:{.icon .lg-icon .tab-icon} **Ionic**](./tutorials/application-client/ionic.md){ .md-button .md-button--primary .tutorial-link}
 
-[:simple-react:{.icon .lg-icon .tab-icon} **React Native**](./tutorials/application-client/react.md){ .md-button .md-button--primary .tutorial-link}
+<!--[:simple-react:{.icon .lg-icon .tab-icon} **React Native**](./tutorials/application-client/react.md){ .md-button .md-button--primary .tutorial-link}
 
 [:simple-flutter:{.icon .lg-icon .tab-icon} **Flutter**](./tutorials/application-client/flutter.md){ .md-button .md-button--primary .tutorial-link}
 
 [:simple-android:{.icon .lg-icon .tab-icon} **Android**](./tutorials/application-client/android.md){ .md-button .md-button--primary .tutorial-link}
 
-[:simple-apple:{.icon .lg-icon .tab-icon} **iOS**](./tutorials/application-client/ios.md){ .md-button .md-button--primary .tutorial-link}
+[:simple-apple:{.icon .lg-icon .tab-icon} **iOS**](./tutorials/application-client/ios.md){ .md-button .md-button--primary .tutorial-link}-->
 
 </div>
 
@@ -102,7 +102,7 @@ They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){tar
 
 </div>
 
-### Advanced tutorials
+<!--### Advanced tutorials
 
 Explore more advanced features of LiveKit: recording, screen-sharing and participant roles.
 
@@ -114,7 +114,7 @@ Explore more advanced features of LiveKit: recording, screen-sharing and partici
 
 [:fontawesome-solid-user-shield:{.icon .lg-icon .tab-icon} **Roles**](./tutorials/advanced-tutorials/roles.md){ .md-button .md-button--primary .tutorial-link }
 
-</div>
+</div>-->
 
 ## About the authors of this site
 
