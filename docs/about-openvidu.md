@@ -75,7 +75,7 @@ d="M21 8C19.5 8 18.7 9.4 19.1 10.5L15.5 14.1C15.2 14 14.8 14 14.5 14.1L11.9 11.5
 OpenVidu has been designed from the outset with <strong><a
 href="/docs/scalability">scalability</a></strong>
 in mind. Add nodes to increase the capacity of
-your cluster when necessary and remove them when no longer needed to optimze your resources.
+your cluster when necessary and remove them when no longer needed to optimize your resources.
 </p>
 </div>
 
