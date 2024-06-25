@@ -24,7 +24,7 @@ When running OpenVidu locally you will have all these services properly integrat
 
 If you are planning to make use of the [Egress](https://docs.livekit.io/realtime/egress/overview/){target="_blank"} service to export media out of your Rooms, you will need an S3 compatible bucket to store the generated files, and configure your LiveKit deployment to use it.
 
-When running OpenVidu locally you will have an S3 compatible storage available right away ([Minio](https://min.io/){target="_blank"}).
+When running OpenVidu locally you will have an S3 compatible storage available right away ([MinIO](https://min.io/){target="_blank"}).
 
 ### Administration dashboard
 
@@ -32,7 +32,7 @@ OpenVidu comes with an administration dashboard that allows you to monitor the s
 
 ### OpenVidu Call
 
-When running OpenVidu locally a default application will be available for you to try. We have named this application **OpenVidu Call**, and it gathers the most important features that advanced videonconference apps would require: camera selection, screen sharing, virtual backgrounds, chat, recording... 
+When running OpenVidu locally a default application will be available for you to try. We have named this application **OpenVidu Call**, and it gathers the most important features that advanced videonconference apps would require: camera selection, screen sharing, virtual backgrounds, chat, recording...
 
 You can use OpenVidu Call to help develop your own application, joining participants to shared rooms between your app and OpenVidu Call, and seeing how your app behaves.
 
@@ -50,13 +50,13 @@ The most straightforward way to test your app is:
 - Connect your app to LiveKit Server through plain `localhost`.
 - Serve your application client and application server from the same computer.
 - Access your app from `localhost` in a browser of the same computer.
-  
+
 This is fairly simple, but what if you want to test your app from different devices at the same time? And what if you want to test it from a real mobile device? In this case there is no other option than using a secure context (HTTPS). And this brings two different problems:
 
 1. LiveKit Server does not provide HTTPS support out of the box. A reverse proxy is needed to serve LiveKit Server over HTTPS.
 2. Even when serving LiveKit Server and accessing your app from an HTTPS address of your local network, the SSL certificate won't just be valid. You must accept it in the browser for web apps, and you will have to install it in your mobile devices for mobile apps.
 
-To overcome these problems, you can [run OpenVidu locally](#run-openvidu-locally). It comes with a magic domain name `openvidu-local.dev`{.do-not-break-line} which can resolve to any IP specified as a subdomain, and it offers a valid wildcard certificate for HTTPS (this is similar to [nip.io](https://nip.io), [traefik.me](https://traefik.me) or [localtls](https://github.com/Corollarium/localtls)).
+To overcome these problems, you can [run OpenVidu locally](#run-openvidu-locally). It comes with a magic domain name `openvidu-local.dev`{.do-not-break-line} which can resolve to any IP specified as a subdomain, and it offers a valid wildcard certificate for HTTPS (this is similar to [nip.io](https://nip.io){target="_blank"}, [traefik.me](https://traefik.me){target="_blank"} or [localtls](https://github.com/Corollarium/localtls){target="_blank"}).
 
 The result is that you can access your application client through `https://xxx-yyy-zzz-www.openvidu-local.dev:5443`{.do-not-break-line} where **`xxx-yyy-zzz-www`** is your LAN private IP address with dashes (-) instead of dots (.). The SSL certificate will be valid!
 
