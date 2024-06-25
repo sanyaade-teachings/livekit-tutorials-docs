@@ -179,7 +179,7 @@ The `joinRoom()` function performs the following actions:
         const element = track.attach(); // (1)!
         element.id = track.sid;
 
-        /* If the track is a video track, we create a container and append the video element to it 
+        /* If the track is a video track, we create a container and append the video element to it
         with the participant's identity */
         if (track.kind === "video") {
             const videoContainer = createVideoContainer(participantIdentity, local);
@@ -230,7 +230,7 @@ The `joinRoom()` function performs the following actions:
 
     !!! info "Take a look at all events"
 
-        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html)
+        You can take a look at all the events in the [Livekit Documentation](https://docs.livekit.io/client-sdk-js/enums/RoomEvent.html){target="_blank"}
 
 3.  It retrieves the room name and participant name from the form.
 4.  It requests a token from the application server using the room name and participant name. This is done by calling the `getToken()` function:
