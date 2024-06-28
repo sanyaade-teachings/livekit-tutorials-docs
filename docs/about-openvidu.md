@@ -121,8 +121,8 @@ them.
 
 OpenVidu is available in two editions:
 
-- **OpenVidu** <a href="/pricing#openvidu-community"><span class="openvidu-tag openvidu-community-tag">COMMUNITY</span></a>: free to use. It is a single-server deployment and provides a custom LiveKit distribution with Egress, Ingress, S3 storage and monitoring. Ideal for development and testing, but also for small-scale production deployments. You can host hundreds of simultaneous participants in your rooms by running OpenVidu Community in a sufficiently powerful server!
-- **OpenVidu** <a href="/pricing#openvidu-pro"><span class="openvidu-tag openvidu-pro-tag">PRO</span></a>: OpenVidu commercial edition. It is a multi-server deployment with all the features of OpenVidu Community plus 2x performance, scalability, fault tolerance and improved monitoring and observability. Ideal for large-scale production deployments with heavy traffic that require the highest standards. You can start with OpenVidu Community and upgrade to OpenVidu Pro when needed.
+- **OpenVidu** <span class="openvidu-tag openvidu-community-tag">COMMUNITY</span>: free to use. It is a single-server deployment and provides a custom LiveKit distribution with Egress, Ingress, S3 storage and monitoring. Ideal for development and testing, but also for small-scale production deployments. You can host hundreds of simultaneous participants in your rooms by running OpenVidu Community in a sufficiently powerful server!
+- **OpenVidu** <span class="openvidu-tag openvidu-pro-tag">PRO</span>: OpenVidu commercial edition. It is a multi-server deployment with all the features of OpenVidu Community plus 2x performance, scalability, fault tolerance and improved monitoring and observability. Ideal for large-scale production deployments with heavy traffic that require the highest standards. You can start with OpenVidu Community and upgrade to OpenVidu Pro when needed.
 
 Visit [openvidu.io](https://openvidu.io) to learn more about what OpenVidu has to offer.
 

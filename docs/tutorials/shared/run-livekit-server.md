@@ -8,7 +8,7 @@ Alternatively, you can use OpenVidu, which is a fully compatible LiveKit distrib
 
 === "Use OpenVidu on-premises"
 
-    To use a production-ready OpenVidu deployment, visit the official [OpenVidu deployment guide](https://openvidu.io/docs/installation/){target="_blank"}.
+    To use a production-ready OpenVidu deployment, visit the official [OpenVidu deployment guide](https://openvidu.io/docs/self-hosting/deployment-types/){target="_blank"}.
 
 === "Run LiveKit locally"
 
