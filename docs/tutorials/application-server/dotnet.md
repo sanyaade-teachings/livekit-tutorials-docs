@@ -4,7 +4,7 @@
 
 This is a minimal server application built for .NET with [ASP.NET Core Minimal APIs](https://docs.microsoft.com/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio){:target="\_blank"} that allows:
 
-- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Generating LiveKit tokens on demand for any [application client](../application-client/index.md).
 - Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 Unfortunately there is no .NET SDK for LiveKit available, so the application has to manually build LiveKit compatible JWT tokens using the .NET library `System.IdentityModel.Tokens.Jwt`, and check the validity of webhook events on its own. It is a fairly easy process.
@@ -21,14 +21,14 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 !!! info
 
-    You can run any [Application Client](../../application-client/) to test against this server right away.
+    You can run any [Application Client](../application-client/index.md) to test against this server right away.
 
 ## Understanding the code
 
 The application is a simple ASP.NET Core Minimal APIs app with a single file `Program.cs` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
-- `/webhook` : receive LiveKit webhook events.
+- `/livekit/webhook` : receive LiveKit webhook events.
 
 Let's see the code `Program.cs` file:
 
@@ -67,7 +67,7 @@ app.UseCors(MyAllowSpecificOrigins);
 
 1. A `WebApplicationBuilder` instance to build the application.
 2. The name of the CORS policy to be used in the application.
-3. A `IConfiguration` instance to load the configuration from the `appsettings.json` file, including the requried environment variables.
+3. A `IConfiguration` instance to load the configuration from the `appsettings.json` file, including the required environment variables.
 4. The port where the application will be listening.
 5. The API key of LiveKit Server.
 6. The API secret of LiveKit Server.
@@ -160,10 +160,10 @@ Finally, the returned token is sent back to the client.
 
 #### Receive webhook
 
-The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+The endpoint `/livekit/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
 ```cs title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/dotnet/Program.cs#L56-L78' target='_blank'>Program.cs</a>" linenums="56"
-app.MapPost("/webhook", async (HttpRequest request) =>
+app.MapPost("/livekit/webhook", async (HttpRequest request) =>
 {
     var body = new StreamReader(request.Body);
     string postData = await body.ReadToEndAsync(); // (1)!
@@ -234,6 +234,6 @@ We need a `TokenValidationParameters` object from the `Microsoft.IdentityModel.T
 
 If method `JwtSecurityTokenHandler#ValidateToken` does rise an exception when validating the `Authorization` header, it means the webhook event was sent by a LiveKit Server with different credentials.
 
-Finally, we calculate the SHA256 hash of the body and compare it with the `sha256` claim in the token. If they match, it means the webhook event was not tampered and we can definetly trust it.
+Finally, we calculate the SHA256 hash of the body and compare it with the `sha256` claim in the token. If they match, it means the webhook event was not tampered and we can definitely trust it.
 
 <br>

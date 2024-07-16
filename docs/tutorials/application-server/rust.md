@@ -4,7 +4,7 @@
 
 This is a minimal server application built for Rust with [Axum](https://github.com/tokio-rs/axum){:target="\_blank"} that allows:
 
-- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Generating LiveKit tokens on demand for any [application client](../application-client/index.md).
 - Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses the [LiveKit Rust SDK](https://github.com/livekit/rust-sdks){:target="\_blank"}.
@@ -21,14 +21,14 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 !!! info
 
-    You can run any [Application Client](../../application-client/) to test against this server right away.
+    You can run any [Application Client](../application-client/index.md) to test against this server right away.
 
 ## Understanding the code
 
 The application is a simple Rust app with a single file `main.rs` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
-- `/webhook` : receive LiveKit webhook events.
+- `/livekit/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `main.rs` file:
 
@@ -61,7 +61,7 @@ async fn main() {
 
     let app = Router::new() // (4)!
         .route("/token", post(create_token))
-        .route("/webhook", post(receive_webhook))
+        .route("/livekit/webhook", post(receive_webhook))
         .layer(cors);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:".to_string() + &server_port)
@@ -74,7 +74,7 @@ async fn main() {
 1. Import all necessary dependencies from the Rust LiveKit library.
 2. Load environment variables from `.env` file.
 3. Enable CORS support.
-4. Define `/token` and `/weebhook` endpoints.
+4. Define `/token` and `/livekit/webhook` endpoints.
 5. Start the server listening on the specified port.
 
 The `main.rs` file imports the required dependencies and loads the necessary environment variables:
@@ -150,7 +150,7 @@ async fn create_token(payload: Option<Json<Value>>) -> (StatusCode, Json<Value>)
 
 1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
 2. We set participant's name and identity in the AccessToken.
-3. We set the video grants in the AccessToken. `room_joim` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+3. We set the video grants in the AccessToken. `room_join` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. We convert the AccessToken to a JWT token.
 5. Finally, the token is sent back to the client.
 
@@ -160,7 +160,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 1. A new `AccessToken` is created providing the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
 2. We set participant's name and identity in the AccessToken.
-3. We set the video grants in the AccessToken. `room_joim` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
+3. We set the video grants in the AccessToken. `room_join` allows the user to join a room and `room` determines the specific room. Check out all [Video Grants](https://docs.livekit.io/realtime/concepts/authentication/#Video-grant){:target="\_blank"}.
 4. We convert the AccessToken to a JWT token.
 5. Finally, the token is sent back to the client.
 
@@ -168,7 +168,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 #### Receive webhook
 
-The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+The endpoint `/livekit/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
 ```rust title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/rust/src/main.rs#L90-L126' target='_blank'>main.rs</a>" linenums="90"
 async fn receive_webhook(headers: HeaderMap, body: String) -> (StatusCode, String) {

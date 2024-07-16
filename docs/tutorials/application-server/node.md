@@ -4,7 +4,7 @@
 
 This is a minimal server application built for Node with [Express](https://expressjs.com/){:target="\_blank"} that allows:
 
-- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Generating LiveKit tokens on demand for any [application client](../application-client/index.md).
 - Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses [LiveKit JS SDK](https://docs.livekit.io/server-sdk-js){:target="\_blank"}.
@@ -21,14 +21,14 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 !!! info
 
-    You can run any [Application Client](../../application-client/) to test against this server right away.
+    You can run any [Application Client](../application-client/index.md) to test against this server right away.
 
 ## Understanding the code
 
 The application is a simple Express app with a single file `index.js` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
-- `/webhook` : receive LiveKit webhook events.
+- `/livekit/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `index.js` file:
 
@@ -56,7 +56,7 @@ app.use(express.raw({ type: "application/webhook+json" })); // (8)!
 5. Initialize the Express application.
 6. Enable CORS support.
 7. Enable JSON body parsing for the `/token` endpoint.
-8. Enable raw body parsing for the `/webhook` endpoint.
+8. Enable raw body parsing for the `/livekit/webhook` endpoint.
 
 The `index.js` file imports the required dependencies and loads the necessary environment variables:
 
@@ -64,9 +64,9 @@ The `index.js` file imports the required dependencies and loads the necessary en
 - `LIVEKIT_API_KEY`: the API key of LiveKit Server.
 - `LIVEKIT_API_SECRET`: the API secret of LiveKit Server.
 
-It also initializes the `WebhookReceiver` object that will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
+It also initializes the `WebhookReceiver` object that will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
-Finally the `express` application is initialized. CORS is allowed, JSON body parsing is enabled for the `/token` endpoint and raw body parsing is enabled for the `/webhook` endpoint.
+Finally the `express` application is initialized. CORS is allowed, JSON body parsing is enabled for the `/token` endpoint and raw body parsing is enabled for the `/livekit/webhook` endpoint.
 
 ---
 
@@ -114,7 +114,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 #### Receive webhook
 
-The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+The endpoint `/livekit/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
 ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/node/index.js#L33-L49' target='_blank'>index.js</a>" linenums="33"
 const webhookReceiver = new WebhookReceiver( // (1)!
@@ -122,7 +122,7 @@ const webhookReceiver = new WebhookReceiver( // (1)!
   LIVEKIT_API_SECRET
 );
 
-app.post("/webhook", async (req, res) => {
+app.post("/livekit/webhook", async (req, res) => {
   try {
     const event = await webhookReceiver.receive(
       req.body, // (2)!
@@ -136,7 +136,7 @@ app.post("/webhook", async (req, res) => {
 });
 ```
 
-1. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
+1. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 2. The body of the HTTP request.
 3. The `Authorization` header of the HTTP request.
 4. Consume the event as you whish.

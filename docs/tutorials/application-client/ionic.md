@@ -4,7 +4,7 @@
 
 This tutorial is a simple video-call application built with **Ionic**, using **Angular** and **Capacitor**, that allows:
 
--   Joining a video call room by requesting a token from any [application server](../application-server/index.md)
+-   Joining a video call room by requesting a token from any [application server](../application-server/index.md).
 -   Publishing your camera and microphone.
 -   Subscribing to all other participants' video and audio tracks automatically.
 -   Leaving the video call room at any time.
@@ -17,7 +17,7 @@ It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_b
 
 --8<-- "docs/tutorials/shared/run-livekit-server.md"
 
-### 2. Donwload the tutorial code
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
@@ -83,7 +83,7 @@ To run the client application tutorial, you need [Node](https://nodejs.org/en/do
 
             The WebRTC API demands a secure connection for functionality outside of localhost, necessitating the serving of the application over HTTPS.
 
-        If you ran [OpenVidu locally](#run-openvidu-locally), you don't need to worry about this, OpenVidu will handle all of the above requirements for you. For more information, see section [Accessing your app from other devices in your network](/openvidu-vs-livekit/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
+        If you run [OpenVidu locally](#run-openvidu-locally) you don't need to worry about this. OpenVidu will handle all of the above requirements for you. For more information, see section [Accessing your app from other devices in your network](/openvidu-vs-livekit/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
 
         Now, let's explore how to run the application on a mobile device:
 
@@ -322,7 +322,7 @@ The `joinRoom()` method performs the following actions:
 
     !!! info
 
-        When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
+        When the room object is defined, the HTML template is automatically updated hiding the "Join room" page and showing the "Room" layout.
 
 2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
 

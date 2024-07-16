@@ -4,7 +4,7 @@
 
 This is a minimal server application built for Go with [Gin](https://gin-gonic.com/){:target="\_blank"}  that allows:
 
-- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Generating LiveKit tokens on demand for any [application client](../application-client/index.md).
 - Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses the [LiveKit Go SDK](https://pkg.go.dev/github.com/livekit/server-sdk-go){:target="\_blank"}.
@@ -21,14 +21,14 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 !!! info
 
-    You can run any [Application Client](../../application-client/) to test against this server right away.
+    You can run any [Application Client](../application-client/index.md) to test against this server right away.
 
 ## Understanding the code
 
 The application is a simple Go app with a single file `main.go` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
-- `/webhook` : receive LiveKit webhook events.
+- `/livekit/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `main.go` file:
 
@@ -66,7 +66,7 @@ func main() {
 	router := gin.Default() // (1)!
 	router.Use(cors.Default()) // (2)!
 	router.POST("/token", createToken) // (3)!
-	router.POST("/webhook", receiveWebhook) // (4)!
+	router.POST("/livekit/webhook", receiveWebhook) // (4)!
 	router.Run(":" + SERVER_PORT) // (5)!
 }
 ```
@@ -74,7 +74,7 @@ func main() {
 1. Create a new Gin router
 2. Enable CORS support
 3. Create the `/token` endpoint
-4. Create the `/webhook` endpoint
+4. Create the `/livekit/webhook` endpoint
 5. Start the server on the `SERVER_PORT`
 
 ---
@@ -138,7 +138,7 @@ If required fields are available, a new JWT token is created. For that we use th
 
 ### Receive webhook
 
-The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+The endpoint `/livekit/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
 ```go title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/go/main.go#L59-L69' target='_blank'>main.go</a>" linenums="59"
 func receiveWebhook(context *gin.Context) {
@@ -155,13 +155,13 @@ func receiveWebhook(context *gin.Context) {
 ```
 
 1. Create a `SimpleKeyProvider` with the `LIVEKIT_API_KEY` and `LIVEKIT_API`.
-2. Receive the webhook event providing the `http.Request` in the Gin context and the `SimpleKeyProvider` we just created. This will validate and decode the incoming [webhook event](https://docs.livekit.io/realtime/server/webhooks/).
+2. Receive the webhook event providing the `http.Request` in the Gin context and the `SimpleKeyProvider` we just created. This will validate and decode the incoming [webhook event](https://docs.livekit.io/realtime/server/webhooks/){:target="\_blank"}.
 3. Consume the event as you whish.
 
 <span></span>
 
 1. Create a `SimpleKeyProvider` with the `LIVEKIT_API_KEY` and `LIVEKIT_API`.
-2. Receive the webhook event providing the `http.Request` in the Gin context and the `SimpleKeyProvider` we just created. This will validate and decode the incoming [webhook event](https://docs.livekit.io/realtime/server/webhooks/).
+2. Receive the webhook event providing the `http.Request` in the Gin context and the `SimpleKeyProvider` we just created. This will validate and decode the incoming [webhook event](https://docs.livekit.io/realtime/server/webhooks/){:target="\_blank"}.
 3. Consume the event as you whish.
 
 <br>

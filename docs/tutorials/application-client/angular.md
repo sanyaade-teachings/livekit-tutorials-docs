@@ -4,7 +4,7 @@
 
 This tutorial is a simple video-call application built with **Angular** that allows:
 
--   Joining a video call room by requesting a token from any [application server](../application-server/index.md)
+-   Joining a video call room by requesting a token from any [application server](../application-server/index.md).
 -   Publishing your camera and microphone.
 -   Subscribing to all other participants' video and audio tracks automatically.
 -   Leaving the video call room at any time.
@@ -225,7 +225,7 @@ The `joinRoom()` method performs the following actions:
 
     !!! info
 
-        When the room object is defined, the HTML template is automatically updated hidding the "Join room" page and showing the "Room" layout.
+        When the room object is defined, the HTML template is automatically updated hiding the "Join room" page and showing the "Room" layout.
 
 2.  Event handling is configured for different scenarios within the room. These events are fired when new tracks are subscribed to and when existing tracks are unsubscribed.
 

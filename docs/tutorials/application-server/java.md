@@ -4,7 +4,7 @@
 
 This is a minimal server application built for Java with [Spring Boot](https://spring.io/){:target="\_blank"} that allows:
 
-- Generating LiveKit tokens on demand for any [application client](../../application-client/).
+- Generating LiveKit tokens on demand for any [application client](../application-client/index.md).
 - Receiving LiveKit [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 
 It internally uses [LiveKit Kotlin SDK](https://github.com/livekit/server-sdk-kotlin){:target="\_blank"}.
@@ -21,14 +21,14 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 !!! info
 
-    You can run any [Application Client](../../application-client/) to test against this server right away.
+    You can run any [Application Client](../application-client/index.md) to test against this server right away.
 
 ## Understanding the code
 
 The application is a simple Spring Boot app with a single controller `Controller.java` that exports two endpoints:
 
 - `/token` : generate a token for a given Room name and Participant name.
-- `/webhook` : receive LiveKit webhook events.
+- `/livekit/webhook` : receive LiveKit webhook events.
 
 Let's see the code of the `Controller.java` file:
 
@@ -108,10 +108,10 @@ If required fields are available, a new JWT token is created. For that we use th
 
 #### Receive webhook
 
-The endpoint `/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
+The endpoint `/livekit/webhook` accepts `POST` requests with a payload of type `application/webhook+json`. This is the endpoint where LiveKit Server will send [webhook events](https://docs.livekit.io/realtime/server/webhooks/#Events){:target="\_blank"}.
 
 ```java title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-server/java/src/main/java/io/openvidu/basic/java/Controller.java#L50-L60' target='_blank'>Controller.java</a>" linenums="50"
-@PostMapping(value = "/webhook", consumes = "application/webhook+json")
+@PostMapping(value = "/livekit/webhook", consumes = "application/webhook+json")
 public ResponseEntity<String> receiveWebhook(@RequestHeader("Authorization") String authHeader, @RequestBody String body) { // (1)!
 	WebhookReceiver webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET); // (2)!
 	try {
@@ -125,7 +125,7 @@ public ResponseEntity<String> receiveWebhook(@RequestHeader("Authorization") Str
 ```
 
 1. We need the 'Authorization' header and the raw body of the HTTP request.
-2. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/).
+2. Initialize the WebhookReceiver using the `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`. It will help validating and decoding incoming [webhook events](https://docs.livekit.io/realtime/server/webhooks/){target=\_blank}.
 3. Obtain the `WebhookEvent` object using the `WebhookReceiver#receive` method. It takes the raw body as a String and the Authorization header of the request.
 4. Consume the event as you whish.
 
