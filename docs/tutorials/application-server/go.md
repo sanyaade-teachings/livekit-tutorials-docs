@@ -164,4 +164,8 @@ func receiveWebhook(context *gin.Context) {
 2. Receive the webhook event providing the `http.Request` in the Gin context and the `SimpleKeyProvider` we just created. This will validate and decode the incoming [webhook event](https://docs.livekit.io/realtime/server/webhooks/){:target="\_blank"}.
 3. Consume the event as you whish.
 
+<hr>
+
+--8<-- "docs/tutorials/shared/webhook-local-server.md"
+
 <br>
