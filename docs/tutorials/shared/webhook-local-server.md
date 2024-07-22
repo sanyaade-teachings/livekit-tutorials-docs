@@ -26,23 +26,20 @@ These tools provide you with a public URL that forwards requests to your local s
 
 === "OpenVidu Local"
 
-    [Go to reference](https://openvidu.io/latest/docs/self-hosting/local/#configuring-webhooks){target="\_blank"}
+    - Configure webhooks for an **OpenVidu Local deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/local/#configuring-webhooks){target="\_blank"}
 
 === "OpenVidu Single Node"
 
-    - Change webhooks in an **On-Premises deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/single-node/on-premises/admin/#enabling-webhooks){target="\_blank"}.
-
-    - Change webhooks in an **AWS deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/single-node/on-premises/admin/#enabling-webhooks){target="\_blank"}.
-
+    - Configure webhooks for an **OpenVidu Single Node deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/single-node/on-premises/admin/#enabling-webhooks){target="\_blank"}.
 
 === "OpenVidu Elastic"
 
-    - Change webhooks in an **On-Premises deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/elastic/on-premises/admin/#enabling-webhooks){target="\_blank"}.
+    - Configure webhooks for an **OpenVidu Elastic On-Premises deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/elastic/on-premises/admin/#enabling-webhooks){target="\_blank"}.
 
-    - Change webhooks in an **AWS deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/elastic/aws/admin/#enabling-webhooks){target="\_blank"}.
+    - Configure webhooks for an **OpenVidu Elastic AWS deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/elastic/aws/admin/#enabling-webhooks){target="\_blank"}.
 
 === "OpenVidu High Availability"
 
-    - Change webhooks in an **On-Premises deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/ha/on-premises/admin/#enabling-webhooks){target="\_blank"}.
+    - Configure webhooks for an **OpenVidu High Availability On-Premises deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/ha/on-premises/admin/#enabling-webhooks){target="\_blank"}.
 
-    - Change webhooks in an **AWS deployment**. [Go to reference](https://openvidu.io/latest/docs/self-hosting/ha/aws/admin/#enabling-webhooks){target="\_blank"}.
+    - Configure webhooks for an **OpenVidu High Availability AWS deployment**. [Learn more](https://openvidu.io/latest/docs/self-hosting/ha/aws/admin/#enabling-webhooks){target="\_blank"}.
