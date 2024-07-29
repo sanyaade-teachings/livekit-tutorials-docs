@@ -1,6 +1,6 @@
 # openvidu-android
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-ionic){ .md-button target=\_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-android){ .md-button target=\_blank }
 
 This tutorial is a simple video-call application built for **Android**, using **Kotlin**, that allows:
 
