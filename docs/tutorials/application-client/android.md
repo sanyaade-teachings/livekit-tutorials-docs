@@ -145,7 +145,7 @@ This file also defines the following variables:
 -   `applicationServerUrl`: The URL of the application server. This variable is used to make requests to the server to obtain a token for joining the video call room.
 -   `livekitUrl`: The URL of the LiveKit server. This variable is used to connect to the LiveKit server and interact with the video call room.
 
-```kotlin title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-android/app/src/main/java/io/openvidu/android/MainActivit.kt#L15-L17' target='_blank'>MainActivity.kt</a>" linenums="15"
+```kotlin title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-android/app/src/main/java/io/openvidu/android/MainActivity.kt#L15-L17' target='_blank'>MainActivity.kt</a>" linenums="15"
 // Configure this variables with correct URLs depending on your deployment
 private var applicationServerUrl = "https://{YOUR-LAN-IP}.openvidu-local.dev:6443/" // (1)!
 private var livekitUrl = "wss://{YOUR-LAN-IP}.openvidu-local.dev:7443/" // (2)!
@@ -162,7 +162,7 @@ private var livekitUrl = "wss://{YOUR-LAN-IP}.openvidu-local.dev:7443/" // (2)!
 
 After the user specifies their participant name and the name of the room they want to join, when they click the `Join` button, the `navigateToRoomLayoutActivity()` method is called, which simply set the values of the participant name, room name, application server URL and LiveKit URL in the intent and starts the `RoomLayoutActivity`:
 
-```kotlin title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-android/app/src/main/java/io/openvidu/android/MainActivit.kt#L35-L53' target='_blank'>MainActivity.kt</a>" linenums="35"
+```kotlin title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/application-client/openvidu-android/app/src/main/java/io/openvidu/android/MainActivity.kt#L35-L53' target='_blank'>MainActivity.kt</a>" linenums="35"
 private fun navigateToRoomLayoutActivity() {
     binding.joinButton.isEnabled = false
 
