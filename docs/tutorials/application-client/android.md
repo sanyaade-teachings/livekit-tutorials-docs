@@ -35,7 +35,7 @@ To run the client application tutorial, you need [Android Studio](https://develo
 
 2. Run the application in an emulator or a physical device by clicking the "Run" button in Android Studio. Check out the [official documentation](https://developer.android.com/studio/run){:target="\_blank"} for further information.
 
-The application will initiate as a native Android program. Once the application is open, you should see a screen like this:
+The application will initiate as a native Android program. Once the application is opened, you should see a screen like this:
 
 <div class="grid-container">
 
