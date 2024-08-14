@@ -14,8 +14,8 @@ nav:
       - Vue: tutorials/application-client/vue.md
       - Electron: tutorials/application-client/electron.md
       - Ionic: tutorials/application-client/ionic.md
-      - iOS: tutorials/application-client/ios.md
       - Android: tutorials/application-client/android.md
+      - iOS: tutorials/application-client/ios.md
   - Application Server:
       - tutorials/application-server/index.md
       - Node.js: tutorials/application-server/node.md
