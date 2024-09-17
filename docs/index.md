@@ -102,19 +102,19 @@ They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){tar
 
 </div>
 
-<!--### Advanced tutorials
+### Advanced features tutorials
 
-Explore more advanced features of LiveKit: recording, screen-sharing and participant roles.
+Explore more advanced features of LiveKit: recording, streaming and ingesting.
 
 <div class="tutorials-container" markdown>
 
-[:material-record-rec:{.icon .lg-icon .tab-icon} **Egress**](./tutorials/advanced-tutorials/recording.md){ .md-button .md-button--primary .tutorial-link }
+[:material-record-rec:{.icon .lg-icon .tab-icon} **Recording**](./tutorials/advanced-features/recording.md){ .md-button .md-button--primary .tutorial-link }
 
-[:material-monitor-screenshot:{.icon .lg-icon .tab-icon} **Screen share**](./tutorials/advanced-tutorials/screenshare.md){ .md-button .md-button--primary .tutorial-link }
+<!-- [:material-monitor-screenshot:{.icon .lg-icon .tab-icon} **Screen share**](./tutorials/advanced-features/screenshare.md){ .md-button .md-button--primary .tutorial-link }
 
-[:fontawesome-solid-user-shield:{.icon .lg-icon .tab-icon} **Roles**](./tutorials/advanced-tutorials/roles.md){ .md-button .md-button--primary .tutorial-link }
+[:fontawesome-solid-user-shield:{.icon .lg-icon .tab-icon} **Roles**](./tutorials/advanced-features/roles.md){ .md-button .md-button--primary .tutorial-link } -->
 
-</div>-->
+</div>
 
 ## About the authors of this site
 
