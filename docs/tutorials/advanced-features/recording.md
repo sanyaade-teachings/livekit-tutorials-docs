@@ -1,4 +1,4 @@
-# openvidu-recording
+# openvidu-recording-basic-node
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/advanced-features/openvidu-recording-node){ .md-button target=\_blank }
 
@@ -29,7 +29,7 @@ To run this application, you need [Node](https://nodejs.org/es/download/){:targe
 1. Navigate into the application directory
 
 ```bash
-cd openvidu-livekit-tutorials/advanced-features/openvidu-recording-node
+cd openvidu-livekit-tutorials/advanced-features/openvidu-recording-basic-node
 ```
 
 2. Install dependencies
@@ -88,7 +88,7 @@ The server application extends the [Node.js server tutorial](../application-serv
 
 Before we dive into the code of each endpoint, let's first see the changes introduced in the `index.js` file:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L9-L27' target='_blank'>index.js</a>" linenums="9" hl_lines="4 8 16-19"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L9-L27' target='_blank'>index.js</a>" linenums="9" hl_lines="4 8 16-19"
 const SERVER_PORT = process.env.SERVER_PORT || 6080;
 
 // LiveKit configuration
@@ -123,10 +123,33 @@ Besides, the `index.js` file configures the server to serve static files from th
 
 It also initializes the `EgressClient`, which will help interacting with [Egress API](https://docs.livekit.io/realtime/egress/api/){:target="\_blank"} to manage recordings, and the `S3Service`, which will help interacting with the S3 bucket:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L58-L59' target='_blank'>index.js</a>" linenums="58"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L58-L59' target='_blank'>index.js</a>" linenums="58"
 const egressClient = new EgressClient(LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
 const s3Service = new S3Service();
 ```
+
+The `POST /token` endpoint has been modified to add the `roomRecord` permission to the access token, so that participants can start recording a room:
+
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L29-L44' target='_blank'>index.js</a>" linenums="29" hl_lines="13"
+app.post("/token", async (req, res) => {
+    const roomName = req.body.roomName;
+    const participantName = req.body.participantName;
+
+    if (!roomName || !participantName) {
+        res.status(400).json({ errorMessage: "roomName and participantName are required" });
+        return;
+    }
+
+    const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
+        identity: participantName
+    });
+    at.addGrant({ roomJoin: true, room: roomName, roomRecord: true }); // (1)!
+    const token = await at.toJwt();
+    res.json({ token });
+});
+```
+
+1. Add the `roomRecord` permission to the access token.
 
 Now let's explore the code for each recording feature:
 
@@ -134,7 +157,7 @@ Now let's explore the code for each recording feature:
 
 The `POST /recordings/start` endpoint starts the recording of a room. It receives the room name of the room to record as parameter and returns the recording metadata:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L61-L95' target='_blank'>index.js</a>" linenums="61"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L61-L95' target='_blank'>index.js</a>" linenums="61"
 app.post("/recordings/start", async (req, res) => {
     const { roomName } = req.body;
 
@@ -143,10 +166,10 @@ app.post("/recordings/start", async (req, res) => {
         return;
     }
 
-    const activeEgresses = await getActiveEgressesByRoom(roomName); // (1)!
+    const activeRecording = await getActiveRecordingByRoom(roomName); // (1)!
 
-    // Check if there is already an active egress for this room
-    if (activeEgresses.length > 0) {
+    // Check if there is already an active recording for this room
+    if (activeRecording) {
         res.status(409).json({ errorMessage: "Recording already started for this room" }); // (2)!
         return;
     }
@@ -173,8 +196,8 @@ app.post("/recordings/start", async (req, res) => {
 });
 ```
 
-1. The `getActiveEgressesByRoom` function lists all active egresses for a room.
-2. If there is already an active egress for the room, the server returns a `409 Conflict` status code.
+1. The `getActiveRecordingByRoom` function retrieves the active recording for a room.
+2. If there is already an active recording for the room, the server returns a `409 Conflict` status code.
 3. Use the `EncodedFileOutput` class to export the recording to an external file.
 4. Define the file type as `MP4`.
 5. Define the file path where the recording will be stored. The `{room_name}`, `{room_id}`, and `{time}` templates will be replaced by the actual room name, room ID and timestamp, respectively. Check out all available [filename templates](https://docs.livekit.io/realtime/egress/overview/#Filename-templating){:target="\_blank"}.
@@ -185,16 +208,17 @@ app.post("/recordings/start", async (req, res) => {
 This endpoint does the following:
 
 1.  Obtains the `roomName` parameter from the request body. If it is not available, it returns a `400` error.
-2.  Retrieves all active egresses for the room. If there is already an active egress for the room, it returns a `409` error to prevent starting a new recording. To accomplish this, we use the `getActiveEgressesByRoom` function, which lists all active egresses for a specified room by calling the `listEgress` method of the `EgressClient` with the `roomName` and `active` parameters:
+2.  Check if there is already an active recording for the room. If there is, it returns a `409` error to prevent starting a new recording. To accomplish this, we use the `getActiveRecordingByRoom` function, which lists all active egresses for a specified room by calling the `listEgress` method of the `EgressClient` with the `roomName` and `active` parameters, and then returns the egress ID of the first active egress found:
 
-    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L131-L139' target='_blank'>index.js</a>" linenums="131"
-    const getActiveEgressesByRoom = async (roomName) => {
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L129-L138' target='_blank'>index.js</a>" linenums="129"
+    const getActiveRecordingByRoom = async (roomName) => {
         try {
             // List all active egresses for the room
-            return await egressClient.listEgress({ roomName, active: true });
+            const egresses = await egressClient.listEgress({ roomName, active: true });
+            return egresses.length > 0 ? egresses[0].egressId : null;
         } catch (error) {
             console.error("Error listing egresses.", error);
-            return [];
+            return null;
         }
     };
     ```
@@ -205,7 +229,7 @@ This endpoint does the following:
 
         The `EncodedFileOutput` class allows you to save the recording metadata to an external file. If you don't explicitly set the `disableManifest` property to `true`, the metadata will be saved in the same folder and with the same name as the recording file, but with a `.json` extension. This metadata file will contain information such as the egress ID, the recording start time, and the name and ID of the room recorded.
 
-        This information may be insufficient depending on your requirements (e.g., you can't get the recording duration). If this is the case, you can follow the steps described in the [improved recording tutorial](./recording-improved){:target="\_blank"}, where we show how to save all necessary metadata in a separate file listening to webhook events.
+        This information may be insufficient depending on your requirements (e.g., you can't get the recording duration). If this is the case, you can follow the steps described in the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, where we show how to save all necessary metadata in a separate file listening to webhook events.
 
 4.  Starts a `RoomCompositeEgress` to record all participants in the room by calling the `startRoomCompositeEgress` method of the `EgressClient` with `roomName` and `fileOutput` as parameters.
 5.  Extracts the recording name from the `fileResults` array.
@@ -215,7 +239,7 @@ This endpoint does the following:
 
 The `POST /recordings/stop` endpoint stops the recording of a room. It receives the room name of the room to stop recording as a parameter and returns the updated recording metadata:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L97-L129' target='_blank'>index.js</a>" linenums="97"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L97-L127' target='_blank'>index.js</a>" linenums="97"
 app.post("/recordings/stop", async (req, res) => {
     const { roomName } = req.body;
 
@@ -224,26 +248,24 @@ app.post("/recordings/stop", async (req, res) => {
         return;
     }
 
-    const activeEgresses = await getActiveEgressesByRoom(roomName); // (1)!
+    const activeRecording = await getActiveRecordingByRoom(roomName); // (1)!
 
-    // Check if there is an active egress for this room
-    if (activeEgresses.length === 0) {
+    // Check if there is an active recording for this room
+    if (!activeRecording) {
         res.status(409).json({ errorMessage: "Recording not started for this room" }); // (2)!
         return;
     }
 
-    const egressId = activeEgresses[0].egressId; // (3)!
-
     try {
-        // Stop the Egress to finish the recording
-        const egressInfo = await egressClient.stopEgress(egressId); // (4)!
+        // Stop the egress to finish the recording
+        const egressInfo = await egressClient.stopEgress(activeRecording); // (3)!
         const file = egressInfo.fileResults[0];
         const recording = {
             name: file.filename.split("/").pop(),
             startedAt: Number(egressInfo.startedAt) / 1_000_000,
             size: Number(file.size)
         };
-        res.json({ message: "Recording stopped", recording }); // (5)!
+        res.json({ message: "Recording stopped", recording }); // (4)!
     } catch (error) {
         console.error("Error stopping recording.", error);
         res.status(500).json({ errorMessage: "Error stopping recording" });
@@ -251,25 +273,24 @@ app.post("/recordings/stop", async (req, res) => {
 });
 ```
 
-1. The `getActiveEgressesByRoom` function lists all active egresses for a room.
-2. If there is no active egress for the room, the server returns a `409 Conflict` status code.
-3. Extract the egress ID from the active egress.
-4. Stop the egress to finish the recording by calling the `stopEgress` method of the `EgressClient` with the `egressId` as a parameter.
-5. Return the updated recording metadata to the client.
+1. The `getActiveRecordingByRoom` function retrieves the active recording for a room.
+2. If there is no active recording for the room, the server returns a `409 Conflict` status code.
+3. Stop the egress to finish the recording by calling the `stopEgress` method of the `EgressClient` with the egress ID (`activeRecording`) as a parameter.
+4. Return the updated recording metadata to the client.
 
 This endpoint does the following:
 
 1. Obtains the `roomName` parameter from the request body. If it is not available, it returns a `400` error.
 2. Retrieves all active egresses for the room. If there is no active egress for the room, it returns a `409` error to prevent stopping a non-existent recording.
 3. Extracts the `egressId` from the active egress.
-4. Stops the egress to finish the recording by calling the `stopEgress` method of the `EgressClient` with the `egressId` as a parameter.
+4. Stops the egress to finish the recording by calling the `stopEgress` method of the `EgressClient` with the egress ID (`activeRecording`) as a parameter.
 5. Returns the updated recording metadata to the client.
 
 #### List recordings
 
 The `GET /recordings` endpoint lists all recordings stored in the S3 bucket. This endpoint also allows filtering recordings by room name or room ID:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L141-L175' target='_blank'>index.js</a>" linenums="141"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L140-L174' target='_blank'>index.js</a>" linenums="140"
 app.get("/recordings", async (req, res) => {
     const roomName = req.query.roomName?.toString();
     const roomId = req.query.roomId?.toString();
@@ -279,7 +300,7 @@ app.get("/recordings", async (req, res) => {
         const keyEnd = ".mp4.json";
         const regex = new RegExp(`^${keyStart}.*${keyEnd}$`); // (2)!
 
-        // List all Egress metadata files in the recordings path that match the regex
+        // List all egress metadata files in the recordings path that match the regex
         const payloadKeys = await s3Service.listObjects(RECORDINGS_PATH, regex); // (3)!
         const recordings = await Promise.all(payloadKeys.map((payloadKey) => getRecordingInfo(payloadKey))); // (4)!
         res.json({ recordings }); // (5)!
@@ -290,7 +311,7 @@ app.get("/recordings", async (req, res) => {
 });
 
 const getRecordingInfo = async (payloadKey) => {
-    // Get the Egress metadata file as JSON
+    // Get the egress metadata file as JSON
     const data = await s3Service.getObjectAsJson(payloadKey); // (6)!
 
     // Get the recording file size
@@ -328,7 +349,7 @@ This endpoint does the following:
 
 The `GET /recordings/:recordingName` endpoint retrieves a recording from the S3 bucket and returns it as a stream:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L177-L202' target='_blank'>index.js</a>" linenums="177"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L176-L201' target='_blank'>index.js</a>" linenums="176"
 app.get("/recordings/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
     const key = RECORDINGS_PATH + recordingName;
@@ -374,7 +395,7 @@ This endpoint does the following:
 
 The `DELETE /recordings/:recordingName` endpoint deletes a recording from the S3 bucket:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/index.js#L204-L222' target='_blank'>index.js</a>" linenums="204"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L203-L221' target='_blank'>index.js</a>" linenums="203"
 app.delete("/recordings/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
     const key = RECORDINGS_PATH + recordingName;
@@ -411,7 +432,7 @@ This endpoint does the following:
 
 Finally, let's take a look at the `s3.service.js` file, which encapsulates the operations to interact with the S3 bucket:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/s3.service.js#L9-L105' target='_blank'>s3.service.js</a>" linenums="9"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/s3.service.js' target='_blank'>s3.service.js</a>" linenums="9"
 // S3 configuration
 const S3_ENDPOINT = process.env.S3_ENDPOINT || "http://localhost:9000"; // (1)!
 const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || "minioadmin"; // (2)!
@@ -553,9 +574,9 @@ In order to update the user interface of all participants in the room according 
 
     By using the `RoomEvent.RecordingStatusChanged` event, we can only detect when the recording has started or stopped, but not other states like `starting`, `stopping` or `failed`. Additionally, when the recording stops, the event is not triggered until the recorder participant leaves the room, causing a delay of approximately 10-15 seconds between the stop and when participants are notified.
 
-    To overcome these limitations, you can follow the steps described in the [improved recording tutorial](./recording-improved){:target="\_blank"}, where we implement a custom notification system. This system inform participants about the recording status by listening to webhook events and updating room metadata.
+    To overcome these limitations, you can follow the steps described in the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, where we implement a custom notification system. This system informs participants about the recording status by listening to webhook events and updating room metadata.
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/public/app.js#L20-L76' target='_blank'>app.js</a>" linenums="20" hl_lines="25-28 51-52"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/public/app.js#L20-L76' target='_blank'>app.js</a>" linenums="20" hl_lines="25-28 51-52"
 async function joinRoom() {
     // Disable 'Join' button
     document.getElementById("join-button").disabled = true;
@@ -619,7 +640,7 @@ The `updateRecordingInfo` function updates the recording information of the room
 
 This function retrieves all recordings available for the room from the backend and displays their relevant information by invoking the `showRecordingList` function:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/public/app.js#L317-L354' target='_blank'>app.js</a>" linenums="317"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/public/app.js#L317-L354' target='_blank'>app.js</a>" linenums="317"
 function showRecordingList(recordings) {
     const recordingsList = document.getElementById("recording-list");
 
@@ -666,11 +687,11 @@ The `showRecordingList` function creates a new `div` element for each recording 
 
     When a recording is deleted, it is removed from the recording list, but only for the user who initiated the deletion. Other users will continue to see the recording in their list until it is refreshed.
 
-    In the [improved recording tutorial](./recording-improved){:target="\_blank"}, we show how to implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
+    In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
 
 When the user clicks the play button, the `displayRecording` function is called to play the recording. This function opens a dialog window with an embedded video element and sets the source of the video to the [get recording endpoint](#get-recording) of the server application:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/public/app.js#L356-L361' target='_blank'>app.js</a>" linenums="356"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/public/app.js#L356-L361' target='_blank'>app.js</a>" linenums="356"
 function displayRecording(recordingName) {
     const recordingVideoDialog = document.getElementById("recording-video-dialog");
     recordingVideoDialog.showModal();
@@ -679,7 +700,7 @@ function displayRecording(recordingName) {
 }
 ```
 
-```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/public/index.html#L94-L99' target='_blank'>index.html</a>" linenums="94"
+```html title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/public/index.html#L94-L99' target='_blank'>index.html</a>" linenums="94"
 <dialog id="recording-video-dialog">
     <video id="recording-video" autoplay controls></video>
     <button class="btn btn-secondary" id="close-recording-video-dialog" onclick="closeRecording()">Close</button>
