@@ -471,7 +471,7 @@ This endpoint does the following:
 
 !!! info "Direct access to S3 bucket"
 
-    With this approach, the backend acts as a proxy between the client and S3, which may result in increased server resource usage. To avoid this, it is more efficient to provide the client with a **pre-signed URL**, allowing direct access to the recording files from the S3 bucket. In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement this method, along with a discussion of its advantages and disadvantages.
+    With this approach, the backend acts as a proxy between the client and S3, which may result in increased server resource usage. To avoid this, it is more efficient to provide the client with a **presigned URL**, allowing direct access to the recording files from the S3 bucket. In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement this method, along with a discussion of its advantages and disadvantages.
 
 #### Delete recording
 
@@ -620,7 +620,7 @@ export class S3Service {
 7. Check if an object exists in the S3 bucket.
 8. Retrieve the metadata of an object in the S3 bucket.
 9. Retrieve the size of an object in the S3 bucket.
-10. Retrieve an object from the S3 bucket.
+10. Retrieve a specified range of bytes from an object in the S3 bucket.
 11. Retrieve an object from the S3 bucket as JSON.
 12. List objects in the S3 bucket that match a regex pattern.
 13. Delete an object from the S3 bucket.
