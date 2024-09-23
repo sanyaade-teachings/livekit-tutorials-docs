@@ -88,7 +88,7 @@ The server application extends the [Node.js server tutorial](../application-serv
 
 Before we dive into the code of each endpoint, let's first see the changes introduced in the `index.js` file:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L9-L27' target='_blank'>index.js</a>" linenums="9" hl_lines="4 8 16-19"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L9-L28' target='_blank'>index.js</a>" linenums="9" hl_lines="4 8-9 17-20"
 const SERVER_PORT = process.env.SERVER_PORT || 6080;
 
 // LiveKit configuration
@@ -97,6 +97,7 @@ const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY || "devkey";
 const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET || "secret";
 
 const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? "recordings/"; // (2)!
+const RECORDING_FILE_PORTION_SIZE = 5 * 1024 * 1024; // (3)!
 
 const app = express();
 
@@ -107,30 +108,32 @@ app.use(express.raw({ type: "application/webhook+json" }));
 // Set the static files location
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "../public"))); // (3)!
+app.use(express.static(path.join(__dirname, "../public"))); // (4)!
 ```
 
 1. The URL of the LiveKit server.
 2. The path where recordings will be stored in the S3 bucket.
-3. Set the `public` directory as the static files location.
+3. The portion size of the recording that will be sent to the client in each request. This value is set to `5 MB`.
+4. Set the `public` directory as the static files location.
 
-There are two new environment variables:
+There are three new environment variables:
 
 -   `LIVEKIT_URL`: The URL of the LiveKit server.
 -   `RECORDINGS_PATH`: The path where recordings will be stored in the S3 bucket.
+-   `RECORDING_FILE_PORTION_SIZE`: The portion size of the recording that will be sent to the client in each request.
 
 Besides, the `index.js` file configures the server to serve static files from the `public` directory.
 
 It also initializes the `EgressClient`, which will help interacting with [Egress API](https://docs.livekit.io/realtime/egress/api/){:target="\_blank"} to manage recordings, and the `S3Service`, which will help interacting with the S3 bucket:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L58-L59' target='_blank'>index.js</a>" linenums="58"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L59-L60' target='_blank'>index.js</a>" linenums="59"
 const egressClient = new EgressClient(LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
 const s3Service = new S3Service();
 ```
 
 The `POST /token` endpoint has been modified to add the `roomRecord` permission to the access token, so that participants can start recording a room:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L29-L44' target='_blank'>index.js</a>" linenums="29" hl_lines="13"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L30-L45' target='_blank'>index.js</a>" linenums="30" hl_lines="13"
 app.post("/token", async (req, res) => {
     const roomName = req.body.roomName;
     const participantName = req.body.participantName;
@@ -157,7 +160,7 @@ Now let's explore the code for each recording feature:
 
 The `POST /recordings/start` endpoint starts the recording of a room. It receives the room name of the room to record as parameter and returns the recording metadata:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L61-L95' target='_blank'>index.js</a>" linenums="61"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L62-L96' target='_blank'>index.js</a>" linenums="62"
 app.post("/recordings/start", async (req, res) => {
     const { roomName } = req.body;
 
@@ -210,7 +213,7 @@ This endpoint does the following:
 1.  Obtains the `roomName` parameter from the request body. If it is not available, it returns a `400` error.
 2.  Check if there is already an active recording for the room. If there is, it returns a `409` error to prevent starting a new recording. To accomplish this, we use the `getActiveRecordingByRoom` function, which lists all active egresses for a specified room by calling the `listEgress` method of the `EgressClient` with the `roomName` and `active` parameters, and then returns the egress ID of the first active egress found:
 
-    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L129-L138' target='_blank'>index.js</a>" linenums="129"
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L130-L139' target='_blank'>index.js</a>" linenums="130"
     const getActiveRecordingByRoom = async (roomName) => {
         try {
             // List all active egresses for the room
@@ -239,7 +242,7 @@ This endpoint does the following:
 
 The `POST /recordings/stop` endpoint stops the recording of a room. It receives the room name of the room to stop recording as a parameter and returns the updated recording metadata:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L97-L127' target='_blank'>index.js</a>" linenums="97"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L98-L128' target='_blank'>index.js</a>" linenums="98"
 app.post("/recordings/stop", async (req, res) => {
     const { roomName } = req.body;
 
@@ -290,51 +293,34 @@ This endpoint does the following:
 
 The `GET /recordings` endpoint lists all recordings stored in the S3 bucket. This endpoint also allows filtering recordings by room name or room ID:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L140-L174' target='_blank'>index.js</a>" linenums="140"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L141-L159' target='_blank'>index.js</a>" linenums="141"
 app.get("/recordings", async (req, res) => {
     const roomName = req.query.roomName?.toString();
     const roomId = req.query.roomId?.toString();
 
     try {
-        const keyStart = RECORDINGS_PATH + (roomName ? `${roomName}` + (roomId ? `-${roomId}` : "") : ""); // (1)!
+        const keyStart = RECORDINGS_PATH + (roomName ? `${roomName}-` + (roomId ? roomId : "") : ""); // (1)!
         const keyEnd = ".mp4.json";
         const regex = new RegExp(`^${keyStart}.*${keyEnd}$`); // (2)!
 
         // List all egress metadata files in the recordings path that match the regex
         const payloadKeys = await s3Service.listObjects(RECORDINGS_PATH, regex); // (3)!
         const recordings = await Promise.all(payloadKeys.map((payloadKey) => getRecordingInfo(payloadKey))); // (4)!
-        res.json({ recordings }); // (5)!
+        const sortedRecordings = filterAndSortRecordings(recordings, roomName, roomId); // (5)!
+        res.json({ recordings: sortedRecordings }); // (6)!
     } catch (error) {
         console.error("Error listing recordings.", error);
         res.status(500).json({ errorMessage: "Error listing recordings" });
     }
 });
-
-const getRecordingInfo = async (payloadKey) => {
-    // Get the egress metadata file as JSON
-    const data = await s3Service.getObjectAsJson(payloadKey); // (6)!
-
-    // Get the recording file size
-    const recordingKey = payloadKey.replace(".json", "");
-    const size = await s3Service.getObjectSize(recordingKey); // (7)!
-
-    const recordingName = recordingKey.split("/").pop();
-    const recording = {
-        name: recordingName,
-        startedAt: Number(data.started_at) / 1000000,
-        size: size
-    };
-    return recording;
-};
 ```
 
 1. Define the start of the key (path) depending on the `roomName` and `roomId` query parameters.
 2. Create a regex pattern with the start and end of the key.
 3. List all Egress metadata files in the recordings path in the S3 bucket that match the regex.
 4. Retrieve the recording metadata for each recording that matches the regex.
-5. Return the list of recordings to the client.
-6. Get the egress metadata file as JSON.
-7. Get the recording file size.
+5. Filter the recordings by room name and room ID and sort them by start time.
+6. Return the list of recordings to the client.
 
 This endpoint does the following:
 
@@ -342,16 +328,62 @@ This endpoint does the following:
 2.  Defines the start of the key (path) depending on the `roomName` and `roomId` query parameters.
 3.  Creates a regex pattern with the start and end of the key.
 4.  Lists all Egress metadata files in the recordings path in the S3 bucket that match the regex. To accomplish this, we use the `listObjects` method of the `S3Service` with the `RECORDINGS_PATH` and `regex` as parameters.
-5.  Retrieves the recording metadata for each recording that matches the regex. To accomplish this, we use the `getRecordingInfo` function, which retrieves the egress metadata file as JSON and the recording file size by calling the `getObjectAsJson` and `getObjectSize` methods of the `S3Service`, respectively. It then extracts the recording name from the recording key and returns the recording metadata.
-6.  Returns the list of recordings to the client.
+5.  Retrieves the recording metadata for each recording that matches the regex. To accomplish this, we use the `getRecordingInfo` function, which retrieves the egress metadata file as JSON and the recording file size by calling the `getObjectAsJson` and `getObjectSize` methods of the `S3Service`, respectively. It then extracts the recording name from the recording key and returns the recording metadata:
+
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L161-L179' target='_blank'>index.js</a>" linenums="161"
+    const getRecordingInfo = async (payloadKey) => {
+        // Get the egress metadata file as JSON
+        const data = await s3Service.getObjectAsJson(payloadKey); // (1)!
+
+        // Get the recording file size
+        const recordingKey = payloadKey.replace(".json", "");
+        const size = await s3Service.getObjectSize(recordingKey); // (2)!
+
+        const recordingName = recordingKey.split("/").pop();
+        const recording = {
+            id: data.egress_id,
+            name: recordingName,
+            roomName: data.room_name,
+            roomId: data.room_id,
+            startedAt: Number(data.started_at) / 1000000,
+            size: size
+        };
+        return recording;
+    };
+    ```
+
+    1. Get the egress metadata file as JSON.
+    2. Get the recording file size.
+
+6.  Filter the recordings by room name and room ID and sort them by start time. To accomplish this, we use the `filterAndSortRecordings` function:
+
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L181-L191' target='_blank'>index.js</a>" linenums="181"
+    const filterAndSortRecordings = (recordings, roomName, roomId) => {
+        let filteredRecordings = recordings;
+
+        if (roomName || roomId) {
+            filteredRecordings = recordings.filter((recording) => {
+                return (!roomName || recording.roomName === roomName) && (!roomId || recording.roomId === roomId); // (1)!
+            });
+        }
+
+        return filteredRecordings.sort((a, b) => b.startedAt - a.startedAt); // (2)!
+    };
+    ```
+
+    1. Filter the recordings by room name and room ID if they are provided.
+    2. Sort the recordings by start time in descending order.
+
+7.  Returns the list of recordings to the client.
 
 #### Get recording
 
-The `GET /recordings/:recordingName` endpoint retrieves a recording from the S3 bucket and returns it as a stream:
+The `GET /recordings/:recordingName` endpoint retrieves a specific portion of a recording from the S3 bucket and returns it as a stream. The server sends the recording file in portions of `5 MB` each time the client requests a range of the recording file. This is done to prevent loading the entire recording file into memory and to allow the client to play the recording while it is being downloaded and seek to a specific time:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L176-L201' target='_blank'>index.js</a>" linenums="176"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L193-L222' target='_blank'>index.js</a>" linenums="193"
 app.get("/recordings/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
+    const { range } = req.headers;
     const key = RECORDINGS_PATH + recordingName;
     const exists = await s3Service.exists(key); // (1)!
 
@@ -362,15 +394,18 @@ app.get("/recordings/:recordingName", async (req, res) => {
 
     try {
         // Get the recording file from S3
-        const { body, size } = await s3Service.getObject(key); // (2)!
+        const { stream, size, start, end } = await getRecordingStream(recordingName, range); // (2)!
 
         // Set the response headers
-        res.setHeader("Content-Type", "video/mp4"); // (3)!
-        res.setHeader("Content-Length", size);
-        res.setHeader("Accept-Ranges", "bytes");
+        res.status(206); // (3)!
+        res.setHeader("Cache-Control", "no-cache"); // (4)!
+        res.setHeader("Content-Type", "video/mp4"); // (5)!
+        res.setHeader("Accept-Ranges", "bytes"); // (6)!
+        res.setHeader("Content-Range", `bytes ${start}-${end}/${size}`); // (7)!
+        res.setHeader("Content-Length", end - start + 1); // (8)!
 
         // Pipe the recording file to the response
-        body.pipe(res).on("finish", () => res.end()); // (4)!
+        body.pipe(res).on("finish", () => res.end()); // (9)!
     } catch (error) {
         console.error("Error getting recording.", error);
         res.status(500).json({ errorMessage: "Error getting recording" });
@@ -380,22 +415,69 @@ app.get("/recordings/:recordingName", async (req, res) => {
 
 1. Check if the recording exists in the S3 bucket.
 2. Get the recording file from the S3 bucket.
-3. Set the response headers.
-4. Pipe the recording file to the response.
+3. Set the response status code to `206 Partial Content`.
+4. Set the `Cache-Control` header as `no-cache`.
+5. Set the `Content-Type` header as `video/mp4`.
+6. Set the `Accept-Ranges` header as `bytes`.
+7. Set the `Content-Range` header with the start and end of the recording file and its size.
+8. Set the `Content-Length` header as the size of the recording file portion.
+9. Pipe the recording file to the response.
 
 This endpoint does the following:
 
 1.  Extracts the `recordingName` parameter from the request.
 2.  Checks if the recording exists in the S3 bucket by calling the `exists` method of the `S3Service` with the `key` as a parameter. If the recording does not exist, it returns a `404` error.
-3.  Gets the recording file from the S3 bucket by calling the `getObject` method of the `S3Service` with the `key` as a parameter.
-4.  Sets the response headers: `Content-Type` as `video/mp4`, `Content-Length` as the recording file size, and `Accept-Ranges` as `bytes`.
+3.  Gets the requested range of the recording file by calling the `getRecordingStream` function:
+
+    ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L224-L236' target='_blank'>index.js</a>" linenums="224"
+    const getRecordingStream = async (recordingName, range) => {
+        const key = RECORDINGS_PATH + recordingName;
+        const size = await s3Service.getObjectSize(key); // (1)!
+
+        // Get the requested range
+        const parts = range?.replace(/bytes=/, "").split("-");
+        const start = range ? parseInt(parts[0], 10) : 0; // (2)!
+        const endRange = parts[1] ? parseInt(parts[1], 10) : start + RECORDING_FILE_PORTION_SIZE; // (3)!
+        const end = Math.min(endRange, size - 1); // (4)!
+
+        const stream = await s3Service.getObject(key, { start, end }); // (5)!
+        return { stream, size, start, end };
+    };
+    ```
+
+    1. Get the size of the recording file.
+    2. Get the start of the requested range.
+    3. Get the end of the requested range or set it to the start plus the established portion size.
+    4. Get the minimum between the end of the requested range and the size of the recording file minus one.
+    5. Get the recording file from the S3 bucket with the requested range.
+
+    This function does the following:
+
+    1.  Gets the size of the recording file by calling the `getObjectSize` method of the `S3Service` with the `key` as a parameter.
+    2.  Extracts the start of the requested range from the `range` header.
+    3.  Extracts the end of the requested range from the `range` header. If the end is not provided, it sets the end to the start plus the established portion size.
+    4.  Gets the minimum between the end of the requested range and the size of the recording file minus one. This is done to prevent requesting a range that exceeds the recording file size.
+    5.  Gets the recording file from the S3 bucket with the requested range by calling the `getObject` method of the `S3Service` with the `key` and `range` as parameters.
+
+4.  Sets the response headers:
+
+    -   `Cache-Control`: `no-cache`.
+    -   `Content-Type`: `video/mp4`.
+    -   `Accept-Ranges`: `bytes`.
+    -   `Content-Range`: The start and end of the recording file and its size.
+    -   `Content-Length`: The size of the recording file portion.
+
 5.  Pipes the recording file to the response.
+
+!!! info "Direct access to S3 bucket"
+
+    With this approach, the backend acts as a proxy between the client and S3, which may result in increased server resource usage. To avoid this, it is more efficient to provide the client with a **pre-signed URL**, allowing direct access to the recording files from the S3 bucket. In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement this method, along with a discussion of its advantages and disadvantages.
 
 #### Delete recording
 
 The `DELETE /recordings/:recordingName` endpoint deletes a recording from the S3 bucket:
 
-```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L203-L221' target='_blank'>index.js</a>" linenums="203"
+```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/src/index.js#L238-L256' target='_blank'>index.js</a>" linenums="238"
 app.delete("/recordings/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
     const key = RECORDINGS_PATH + recordingName;
@@ -481,22 +563,23 @@ export class S3Service {
     }
     // (9)!
     async getObjectSize(key) {
-        const { ContentLength } = await this.headObject(key);
-        return ContentLength;
+        const { ContentLength: size } = await this.headObject(key);
+        return size;
     }
     // (10)!
-    async getObject(key) {
+    async getObject(key, range) {
         const params = {
             Bucket: S3_BUCKET,
-            Key: key
+            Key: key,
+            Range: range ? `bytes=${range.start}-${range.end}` : undefined
         };
         const command = new GetObjectCommand(params);
-        const { Body: body, ContentLength: size } = await this.run(command);
-        return { body, size };
+        const { Body: body } = await this.run(command);
+        return body;
     }
     // (11)!
     async getObjectAsJson(key) {
-        const { body } = await this.getObject(key);
+        const body = await this.getObject(key);
         const stringifiedData = await body.transformToString();
         return JSON.parse(stringifiedData);
     }
@@ -572,7 +655,7 @@ In order to update the user interface of all participants in the room according 
 
 !!! warning "Limitations of the `RoomEvent.RecordingStatusChanged` event"
 
-    By using the `RoomEvent.RecordingStatusChanged` event, we can only detect when the recording has started or stopped, but not other states like `starting`, `stopping` or `failed`. Additionally, when the recording stops, the event is not triggered until the recorder participant leaves the room, causing a delay of approximately 10-15 seconds between the stop and when participants are notified.
+    By using the `RoomEvent.RecordingStatusChanged` event, we can only detect when the recording has started or stopped, but not other states like `starting`, `stopping` or `failed`. Additionally, when the recording stops, the event is not triggered until the recorder participant leaves the room, causing a delay of 20 seconds approximately between the stop and when participants are notified.
 
     To overcome these limitations, you can follow the steps described in the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, where we implement a custom notification system. This system informs participants about the recording status by listening to webhook events and updating room metadata.
 
@@ -712,3 +795,11 @@ function displayRecording(recordingName) {
 #### General recording page
 
 The `recordings.html` file defines the HTML for the general recording page. This page lists all available recordings from all rooms and allows the user to filter them by room name. It also provides buttons to play and delete each recording.
+
+<div class="grid-container">
+
+<div class="grid-50"><p><a class="glightbox" href="/assets/images/advanced-features/recording3.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="/assets/images/advanced-features/recording3.png" loading="lazy"/></a></p></div>
+
+<div class="grid-50"><p><a class="glightbox" href="/assets/images/advanced-features/recording4.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img src="/assets/images/advanced-features/recording4.png" loading="lazy"/></a></p></div>
+
+</div>
