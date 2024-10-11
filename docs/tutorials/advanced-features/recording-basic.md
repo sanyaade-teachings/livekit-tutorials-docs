@@ -78,7 +78,7 @@ And the following essential frontend files under the `public` directory:
 
 ### Backend
 
-The server application extends the [Node.js server tutorial](../application-server/node.md) by adding the following REST API endpoints:
+The server application extends the [Node.js server tutorial](../application-server/node.md){:target="\_blank"} by adding the following REST API endpoints:
 
 -   **`POST /recordings/start`**: Starts the recording of a room.
 -   **`POST /recordings/stop`**: Stops the recording of a room.
@@ -232,7 +232,7 @@ This endpoint does the following:
 
         The `EncodedFileOutput` class allows you to save the recording metadata to an external file. If you don't explicitly set the `disableManifest` property to `true`, the metadata will be saved in the same folder and with the same name as the recording file, but with a `.json` extension. This metadata file will contain information such as the egress ID, the recording start time, and the name and ID of the room recorded.
 
-        This information may be insufficient depending on your requirements (e.g., you can't get the recording duration). If this is the case, you can follow the steps described in the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, where we show how to save all necessary metadata in a separate file listening to webhook events.
+        This information may be insufficient depending on your requirements (e.g., you can't get the recording duration). If this is the case, you can follow the steps described in the [advanced recording tutorial](./recording-advanced.md){:target="\_blank"}, where we show how to save all necessary metadata in a separate file listening to webhook events.
 
 4.  Starts a `RoomCompositeEgress` to record all participants in the room by calling the `startRoomCompositeEgress` method of the `EgressClient` with `roomName` and `fileOutput` as parameters.
 5.  Extracts the recording name from the `fileResults` array.
@@ -471,7 +471,7 @@ This endpoint does the following:
 
 !!! info "Direct access to S3 bucket"
 
-    With this approach, the backend acts as a proxy between the client and S3, which may result in increased server resource usage. To avoid this, it is more efficient to provide the client with a **presigned URL**, allowing direct access to the recording files from the S3 bucket. In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement this method, along with a discussion of its advantages and disadvantages.
+    With this approach, the backend acts as a proxy between the client and S3, which may result in increased server resource usage. To avoid this, it is more efficient to provide the client with a **presigned URL**, allowing direct access to the recording files from the S3 bucket. In the [advanced recording tutorial](./recording-advanced.md){:target="\_blank"}, we show how to implement this method, along with a discussion of its advantages and disadvantages.
 
 #### Delete recording
 
@@ -657,7 +657,7 @@ In order to update the user interface of all participants in the room according 
 
     By using the `RoomEvent.RecordingStatusChanged` event, we can only detect when the recording has started or stopped, but not other states like `starting`, `stopping` or `failed`. Additionally, when the recording stops, the event is not triggered until the recorder participant leaves the room, causing a delay of 20 seconds approximately between the stop and when participants are notified.
 
-    To overcome these limitations, you can follow the steps described in the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, where we implement a custom notification system. This system informs participants about the recording status by listening to webhook events and updating room metadata.
+    To overcome these limitations, you can follow the steps described in the [advanced recording tutorial](./recording-advanced.md){:target="\_blank"}, where we implement a custom notification system. This system informs participants about the recording status by listening to webhook events and updating room metadata.
 
 ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-basic-node/public/app.js#L20-L76' target='_blank'>app.js</a>" linenums="20" hl_lines="25-28 51-52"
 async function joinRoom() {
@@ -770,7 +770,7 @@ The `showRecordingList` function creates a new `div` element for each recording 
 
     When a recording is deleted, it is removed from the recording list, but only for the user who initiated the deletion. Other users will continue to see the recording in their list until it is refreshed.
 
-    In the [advanced recording tutorial](./recording-advanced){:target="\_blank"}, we show how to implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
+    In the [advanced recording tutorial](./recording-advanced.md){:target="\_blank"}, we show how to implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
 
 When the user clicks the play button, the `displayRecording` function is called to play the recording. This function opens a dialog window with an embedded video element and sets the source of the video to the [get recording endpoint](#get-recording) of the server application:
 
