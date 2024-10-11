@@ -11,9 +11,9 @@ This tutorial improves the [basic recording tutorial](/tutorials/advanced-featur
 
 ## Running this tutorial
 
-### 1. Run LiveKit Server
+### 1. Run LiveKit Server and Egress
 
---8<-- "docs/tutorials/shared/run-livekit-server.md"
+--8<-- "docs/tutorials/shared/run-livekit-server-and-egress.md"
 
 ### 2. Download the tutorial code
 
