@@ -2,12 +2,12 @@
 
 [Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/advanced-features/openvidu-recording-improved-node){ .md-button target=\_blank }
 
-This tutorial fixes the issues with the [basic recording tutorial](/tutorials/advanced-features/recording-basic){target="\_blank"} by doing the following:
+This tutorial improves the [basic recording tutorial](/tutorials/advanced-features/recording-basic){target="\_blank"} by doing the following:
 
--   **Poor recording metadata**: Listen to webhook events and save all necessary metadata in a separate file.
--   **Limitations of the `RoomEvent.RecordingStatusChanged` event**: Implement a custom notification system to inform participants about the recording status by listening to webhook events and updating room metadata.
--   **Not notifying participants about the deletion of a recording**: Implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
--   **Increased server resource usage when proxying recordings through the backend**: Add an additional method to allow access to recording files directly from the S3 bucket by creating a presigned URL.
+-   **Complete recording metadata**: Listen to webhook events and save all necessary metadata in a separate file.
+-   **Real time recording status notification**: Implement a custom notification system to inform participants about the recording status by listening to webhook events and updating room metadata.
+-   **Recording deletion notification**: Implement a custom notification system that alerts all participants of a recording's deletion by sending data messages.
+-   **Direct access to recording files**: Add an additional method to allow access to recording files directly from the S3 bucket by creating a presigned URL.
 
 ## Running this tutorial
 
@@ -59,7 +59,7 @@ Once the server is up and running, you can test the application by visiting [`ht
 
     Access your application client through [`https://xxx-yyy-zzz-www.openvidu-local.dev:6443`](https://xxx-yyy-zzz-www.openvidu-local.dev:6443){target="_blank"}, where `xxx-yyy-zzz-www` part of the domain is your LAN private IP address with dashes (-) instead of dots (.). For more information, see section [Accessing your app from other devices in your network](/openvidu-vs-livekit/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
 
-    **Limitation**: Playing recordings with the `URL` strategy from other devices in your local network is not possible due to MinIO not being exposed. To play recordings from other devices, you need to change the environment variable `RECORDING_PLAYBACK_STRATEGY` to `PROXY`.
+    **Limitation**: Playing recordings with the `S3` strategy from other devices in your local network is not possible due to MinIO not being exposed. To play recordings from other devices, you need to change the environment variable `RECORDING_PLAYBACK_STRATEGY` to `PROXY`.
 
 ## Enhancements
 
@@ -101,7 +101,7 @@ The backend has been refactored to prevent code duplication and improve readabil
 
     export const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? "recordings/";
     export const RECORDINGS_METADATA_PATH = ".metadata/";
-    export const RECORDING_PLAYBACK_STRATEGY = process.env.RECORDING_PLAYBACK_STRATEGY || "URL"; // PROXY or URL
+    export const RECORDING_PLAYBACK_STRATEGY = process.env.RECORDING_PLAYBACK_STRATEGY || "S3"; // PROXY or S3
     export const RECORDING_FILE_PORTION_SIZE = 5 * 1024 * 1024; // 5MB
     ```
 
@@ -497,7 +497,7 @@ This method does the following:
 
 ### Accessing recording files directly from the S3 bucket
 
-In this tutorial, we have added an additional method to allow access to recording files directly from the S3 bucket by creating a presigned URL. To accomplish this, we have created a new endpoint (`GET /recordings/:recordingName/url`) to get the recording URL depending on the playback strategy defined in the environment variable `RECORDING_PLAYBACK_STRATEGY`, whose value can be `PROXY` or `URL`:
+In this tutorial, we have added an additional method to allow access to recording files directly from the S3 bucket by creating a presigned URL. To accomplish this, we have created a new endpoint (`GET /recordings/:recordingName/url`) to get the recording URL depending on the playback strategy defined in the environment variable `RECORDING_PLAYBACK_STRATEGY`, whose value can be `PROXY` or `S3`:
 
 ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/controllers/recording.controller.js#L104-L127' target='_blank'>recording.controller.js</a>" linenums="104"
 recordingController.get("/:recordingName/url", async (req, res) => {
@@ -516,7 +516,7 @@ recordingController.get("/:recordingName/url", async (req, res) => {
     }
 
     try {
-        // If the recording playback strategy is "URL", return a signed URL to access the recording directly from S3
+        // If the recording playback strategy is "S3", return a signed URL to access the recording directly from S3
         const recordingUrl = await recordingService.getRecordingUrl(recordingName); // (3)!
         res.json({ recordingUrl });
     } catch (error) {
@@ -528,14 +528,14 @@ recordingController.get("/:recordingName/url", async (req, res) => {
 
 1. Check if the recording exists.
 2. Return the `GET /recordings/:recordingName` endpoint URL if the playback strategy is `PROXY`.
-3. Create a presigned URL to access the recording directly from the S3 bucket if the playback strategy is `URL`.
+3. Create a presigned URL to access the recording directly from the S3 bucket if the playback strategy is `S3`.
 
 This endpoint does the following:
 
 1.  Extracts the `recordingName` parameter from the request.
 2.  Checks if the recording exists. If it does not exist, it returns a `404` error.
 3.  If the playback strategy is `PROXY`, it returns the `GET /recordings/:recordingName` endpoint URL to get the recording file from the backend.
-4.  If the playback strategy is `URL`, it creates a presigned URL to access the recording directly from the S3 bucket by calling the `getRecordingUrl` method of the `RecordingService` with the `recordingName` as a parameter. This method simply calls the `getObjectUrl` method of the `S3Service` with the key of the recording as a parameter:
+4.  If the playback strategy is `S3`, it creates a presigned URL to access the recording directly from the S3 bucket by calling the `getRecordingUrl` method of the `RecordingService` with the `recordingName` as a parameter. This method simply calls the `getObjectUrl` method of the `S3Service` with the key of the recording as a parameter:
 
     ```javascript title="<a href='https://github.com/OpenVidu/openvidu-livekit-tutorials/blob/master/advanced-features/openvidu-recording-node/src/services/s3.service.js#L78-L85' target='_blank'>s3.service.js</a>" linenums="78"
     async getObjectUrl(key) {
