@@ -1,6 +1,6 @@
 # openvidu-recording-basic-node
 
-[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/advanced-features/openvidu-recording-node){ .md-button target=\_blank }
+[Source code :simple-github:](https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/advanced-features/openvidu-recording-basic-node){ .md-button target=\_blank }
 
 This tutorial is a simple video-call application, built upon [Node.js server](../application-server/node.md){:target="\_blank"} and [JavaScript client](../application-client/javascript.md){:target="\_blank"} tutorials, and extends them by adding recording capabilities:
 
