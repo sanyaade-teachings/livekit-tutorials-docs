@@ -108,9 +108,9 @@ Explore more advanced features of LiveKit! For now, we have implemented a basic 
 
 <div class="tutorials-container" markdown>
 
-[:material-record-rec:{.icon .lg-icon .tab-icon} **Recording Basic**](./tutorials/advanced-features/recording-basic.md){ .md-button .md-button--primary .tutorial-link }
+[:material-record-rec:{.icon .lg-icon .tab-icon} **Recording Basic**](./tutorials/advanced-features/recording-basic.md){ .md-button .md-button--primary .tutorial-link .no-width }
 
-[:material-record-rec:{.icon .lg-icon .tab-icon} **Recording ADV**](./tutorials/advanced-features/recording-advanced.md){ .md-button .md-button--primary .tutorial-link }
+[:material-record-rec:{.icon .lg-icon .tab-icon} **Recording Advanced**](./tutorials/advanced-features/recording-advanced.md){ .md-button .md-button--primary .tutorial-link .no-width }
 
 </div>
 
