@@ -9,19 +9,25 @@ This is a minimal server application built for Rust with [Axum](https://github.c
 
 It internally uses the [LiveKit Rust SDK](https://github.com/livekit/rust-sdks){:target="\_blank"}.
 
-## Running this application
+## Running this tutorial
 
-Download the tutorial code:
+### 1. Run LiveKit Server
+
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
+
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
---8<-- "docs/tutorials/shared/rust.md"
+### 3. Run the server application
 
-!!! info
+--8<-- "docs/tutorials/shared/application-server/rust.md"
 
-    You can run any [Application Client](../application-client/index.md) to test against this server right away.
+### 4. Run a client application to test against this server
+
+--8<-- "docs/tutorials/shared/application-client/application-client-tabs.md"
 
 ## Understanding the code
 

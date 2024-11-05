@@ -9,19 +9,25 @@ This is a minimal server application built for Go with [Gin](https://gin-gonic.c
 
 It internally uses the [LiveKit Go SDK](https://pkg.go.dev/github.com/livekit/server-sdk-go){:target="\_blank"}.
 
-## Running this application
+## Running this tutorial
 
-Download the tutorial code:
+### 1. Run LiveKit Server
+
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
+
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
---8<-- "docs/tutorials/shared/go.md"
+### 3. Run the server application
 
-!!! info
+--8<-- "docs/tutorials/shared/application-server/go.md"
 
-    You can run any [Application Client](../application-client/index.md) to test against this server right away.
+### 4. Run a client application to test against this server
+
+--8<-- "docs/tutorials/shared/application-client/application-client-tabs.md"
 
 ## Understanding the code
 

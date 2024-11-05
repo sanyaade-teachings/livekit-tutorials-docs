@@ -9,23 +9,25 @@ This is a minimal server application built for PHP  that allows:
 
 It internally uses [LiveKit PHP SDK](https://github.com/agence104/livekit-server-sdk-php){:target="\_blank"}.
 
-## Running this application
+## Running this tutorial
 
-Download the tutorial code:
+### 1. Run LiveKit Server
+
+--8<-- "docs/tutorials/shared/run-livekit-server.md"
+
+### 2. Download the tutorial code
 
 ```bash
 git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 ```
 
---8<-- "docs/tutorials/shared/php.md"
+### 3. Run the server application
 
-!!! info
+--8<-- "docs/tutorials/shared/application-server/php.md"
 
-    You can run any [Application Client](../application-client/index.md) to test against this server right away.
+### 4. Run a client application to test against this server
 
-!!! warning
-
-    LiveKit PHP SDK requires library [BCMath](https://www.php.net/manual/en/book.bc.php){:target="\_blank"}. This is available out-of-the-box in PHP for Windows, but a manual installation might be necessary in other OS. Run **`sudo apt install php-bcmath`** or **`sudo yum install php-bcmath`**
+--8<-- "docs/tutorials/shared/application-client/application-client-tabs.md"
 
 ## Understanding the code
 
