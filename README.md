@@ -22,9 +22,9 @@ docker run --rm -it -v ${PWD}:/docs squidfunk/mkdocs-material build
 
 ## Updating tutorials
 
-Whenever any changes are made to the tutorials documentation, theses changes must be also reflected in the "tutorials" section of the official OpenVidu documentation, which is located in the [openvidu.io repository](https://github.com/OpenVidu/openvidu.io).
+Whenever any changes are made to the tutorials documentation, theses changes must be also reflected in repository [openvidu.io](https://github.com/OpenVidu/openvidu.io) so they end up available in [openvidu.io/docs/getting-started](https://openvidu.io/docs/getting-started/).
 
-In order to publish the changes in the tutorials, follow these steps:
+To apply changes in the web _openvidu.io_:
 
--   In this repository, push the changes to the `main` branch, go to `Actions` and run the workflow named "Publish Web" selecting the `main` branch.
--   In the [openvidu.io repository](https://github.com/OpenVidu/openvidu.io), push the changes to the `main` branch and execute the script [Overwriting the latest version](https://github.com/OpenVidu/openvidu.io#overwriting-the-latest-version) to update the latest version of the documentation.
+- In this repository, push the changes to tutorials documentation to the main branch, run GitHub Action [Publish Web](https://github.com/OpenVidu/livekit-tutorials-docs/actions/workflows/publish-web.yaml) selecting the `main` branch.
+- In repository [openvidu.io](https://github.com/OpenVidu/openvidu.io), push the changes to the `main` branch and run GitHub Action to [overwrite the latest version](#overwriting-the-latest-version).
