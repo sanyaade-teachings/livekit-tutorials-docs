@@ -26,5 +26,5 @@ Whenever any changes are made to the tutorials documentation, theses changes mus
 
 To apply changes in the web _openvidu.io_:
 
-- In this repository, push the changes to tutorials documentation to the main branch, run GitHub Action [Publish Web](https://github.com/OpenVidu/livekit-tutorials-docs/actions/workflows/publish-web.yaml) selecting the `main` branch.
-- In repository [openvidu.io](https://github.com/OpenVidu/openvidu.io), push the changes to the `main` branch and run GitHub Action to [overwrite the latest version](#overwriting-the-latest-version).
+- In this repository, push the changes to tutorials documentation to the `main` branch and run GitHub Action [Publish Web](https://github.com/OpenVidu/livekit-tutorials-docs/actions/workflows/publish-web.yaml) selecting the `main` branch.
+- In repository [openvidu.io](https://github.com/OpenVidu/openvidu.io), push the changes to the `main` branch and run GitHub Action to [overwrite the latest version](https://github.com/OpenVidu/openvidu.io#overwriting-the-latest-version).
