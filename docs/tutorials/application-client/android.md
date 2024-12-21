@@ -15,7 +15,7 @@ It uses the [LiveKit Android Kotlin SDK](https://docs.livekit.io/client-sdk-andr
 
 ### 1. Run LiveKit Server
 
---8<-- "docs/tutorials/shared/run-livekit-server.md"
+--8<-- "shared/run-livekit-server.md"
 
 ### 2. Download the tutorial code
 
@@ -25,11 +25,11 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ### 3. Run a server application
 
---8<-- "docs/tutorials/shared/application-server/application-server-tabs.md"
+--8<-- "shared/application-server/application-server-tabs.md"
 
 ### 4. Run the client application
 
---8<-- "docs/tutorials/shared/application-client/android.md"
+--8<-- "shared/application-client/android.md"
 
 ## Understanding the code
 

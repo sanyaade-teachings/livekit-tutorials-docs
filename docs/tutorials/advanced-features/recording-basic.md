@@ -14,7 +14,7 @@ This tutorial is a simple video-call application, built upon [Node.js server](..
 
 ### 1. Run LiveKit Server and Egress
 
---8<-- "docs/tutorials/shared/run-livekit-server-and-egress.md"
+--8<-- "shared/run-livekit-server-and-egress.md"
 
 ### 2. Download the tutorial code
 

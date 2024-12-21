@@ -26,4 +26,4 @@ Once the server is up and running, you can test the application by visiting [`ht
 
 </div>
 
---8<-- "docs/tutorials/shared/testing-other-devices.md"
+--8<-- "shared/testing-other-devices.md"

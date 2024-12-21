@@ -12,7 +12,7 @@ Whenever you are ready to deploy your real-time application, OpenVidu for produc
 
 === "Run OpenVidu locally"
 
-	--8<-- "docs/tutorials/shared/run-openvidu-locally.md"
+	--8<-- "shared/run-openvidu-locally.md"
 
 ## Egress and Ingress out of the box
 
@@ -67,10 +67,13 @@ When using OpenVidu Local Deployment, you can access OpenVidu Server (which is 1
 | Application Server (backend)      | [http://localhost:6080](http://localhost:6080)                 | [https://xxx-yyy-zzz-www.openvidu-local.dev:6443](https://xxx-yyy-zzz-www.openvidu-local.dev:6443)                            |
 | OpenVidu (LiveKit Compatible) URL | [http://localhost:7880](http://localhost:7880)                 | [https://xxx-yyy-zzz-www.openvidu-local.dev:7443](https://xxx-yyy-zzz-www.openvidu-local.dev:7443)                            |
 
-!!!info
+!!! info
+    
     - If you are developing locally, use `localhost` to access the services, but if you want to test your application from other devices on your network, use the `openvidu-local.dev` URLs.
     - Replace `xxx-yyy-zzz-www` with your local IP address. You can find it in the `.env` file in the `LAN_PRIVATE_IP` variable.
-!!!warning
+
+!!! warning
+    
     If the URL isn't working because the IP address is incorrect or the installation script couldn't detect it automatically, you can update the `LAN_PRIVATE_IP` value in the `.env` file and restart the deployment with `docker compose up`.
 
 

@@ -4,7 +4,7 @@ Alternatively, you can use OpenVidu, which is a fully compatible LiveKit distrib
 
 === "Run OpenVidu locally"
 
-    --8<-- "docs/tutorials/shared/run-openvidu-locally.md"
+    --8<-- "shared/run-openvidu-locally.md"
 
 === "Deploy OpenVidu"
 

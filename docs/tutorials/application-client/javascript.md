@@ -15,7 +15,7 @@ It uses the [LiveKit JS SDK](https://docs.livekit.io/client-sdk-js){:target="\_b
 
 ### 1. Run LiveKit Server
 
---8<-- "docs/tutorials/shared/run-livekit-server.md"
+--8<-- "shared/run-livekit-server.md"
 
 ### 2. Download the tutorial code
 
@@ -25,11 +25,11 @@ git clone https://github.com/OpenVidu/openvidu-livekit-tutorials.git
 
 ### 3. Run a server application
 
---8<-- "docs/tutorials/shared/application-server/application-server-tabs.md"
+--8<-- "shared/application-server/application-server-tabs.md"
 
 ### 4. Run the client application
 
---8<-- "docs/tutorials/shared/application-client/javascript.md"
+--8<-- "shared/application-client/javascript.md"
 
 ## Understanding the code
 
@@ -92,7 +92,7 @@ The `app.js` file defines the following variables:
 -   `LivekitClient`: The LiveKit JS SDK object, which is the entry point to the LiveKit JS SDK.
 -   `room`: The room object, which represents the video call room.
 
---8<-- "docs/tutorials/shared/configure-urls.md"
+--8<-- "shared/configure-urls.md"
 
 ---
 
