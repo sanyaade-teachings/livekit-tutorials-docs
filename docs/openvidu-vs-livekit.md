@@ -92,4 +92,4 @@ This setup simplifies the configuration of local OpenVidu deployments with SSL, 
 
 The HTTPS offered by `openvidu-local.dev` is intended for development or testing purposes with the only goal of making your local devices trust your application (which is mandatory in WebRTC applications). For any other use case, it should be treated with the same security considerations as plain HTTP.
 
-For production deployments, you should follow the [official OpenVidu installation guide](https://openvidu.io/docs/self-hosting/deployment-types/){target="_blank"}.
+For production deployments, you should follow the [official OpenVidu installation guide](https://openvidu.io/latest/docs/self-hosting/deployment-types/){target="_blank"}.

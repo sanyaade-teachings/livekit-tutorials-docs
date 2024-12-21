@@ -1,7 +1,7 @@
-site_name: Livekit Tutorials
+site_name: LiveKit Tutorials
 site_url: https://livekit-tutorials.openvidu.io
 site_description: LiveKit Tutorials
-repo_name: openvidu/livekit-tutorials-docs
+repo_name: openvidu/openvidu-livekit-tutorials
 repo_url: https://github.com/openvidu/openvidu-livekit-tutorials
 
 nav:
@@ -139,9 +139,9 @@ extra:
     - icon: simple/github
       link: https://github.com/OpenVidu
     - icon: simple/x
-      link: https://twitter.com/openvidu
+      link: https://x.com/openvidu
     - icon: simple/medium
-      link: https://medium.com/@openvidu
+      link: https://openvidu.medium.com/
     - icon: simple/youtube
       link: https://www.youtube.com/@openvidu
   scope: /
@@ -149,7 +149,7 @@ extra:
     title: Cookie consent
     description: >
       This website uses cookies to ensure you get the best experience on our website.
-      <a href="https://openvidu.io/conditions/cookie-policy" target="_blank">See cookie policy</a>
+      <a href="/conditions/cookie-policy/" target="_blank">See cookie policy</a>
     cookies:
       analytics: Google Analytics
 

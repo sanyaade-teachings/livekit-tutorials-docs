@@ -52,7 +52,7 @@ To run the client application tutorial, you need [Node](https://nodejs.org/en/do
 
             The WebRTC API demands a secure connection for functionality outside of localhost, necessitating the serving of the application over HTTPS.
 
-        If you run [OpenVidu locally](#run-openvidu-locally) you don't need to worry about this. OpenVidu will handle all of the above requirements for you. For more information, see section [Accessing your app from other devices in your network](/openvidu-vs-livekit/#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
+        If you run [OpenVidu locally](#run-openvidu-locally) you don't need to worry about this. OpenVidu will handle all of the above requirements for you. For more information, see section [Accessing your app from other devices in your network](../../openvidu-vs-livekit.md#accessing-your-app-from-other-devices-in-your-network){target="_blank"}.
 
         Now, let's explore how to run the application on a mobile device:
 

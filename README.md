@@ -22,7 +22,7 @@ docker run --rm -it -v ${PWD}:/docs squidfunk/mkdocs-material build
 
 ## Sync changes between _openvidu.io_ and _livekit-tutorials.openvidu.io_
 
-Whenever any changes are made to the tutorials documentation, theses changes must be also reflected in repository [openvidu.io](https://github.com/OpenVidu/openvidu.io) so they end up available in [openvidu.io/docs/getting-started](https://openvidu.io/docs/getting-started/).
+Whenever any changes are made to the tutorials documentation, theses changes must be also reflected in repository [openvidu.io](https://github.com/OpenVidu/openvidu.io) so they end up available in [openvidu.io/latest/docs/getting-started](https://openvidu.io/latest/docs/getting-started/).
 
 To apply changes in the web _openvidu.io_:
 
