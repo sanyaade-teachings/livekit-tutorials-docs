@@ -126,15 +126,4 @@ OpenVidu is available in two editions:
 
 Visit [openvidu.io](https://openvidu.io) to learn more about what OpenVidu has to offer.
 
-<!-- - :material-server: **On-Premises**: take full control of your resources and data. OpenVidu is designed to be easily deployed in your own infrastructure, keeping all of your application's data completely secure without ever leaving your domain. The management, maintenance and updating of your cluster becomes an easy task with OpenVidu. We also provide ready-to-use native deployments in the most popular cloud providers.
-- :material-lightning-bolt: **Performant**: OpenVidu is built to be incredibly powerful, providing up to 2x performance of LiveKit. You can host double the users in your video rooms just by using OpenVidu.
-- :material-shield-refresh: **Fault tolerance**: OpenVidu deployments are natively fault tolerant in all of their components. In real-time applications, downtime events are extremely disruptive, so with OpenVidu node failures are handled appropriately to provide a seamless experience with no downtime.
-- :material-chart-timeline-variant-shimmer: **Scalable**: add nodes to increase the capacity of your cluster when necessary and remove them when no longer needed to optimize your resources and squeeze the most out of them.
-- :material-microscope: **Observable**: OpenVidu provides different tools and APIs to monitor the status, health, performance and history of your deployment. It automatically collects logs and metrics and offers a dashboard to visualize them.
-
-<figure markdown>
-  ![OpenVidu vs LiveKit](./assets/images/openvidu-vs-livekit.png){ .mkdocs-img }
-  <figcaption>OpenVidu is a 100%-compatible fork of LiveKit and extends it with custom addons and APIs. These extensions provide improved performance, new features and facilitate the deployment and management of your cluster.</figcaption>
-</figure> -->
-
 <br>
