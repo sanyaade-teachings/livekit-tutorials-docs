@@ -84,7 +84,7 @@ They use the proper [LiveKit Server SDK](https://docs.livekit.io/reference/){tar
 
 <div class="tutorials-container" markdown>
 
-[:simple-nodedotjs:{.icon .lg-icon .tab-icon} **NodeJS**](./tutorials/application-server/node.md){ .md-button .md-button--primary .tutorial-link }
+[:simple-nodedotjs:{.icon .lg-icon .tab-icon} **Node.js**](./tutorials/application-server/node.md){ .md-button .md-button--primary .tutorial-link }
 
 [:simple-goland:{.icon .lg-icon .tab-icon} **Go**](./tutorials/application-server/go.md){ .md-button .md-button--primary .tutorial-link}
 

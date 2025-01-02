@@ -1,3 +1,7 @@
+---
+description: Compare OpenVidu and LiveKit for local development. Discover the advantages of running OpenVidu locally and how it can help you develop your real-time application.
+---
+
 # Running OpenVidu vs LiveKit locally
 
 If you want to run the tutorials on this site locally without the need to create an account on [LiveKit Cloud](https://cloud.livekit.io/){target="_blank"}, we recommend **running OpenVidu locally**. OpenVidu is 100% compatible with LiveKit, and it offers many **advantages** for local development:
